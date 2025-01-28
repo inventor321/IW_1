@@ -72,7 +72,7 @@ public class RootController {
 		log.info("Cargando página de contenido");
 		model.addAttribute("mensaje", mensaje);
 
-		return "authors";
+		return "autores";
 	}
 
 	@GetMapping("/")
