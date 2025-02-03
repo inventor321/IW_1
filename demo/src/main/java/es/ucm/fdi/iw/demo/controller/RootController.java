@@ -68,16 +68,13 @@ public class RootController {
 
 	@GetMapping("/autores")
 	public String autores(Model model) {
-		String mensaje = "Bienvenido a la página de contenido.";
 		log.info("Cargando página de contenido");
-		model.addAttribute("mensaje", mensaje);
-
 		return "autores";
 	}
 
 	@GetMapping("/")
 	public String inicio(Model model) {
-		String mensaje = "Bienvenido a la página de contenido.";
+		String mensaje = "Hay un número secreto. Tu objetivo es adivinar el número secreto con la menor cantidad de conjeturas posible. Después de cada suposición, recibirá comentarios que le indicarán si la suposición es demasiado alta, demasiado baja o correcta.";
 		log.info("Cargando página de contenido");
 		model.addAttribute("mensaje", mensaje);
 
