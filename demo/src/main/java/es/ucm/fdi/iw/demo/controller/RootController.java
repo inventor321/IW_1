@@ -66,13 +66,13 @@ public class RootController {
 		return "adivina";
 	}
 
-	@GetMapping("/authors")
+	@GetMapping("/autores")
 	public String autores(Model model) {
 		String mensaje = "Bienvenido a la página de contenido.";
 		log.info("Cargando página de contenido");
 		model.addAttribute("mensaje", mensaje);
 
-		return "authors";
+		return "autores";
 	}
 
 	@GetMapping("/")
