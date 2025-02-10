@@ -32,6 +32,18 @@ public class RootController {
         return "login";
     }
 
+    @GetMapping("/register")
+    public String register(Model model, HttpServletRequest request) {
+        boolean error = request.getQueryString() != null && request.getQueryString().indexOf("error") != -1;
+        model.addAttribute("RegisterError", error);
+        return "register";
+    }
+
+    @GetMapping("/events")
+    public String events(Model model) {
+        return "events";
+    }
+
 	@GetMapping("/")
     public String index(Model model) {
         return "index";

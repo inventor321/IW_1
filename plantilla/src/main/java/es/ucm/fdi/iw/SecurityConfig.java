@@ -57,7 +57,7 @@ public class SecurityConfig {
 						.ignoringRequestMatchers("/api/**"))
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers("/css/**", "/js/**", "/img/**", "/", "/error").permitAll()
-						.requestMatchers("/api/**", "/eventos").permitAll() // <-- public api access
+						.requestMatchers("/api/**", "/events").permitAll() // <-- public api access
 						.requestMatchers("/admin/**").hasRole("ADMIN") // <-- administration
 						.requestMatchers("/user/**").hasRole("USER") // <-- logged-in users
 						.anyRequest().authenticated())
@@ -65,12 +65,13 @@ public class SecurityConfig {
 						.loginPage("/login")
 						.permitAll()
 						.successHandler(loginSuccessHandler) // <-- called when login Ok; can redirect
-				)
-				.formRegister(formRegister -> formRegister
-						.registerPage("/register")
-						.permitAll()
-						.successHandler(registerSuccessHandler) // <-- called when register Ok; can redirect
 				);
+				// ! TODO : Find replacement for .formRegister
+				// .formRegister(formRegister -> formRegister
+				// 		.registerPage("/register")
+				// 		.permitAll()
+				// 		.successHandler(registerSuccessHandler) // <-- called when register Ok; can redirect
+				// );
 
 		return http.build();
 	}

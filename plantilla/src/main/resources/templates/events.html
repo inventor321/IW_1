@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/head :: header}" />
+    <title>Eventos</title>
+</head>
+<body class="d-flex flex-column h-100">
+    <header th:replace="~{fragments/nav.html :: nav}"></header>
+
+    <main class="flex-shrink-0">
+        <div class="container mt-5">
+            <h1 class="mb-4">Eventos</h1>
+            
+            <!-- Event List -->
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col" th:each="event : ${events}">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${event.name}">Event Name</h5>
+                            <p class="card-text" th:text="${event.description}">Description</p>
+                            <p class="card-text">
+                                <small class="text-muted" 
+                                       th:text="${#temporals.format(event.date, 'dd-MM-yyyy')}">
+                                    Date
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <th:block th:replace="~{fragments/footer.html :: footer}" />
+    <script th:src="@{/js/ajax-demo.js}"></script>
+</body>
+</html>
