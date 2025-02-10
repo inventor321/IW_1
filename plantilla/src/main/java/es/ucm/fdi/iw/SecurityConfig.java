@@ -66,11 +66,14 @@ public class SecurityConfig {
 						.permitAll()
 						.successHandler(loginSuccessHandler) // <-- called when login Ok; can redirect
 				)
-				.formRegister(formRegister -> formRegister
-						.registerPage("/register")
-						.permitAll()
-						.successHandler(registerSuccessHandler) // <-- called when register Ok; can redirect
-				);
+		/*
+		 * .formRegister(formRegister -> formRegister
+		 * .registerPage("/register")
+		 * .permitAll()
+		 * .successHandler(registerSuccessHandler) // <-- called when register Ok; can
+		 * redirect
+		 * )
+		 */;
 
 		return http.build();
 	}
