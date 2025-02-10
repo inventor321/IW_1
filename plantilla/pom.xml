@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>es.ucm.fdi.iw</groupId>		<!-- *no* cambies esto -->
-	<artifactId>Exchange Connect</artifactId>		<!-- cambia esto -->
+	<artifactId>exchange-connect</artifactId>		<!-- cambia esto -->
 	<version>0.0.1-SNAPSHOT</version>		
 	<name>Exchange Connect</name>				<!-- cambia esto -->
 	<description>Red social destinada a estudiantes de erasmus</description>	<!-- cambia esto -->
