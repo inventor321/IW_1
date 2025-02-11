@@ -49,17 +49,4 @@ public class RootController {
         return "index";
     }
 
-    @GetMapping("/register")
-    public String register(Model model, HttpServletRequest request) {
-        boolean error = request.getQueryString() != null && request.getQueryString().indexOf("error") != -1;
-        model.addAttribute("loginError", error);
-        return "register";
-    }
-
-    @GetMapping("/events")
-    public String listarEventos(Model model) {
-        //List<Evento> eventos = eventoService.obtenerTodosLosEventos(); // Obtiene la lista de eventos
-        //model.addAttribute("eventos", eventos);
-        return "events"; // Devuelve la vista eventos.html
-    }
 }

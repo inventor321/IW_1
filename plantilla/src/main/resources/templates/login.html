@@ -4,27 +4,49 @@
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
     <title>Inicio de sesión</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #e8f5e9;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 10vh;
+        }
+        .btn-green {
+            background-color: #2e7d32;
+            color: white;
+        }
+        .btn-green:hover {
+            background-color: #1b5e20;
+        }
+    </style>
 </head>
 
 <body class="d-flex flex-column h-100">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
-    <main class="flex-shrink-0">
-        <div class="container">
+    <main class="flex-shrink-0 d-flex justify-content-center align-items-center">
+        <div class="login-container">s
+            <h2 class="text-center text-success">Inicia sesión</h2>
             <form class="form-signin" method="post" th:action="@{/login}">
-                <h2 class="form-signin-heading">Inicia sesión</h2>
-                <p th:if="${loginError != false}" class="error">
+                <p th:if="${loginError != false}" class="text-danger text-center">
                     Error en nombre de usuario o contraseña. Inténtalo otra vez.
                 </p>
-                <p>
-                    <label for="username" class="visually-hidden">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" required="required">
-                </p>
-                <p>
-                    <label for="password" class="visually-hidden">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="required">
-                </p>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Usuario</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                </div>
+                <button class="btn btn-green w-100" type="submit">Iniciar sesión</button>
             </form>
         </div>
     </main>
