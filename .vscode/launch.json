@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "IwApplication",
+            "request": "launch",
+            "mainClass": "es.ucm.fdi.iw.IwApplication",
+            "projectName": "exchange-connect"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-DemoApplication<demo>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
