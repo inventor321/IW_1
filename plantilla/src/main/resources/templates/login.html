@@ -32,7 +32,7 @@
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
     <main class="flex-shrink-0 d-flex justify-content-center align-items-center">
-        <div class="login-container">s
+        <div class="login-container">
             <h2 class="text-center text-success">Inicia sesión</h2>
             <form class="form-signin" method="post" th:action="@{/login}">
                 <p th:if="${loginError != false}" class="text-danger text-center">
@@ -40,11 +40,11 @@
                 </p>
                 <div class="mb-3">
                     <label for="username" class="form-label">Usuario</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="" required>
                 </div>
                 <button class="btn btn-green w-100" type="submit">Iniciar sesión</button>
             </form>

@@ -41,6 +41,38 @@
 
 <body class="d-flex flex-column h-100">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
+    <main class="flex-shrink-0">
+        <div class="container">
+            
+            <!-- Event Creation Form -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Create New Event</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/events}" method="post">
+                        <div class="mb-3">
+                            <label for="eventName" class="form-label">Event Name</label>
+                            <input type="text" class="form-control" id="eventName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="eventDescription" name="description" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventDate" class="form-label">Date</label>
+                            <input type="datetime-local" class="form-control" id="eventDate" name="date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventLocation" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="eventLocation" name="location" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Event</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <th:block th:replace="~{fragments/footer.html :: footer}" />
 </body>

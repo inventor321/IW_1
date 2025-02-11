@@ -12,6 +12,17 @@
     <main class="flex-shrink-0">
         <div class="container">
             <h1 class="mt-5">Administración</h1>
+            
+            <div class="row mt-4">
+                <div class="col">
+                    <a th:href="@{/admin/events/create}" class="btn btn-primary me-2">
+                        <i class="bi bi-plus-circle me-2"></i>Create New Event
+                    </a>
+                    <a th:href="@{/admin/events}" class="btn btn-secondary">
+                        <i class="bi bi-list me-2"></i>View Events
+                    </a>
+                </div>
+            </div>
         </div>
     </main>
 

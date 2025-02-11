@@ -3,54 +3,103 @@
 
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
-    <title>IW: Perfil</title>
+    <title>Perfil de Usuario</title>
+    <style>
+        body {
+            background-color: #e8f5e9;
+        }
+        .profile-container {
+            max-width: 800px;
+            margin: auto;
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-green {
+            background-color: #448147;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-green2 {
+            background-color: #70cb76;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100 bg-light">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
-    <main class="flex-shrink-0">
-        <div id="books" class="border border-2 border-primary rounded">
-            <label for="isbn">ISBN</label><input id="isbn" value="9780140328721" />
-            <button id="fetchBook">Buscar datos online</button>
-            <img class="preview" id="portada" alt="portada del libro" />
-            <form th:action="@{/user/__${user.id}__/pic}">
-                <button id="postPortada" class="perfilable">Usar como foto de perfil</button>
-            </form>
-        </div>
-        <div id="movies" class="border border-2 border-secondary rounded">
-            <label for="imdb">IMDB</label><input id="imdb" value="tt11286314" />
-            <button id="fetchMovie">Buscar datos online</button>
-            <img class="preview" id="poster" alt="poster de la pelicula" />
-            <form th:action="@{/user/__${user.id}__/pic}">
-                <button id="postPoster" class="perfilable">Usar como foto de perfil</button>
-            </form>
-        </div>
-        <div id="profile" class="border border-2 border-tertiary rounded">
-            <input type="file" id="f_avatar" accept="image/jpeg,image/png">
-            <img class="preview" id="avatar" alt="careto a subir" />
-            <form th:action="@{/user/__${user.id}__/pic}">
-                <button id="postAvatar">Usar como foto de perfil</button>
-            </form>
-        </div>
+    <main class="flex-shrink-0" style="background-color: rgba(0, 128, 0, 0.5);">
+        <div class="container mt-5 mb-4 profile-container">
+            <h1 class="text-center">Perfil de <span th:text="${user.username}">Usuario</span></h1>
+            <div class="mt-4 mb-4">
+                <h4>Datos de Usuario</h4>
+                <label for="username">Nombre de usuario</label>
+                <input id="username" class="form-control" th:value="${user.username}" />
 
-        <div class="container">
-            <h1 class="mt-5">Perfil de <span th:text="${user.username}">Paco</span></h1>
-            <!-- recepción de mensajes -->
-            <div class="py-5 row" id="mensajes">
+                <label for="email">Correo electrónico</label>
+                <input id="email" class="form-control" value="user@gmail.com" />
+
+                <button id="save" class="btn btn-success btn-green">Guardar Inforamción</button>
             </div>
-            <!-- envío de mensajes -->
-            <div class="py-5 row ">
-                <form th:action="@{/user/__${user.id}__/msg}" method="POST">
-                    <input type="text" id="message" placeholder="escribe a este usuario" />
-                    <button id="sendmsg" class="btn btn-secondary" type="submit">Enviar</button>
+
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img class="preview" id="avatar" alt="Foto de perfil" />
+                    <input type="file" id="f_avatar" accept="image/jpeg,image/png" class="form-control mt-2">
+                    <form th:action="@{/user/__${user.id}__/pic}">
+                        <button id="postAvatar" class="btn btn-primary btn-green">Actualizar foto de perfil</button>
+                    </form>
+                </div>
+                
+                <div class="col-md-8">
+                    <h4>Buscar libros o películas</h4>
+                    <div class="border p-3 rounded mb-3">
+                        <label for="isbn">ISBN</label>
+                        <input id="isbn" class="form-control" value="9780140328721" />
+                        <button id="fetchBook" class="btn btn-info btn-green">Buscar libro</button>
+                        <img class="preview" id="portada" alt="Portada del libro" />
+                        <form th:action="@{/user/__${user.id}__/pic}">
+                            <button id="postPortada" class="btn btn-secondary btn-green2">Usar como perfil</button>
+                        </form>
+                    </div>
+
+                    <div class="border p-3 rounded">
+                        <label for="imdb">IMDB</label>
+                        <input id="imdb" class="form-control" value="tt11286314" />
+                        <button id="fetchMovie" class="btn btn-info btn-green">Buscar película</button>
+                        <img class="preview" id="poster" alt="Poster de la película" />
+                        <form th:action="@{/user/__${user.id}__/pic}">
+                            <button id="postPoster" class="btn btn-secondary btn-green2">Usar como perfil</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h4>Mensajes</h4>
+                <div class="border p-3 rounded mb-3" id="mensajes"></div>
+                <form th:action="@{/user/__${user.id}__/msg}" method="POST" class="d-flex">
+                    <input type="text" id="message" class="form-control me-2" placeholder="Escribe un mensaje..." />
+                    <button id="sendmsg" class="btn btn-success btn-green">Enviar</button>
                 </form>
             </div>
         </div>
     </main>
 
     <th:block th:replace="~{fragments/footer.html :: footer}" />
-
     <script th:src="@{/js/ajax-demo.js}"></script>
 </body>
 

@@ -39,9 +39,9 @@ public class RootController {
         return "register";
     }
     
-    @GetMapping("/eventList")
+    @GetMapping("/events")
     public String eventList(Model model) {
-        return "eventList";
+        return "events";
     }
 
     @GetMapping("/event")

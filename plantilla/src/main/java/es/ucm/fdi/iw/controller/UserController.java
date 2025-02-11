@@ -115,6 +115,16 @@ public class UserController {
     public String chat(Model model) {
         return "chat";
     }
+	
+	@GetMapping("/events")
+    public String eventList(Model model) {
+        return "events";
+    }
+
+    @GetMapping("/event")
+    public String event(Model model) {
+        return "event";
+    }
 
     /**
      * Landing page for a user profile
