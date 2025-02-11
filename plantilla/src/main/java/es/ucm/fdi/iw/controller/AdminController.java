@@ -36,4 +36,14 @@ public class AdminController {
         log.info("Admin acaba de entrar");
         return "admin";
     }
+
+    @GetMapping("/createEvent")
+    public String createEvent(Model model) {
+        return "createEvent";
+    }
+
+    @GetMapping("/chat")
+    public String chat(Model model) {
+        return "chat";
+    }
 }

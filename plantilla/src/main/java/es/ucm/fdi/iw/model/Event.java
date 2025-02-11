@@ -15,6 +15,7 @@ public class Event {
     private String name;
     private String description;
     private LocalDateTime date;
+    private String location;
     
     @ManyToOne
     private User creator;

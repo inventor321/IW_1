@@ -38,28 +38,19 @@ public class RootController {
         model.addAttribute("RegisterError", error);
         return "register";
     }
+    
+    @GetMapping("/eventList")
+    public String eventList(Model model) {
+        return "eventList";
+    }
 
-    @GetMapping("/events")
-    public String events(Model model) {
-        return "events";
+    @GetMapping("/event")
+    public String event(Model model) {
+        return "event";
     }
 
 	@GetMapping("/")
     public String index(Model model) {
         return "index";
-    }
-
-    @GetMapping("/register")
-    public String register(Model model, HttpServletRequest request) {
-        boolean error = request.getQueryString() != null && request.getQueryString().indexOf("error") != -1;
-        model.addAttribute("loginError", error);
-        return "register";
-    }
-
-    @GetMapping("/events")
-    public String listarEventos(Model model) {
-        //List<Evento> eventos = eventoService.obtenerTodosLosEventos(); // Obtiene la lista de eventos
-        //model.addAttribute("eventos", eventos);
-        return "events"; // Devuelve la vista eventos.html
     }
 }

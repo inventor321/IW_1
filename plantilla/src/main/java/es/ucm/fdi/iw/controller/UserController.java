@@ -111,6 +111,11 @@ public class UserController {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(token); //base64 encoding
     }
 
+	@GetMapping("/chat")
+    public String chat(Model model) {
+        return "chat";
+    }
+
     /**
      * Landing page for a user profile
      */
