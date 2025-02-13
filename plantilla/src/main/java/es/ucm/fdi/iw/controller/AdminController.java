@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import es.ucm.fdi.iw.model.EventService;
 import es.ucm.fdi.iw.model.Event;
 
@@ -57,8 +59,13 @@ public class AdminController {
     }
     
     @PostMapping("/events")
-    public String createEvent(@ModelAttribute Event event) {
-        eventService.save(event);
+    public String createEvent(@ModelAttribute Event event, RedirectAttributes ra) {
+        try {
+            eventService.save(event);
+            ra.addFlashAttribute("message", "Event created successfully!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Failed to create event: " + e.getMessage());
+        }
         return "redirect:/admin/events";
     }
 
