@@ -16,6 +16,16 @@
             "projectName": "demo",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-IwApplication<Exchange_Connect>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "es.ucm.fdi.iw.IwApplication",
+            "projectName": "Exchange_Connect",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
