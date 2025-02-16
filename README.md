@@ -13,7 +13,7 @@ Página web dirigida a estudiantes de intercambio en la que los usuarios pueden 
   Vista de administrador para realizar tareas de gestión, como la creación de nuevos eventos.
 - **Perfil de usuario**  
   Permite modificar la información personal de tu cuenta, cambiar la foto de perfil y enviar mensajes. 
-- **Chat**
+- **Chat**  
   Pantalla dedicada a la comunicación mediante mensajes con otros usuarios.
 
 ## Autores
