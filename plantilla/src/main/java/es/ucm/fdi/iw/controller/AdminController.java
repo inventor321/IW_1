@@ -52,9 +52,9 @@ public class AdminController {
     private EventService eventService;
     
     @GetMapping("/events")
-    public String listEvents(Model model) {
-        // model.addAttribute("events", eventService.findAll());
-        return "events";
+    public String eventList(Model model) {
+        model.addAttribute("events", eventService.findAll());
+        return "events";  // Return template name directly instead of redirecting
     }
     
     @GetMapping("/events/create")
@@ -62,7 +62,7 @@ public class AdminController {
         model.addAttribute("event", new Event());
         return "createEvent";
     }
-    
+
     @PostMapping("/events")
     public String createEvent(@ModelAttribute Event event, RedirectAttributes ra) {
         try {

@@ -19,8 +19,6 @@ import es.ucm.fdi.iw.model.EventService;
 @Controller
 public class RootController {
 
-    private static final Logger log = LogManager.getLogger(RootController.class);
-
     @ModelAttribute
     public void populateModel(HttpSession session, Model model) {        
         for (String name : new String[] {"u", "url", "ws"}) {
@@ -59,10 +57,5 @@ public class RootController {
 	@GetMapping("/")
     public String index(Model model) {
         return "index";
-    }
-
-    @GetMapping("/chat")
-    public String chat(Model model) {
-        return "chat";
     }
 }
