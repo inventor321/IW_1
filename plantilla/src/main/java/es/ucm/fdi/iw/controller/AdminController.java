@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import es.ucm.fdi.iw.model.EventService;
 import es.ucm.fdi.iw.model.Event;
 
 import es.ucm.fdi.iw.model.User;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -27,6 +29,9 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("admin")
 public class AdminController {
+
+    @Autowired
+	private EntityManager entityManager;
 
     @ModelAttribute
     public void populateModel(HttpSession session, Model model) {        
@@ -69,10 +74,12 @@ public class AdminController {
         return "redirect:/admin/events";
     }
 
-    // @GetMapping("/event")
-    // public String event(Model model) {
-    //     return "event";
-    // }
+    @GetMapping("/event/{id}")
+	public String event(@PathVariable long id, Model model) {
+		Event event = entityManager.find(Event.class, id);
+		model.addAttribute("event", event);
+		return "event";
+	}
 
     @GetMapping("/chat")
     public String chat(Model model) {

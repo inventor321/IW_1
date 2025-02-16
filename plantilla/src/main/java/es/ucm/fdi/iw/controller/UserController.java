@@ -1,6 +1,7 @@
 package es.ucm.fdi.iw.controller;
 
 import es.ucm.fdi.iw.LocalData;
+import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.model.Message;
 import es.ucm.fdi.iw.model.Transferable;
 import es.ucm.fdi.iw.model.User;
@@ -121,10 +122,12 @@ public class UserController {
         return "events";
     }
 
-    @GetMapping("/event")
-    public String event(Model model) {
-        return "event";
-    }
+    @GetMapping("/event/{id}")
+	public String event(@PathVariable long id, Model model) {
+		Event event = entityManager.find(Event.class, id);
+		model.addAttribute("event", event);
+		return "event";
+	}
 
     /**
      * Landing page for a user profile
