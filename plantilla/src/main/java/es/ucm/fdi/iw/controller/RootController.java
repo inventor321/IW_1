@@ -60,4 +60,9 @@ public class RootController {
     public String index(Model model) {
         return "index";
     }
+
+    @GetMapping("/chat")
+    public String chat(Model model) {
+        return "chat";
+    }
 }
