@@ -1,5 +1,14 @@
 # Exchange Connect
-Página web dirigida a estudiantes de intercambio en la que los usuarios pueden participar en eventos y socializar con otros estudiantes.
+
+Página web dirigida a estudiantes de intercambio en la que los usuarios pueden participar en eventos y socializar con otros estudiantes.  
+
+Roles:
+ - Administrador:  
+    Da de alta y baja usuarios, puede crear y editar eventos, eliminar mensajes, (...)
+ - Organizador:  
+    Puede crear y editar y participar en eventos. (...)
+ - Usuario:  
+    Puede apuntarse y participar en eventos. (...)
 
 ## Vistas
 
