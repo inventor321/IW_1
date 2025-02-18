@@ -97,15 +97,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="mt-4">
-                <h4>Mensajes</h4>
-                <div class="border p-3 rounded mb-3" id="mensajes"></div>
-                <form th:action="@{/user/__${user.id}__/msg}" method="POST" class="d-flex">
-                    <input type="text" id="message" class="form-control me-2" placeholder="Escribe un mensaje..." />
-                    <button id="sendmsg" class="btn btn-success btn-green">Enviar</button>
-                </form>
-            </div>
         </div>
     </main>
 
