@@ -14,16 +14,18 @@ public class Event {
     private LocalDateTime date;
     private String location;
     private String imageUrl;
+    private int org;
 
     public Event() {
     }
 
-    public Event(String name, String description, LocalDateTime date, String location, String imageUrl) {
+    public Event(String name, String description, LocalDateTime date, String location, String imageUrl, int org) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.location = location;
         this.imageUrl = imageUrl;
+        this.org = org;
     }
 
     public void setId(Long id) {
@@ -74,7 +76,5 @@ public class Event {
         return imageUrl;
     }
 
-
-    
     // Getters and setters
 }
