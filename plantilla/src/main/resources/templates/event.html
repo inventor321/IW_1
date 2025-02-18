@@ -40,6 +40,17 @@
                 object-fit: cover;
                 border-radius: 10px;
             }
+            .custom-btn {
+                background-color: white;
+                color: rgba(0, 128, 0, 0.5);
+                border: 2px solid rgba(0, 128, 0, 0.5);
+                padding: 12px 20px;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 8px;
+                transition: all 0.3s ease-in-out;
+                cursor: pointer;
+            }
             .btn {
                 padding: 10px 15px;
                 background-color: rgba(0, 128, 0, 0.5);
@@ -70,7 +81,7 @@
                     <p class="lead" th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">Fecha del Evento</p>
                     <p class="lead" th:text="${event.location}">Ubicación del Evento</p>
                     <div class="text-center">
-                        <button class="btn w-50 mb-4">Participar en el evento</button>
+                        <button class="custom-btn w-50 mt-4">PARTICIPAR EN EL EVENTO</button>
                     </div>
                 </div>
             </section>
