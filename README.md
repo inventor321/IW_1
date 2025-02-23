@@ -2,16 +2,22 @@
 
 Página web dirigida a estudiantes de intercambio en la que los usuarios pueden participar en eventos y socializar con otros estudiantes.  
 
-¿Eres un estudiante de intercambio buscando hacer nuevos amigos? Participa en eventos, conoce a otros estudiantes con intereses similares, haz fantásticos planes en grupo y mucho más con Exchange Connect, la plataforma que conecta estudiantes de cualquier nacionalidad. Forma parte de nuestra comunidad y (...)
+Haz que tu experiencia como estudiante de intercambio sea inolvidable con Exchange Connect, la plataforma ideal para conocer nuevos amigos, participar en eventos y sumergirte en la comunidad estudiantil internacional. Descubre actividades, socializa con personas de gustos afines y disfruta de una experiencia de intercambio enriquecedora y divertida.
 
+Roles y tareas:
+- Administrador
+  - Gestiona usuarios y permisos.
+  - Crea, edita y elimina eventos.
+  - Modera contenido y mensajes.
 
-Roles:
- - Administrador:  
-    Da de alta y baja usuarios, puede crear y editar eventos, eliminar mensajes, (...)
- - Organizador:  
-    Puede crear y editar y participar en eventos. (...)
- - Usuario:  
-    Puede apuntarse y participar en eventos. (...)
+- Organizador
+  - Crea, administra y participa en eventos.
+  - Se comunica con los participantes.
+
+- Usuario
+  - Personaliza su perfil.
+  - Explora y se inscribe en eventos.
+  - Interactúa a través del chat.
 
 ## Vistas
 
