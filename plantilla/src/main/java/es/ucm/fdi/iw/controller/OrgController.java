@@ -27,8 +27,8 @@ import jakarta.servlet.http.HttpSession;
  * Access to this end-point is authenticated - see SecurityConfig
  */
 @Controller
-@RequestMapping("admin")
-public class AdminController {
+@RequestMapping("org")
+public class OrgController {
 
     @Autowired
     private EntityManager entityManager;
@@ -40,16 +40,33 @@ public class AdminController {
         }
     }
 
-    private static final Logger log = LogManager.getLogger(AdminController.class);
+    private static final Logger log = LogManager.getLogger(OrgController.class);
 
     @GetMapping("/")
     public String index(Model model) {
-        log.info("Admin acaba de entrar");
-        return "admin";
+        log.info("Org acaba de entrar");
+        return "org";
     }
 
     @Autowired
     private EventService eventService;
+
+    @GetMapping("/create-event")
+    public String showCreateEventForm(Model model) {
+        model.addAttribute("event", new Event());
+        return "createEvent";
+    }
+
+    @PostMapping("/events")
+    public String createEvent(@ModelAttribute Event event, RedirectAttributes ra) {
+        try {
+            eventService.save(event);
+            ra.addFlashAttribute("message", "Event created successfully!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Failed to create event: " + e.getMessage());
+        }
+        return "redirect:/events";
+    }
 
     @GetMapping("/event/{id}")
     public String event(@PathVariable long id, Model model) {

@@ -6,15 +6,15 @@
  */
 
 // envio de mensajes con AJAX
-let b = document.getElementById("sendmsg");
-b.onclick = (e) => {
-    e.preventDefault();
-    go(b.parentNode.action, 'POST', {
-            message: document.getElementById("message").value
-        })
-        .then(d => console.log("happy", d))
-        .catch(e => console.log("sad", e))
-}
+// let b = document.getElementById("sendmsg");
+// b.onclick = (e) => {
+//     e.preventDefault();
+//     go(b.parentNode.action, 'POST', {
+//             message: document.getElementById("message").value
+//         })
+//         .then(d => console.log("happy", d))
+//         .catch(e => console.log("sad", e))
+// }
 
 // cómo pintar 1 mensaje (devuelve html que se puede insertar en un div)
 function renderMsg(msg) {

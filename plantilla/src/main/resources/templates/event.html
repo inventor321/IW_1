@@ -11,8 +11,8 @@
                 font-family: 'Poppins', sans-serif;
             }
             .hero {
-                padding: 60px 0;
-                text-align: center;
+                padding: 35px 0;
+                text-align: center; 
                 background: rgba(0, 128, 0, 0.5);
                 color: white;
             }
@@ -50,7 +50,9 @@
                 border-radius: 8px;
                 transition: all 0.3s ease-in-out;
                 cursor: pointer;
+                margin-bottom: 2rem; 
             }
+
             .btn {
                 padding: 10px 15px;
                 background-color: rgba(0, 128, 0, 0.5);
@@ -81,8 +83,16 @@
                     <p class="lead" th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">Fecha del Evento</p>
                     <p class="lead" th:text="${event.location}">Ubicación del Evento</p>
                     <div class="text-center">
-                        <button class="custom-btn w-50 mt-4">PARTICIPAR EN EL EVENTO</button>
+                        <button class="custom-btn w-50 mb-4">PARTICIPAR EN EL EVENTO</button>
                     </div>
+                    <div class="text-center">
+                        <button th:href="@{${#authorization.expression('hasRole(''ORG'')')} ? '/org/event/edit/' + ${event.id} : '/user/event/' + ${event.id}}" 
+                           th:if="${#authorization.expression('hasRole(''ORG'')')}"
+                           class="custom-btn w-21 mb-0">
+                            EDITAR EVENTO
+                    </button>
+                    </div>                                       
+                    
                 </div>
             </section>
             <div class="container event-container mb-4">

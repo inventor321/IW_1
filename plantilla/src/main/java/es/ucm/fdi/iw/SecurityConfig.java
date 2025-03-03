@@ -59,6 +59,7 @@ public class SecurityConfig {
 						.requestMatchers("/css/**", "/js/**", "/img/**", "/", "/error").permitAll()
 						.requestMatchers("/api/**", "/events", "/register").permitAll() // <-- public api access
 						.requestMatchers("/admin/**").hasRole("ADMIN") // <-- administration
+						.requestMatchers("/org/**").hasRole("ORG") // <-- organization
 						.requestMatchers("/user/**", "/chat").hasRole("USER") // <-- logged-in users
 						.anyRequest().authenticated())
 				.formLogin(formLogin -> formLogin

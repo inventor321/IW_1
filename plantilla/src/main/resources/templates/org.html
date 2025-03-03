@@ -3,7 +3,7 @@
 
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
-    <title>IW: Admin</title>
+    <title>IW: Org</title>
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -11,19 +11,19 @@
 
     <main class="flex-shrink-0">
         <div class="container">
-            <h1 class="mt-5">Administración</h1>
+            <h1 class="mt-5">Organisation</h1>
             
             <div class="row mt-4">
                 <div class="col">
                     <a th:href="@{/org/create-event}" class="btn btn-primary me-2">
-                        <i class="bi bi-plus-circle me-2"></i>Create New Event
+                        <i class="bi bi-plus-circle me-2"></i>Create New Event!
                     </a>
                     <a th:href="@{/events}" class="btn btn-secondary">
                         <i class="bi bi-list me-2"></i>View Events
                     </a>
                 </div>
             </div>
-        </div>
+        </div> 
     </main>
 
     <th:block th:replace="~{fragments/footer.html :: footer}" />
