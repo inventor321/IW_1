@@ -45,6 +45,7 @@ public class AdminController {
     @GetMapping("/")
     public String index(Model model) {
         log.info("Admin acaba de entrar");
+        model.addAttribute("users", entityManager.createQuery("select u from User u").getResultList());
         return "admin";
     }
 
@@ -58,4 +59,11 @@ public class AdminController {
         return "event";
     }
 
+    @PostMapping("/toggle/{id}")
+    public String toggleUser(@PathVariable long id, Model model) {
+        log.info("Admin cambia estado de " + id);
+        User target = entityManager.find(User.class, id);
+        target.setEnabled(!target.isEnabled());
+        return "{\"enabled\":" + target.isEnabled() + "}";
+    }
 }
