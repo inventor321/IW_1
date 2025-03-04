@@ -14,19 +14,19 @@ import jakarta.servlet.http.HttpSession;
 import es.ucm.fdi.iw.model.EventService;
 
 /**
- *  Non-authenticated requests only.
+ * Non-authenticated requests only.
  */
 @Controller
 public class RootController {
 
     @ModelAttribute
-    public void populateModel(HttpSession session, Model model) {        
-        for (String name : new String[] {"u", "url", "ws"}) {
+    public void populateModel(HttpSession session, Model model) {
+        for (String name : new String[] { "u", "url", "ws" }) {
             model.addAttribute(name, session.getAttribute(name));
         }
     }
 
-	@GetMapping("/login")
+    @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
         boolean error = request.getQueryString() != null && request.getQueryString().indexOf("error") != -1;
         model.addAttribute("loginError", error);
@@ -42,7 +42,7 @@ public class RootController {
 
     @Autowired
     private EventService eventService;
-    
+
     @GetMapping("/events")
     public String eventList(Model model) {
         model.addAttribute("events", eventService.findAll());
@@ -54,7 +54,7 @@ public class RootController {
         return "event";
     }
 
-	@GetMapping("/")
+    @GetMapping("/")
     public String index(Model model) {
         return "index";
     }
