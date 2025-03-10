@@ -14,12 +14,14 @@ public class Event {
     private LocalDateTime date;
     private String location;
     private String imageUrl;
-    private int org;
+    private Long org;
+    @ManyToOne
+    private User user;
 
     public Event() {
     }
 
-    public Event(String name, String description, LocalDateTime date, String location, String imageUrl, int org) {
+    public Event(String name, String description, LocalDateTime date, String location, String imageUrl, Long org) {
         this.name = name;
         this.description = description;
         this.date = date;
@@ -28,53 +30,25 @@ public class Event {
         this.org = org;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
+    public Long getId() { return id; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
+    public String getName() { return name; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
+    public String getDescription() { return description; }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
+    public void setDate(LocalDateTime date) { this.date = date; }
+    public LocalDateTime getDate() { return date; }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public void setLocation(String location) { this.location = location; }
+    public String getLocation() { return location; }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getImageUrl() { return imageUrl; }
 
-    public Long getId() {
-        return id;
-    }
+    public void setOrg(Long org) { this.org = org; }
+    public Long getOrg() { return org; }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    // Getters and setters
 }
