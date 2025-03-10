@@ -43,11 +43,12 @@ public class RootController {
     @Autowired
     private EventService eventService;
 
-    @GetMapping("/events")
-    public String eventList(Model model) {
+    @GetMapping("/events/list") // Cambia la ruta
+    public String listEvents(Model model) {
         model.addAttribute("events", eventService.findAll());
         return "events";
     }
+
 
     @GetMapping("/event")
     public String event(Model model) {

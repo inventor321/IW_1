@@ -4,85 +4,54 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Events")
+@Table(name = "event") // Mejor en singular y en minúsculas
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
+    @Lob // Si la descripción puede ser larga
     private String description;
+
     private LocalDateTime date;
     private String location;
     private String imageUrl;
-    private int org;
+
+    @Transient // Evita conflictos con palabras reservadas
+    private String org;
 
     public Event() {
     }
 
-    public Event(String name, String description, LocalDateTime date, String location, String imageUrl, int org) {
+    public Event(String name, String description, LocalDateTime date, String location, String imageUrl) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.location = location;
         this.imageUrl = imageUrl;
-        this.org = org;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // Getters y Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
+    public LocalDateTime getDate() { return date; }
+    public void setDate(LocalDateTime date) { this.date = date; }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public void setOrg(int org) {
-        this.org = org;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public int getOrg() {
-        return org;
-    }
-
-    // Getters and setters
+    public String getOrg() { return org; }
+    public void setOrg(String org) { this.org = org; }
 }

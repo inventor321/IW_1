@@ -61,7 +61,7 @@
                     <h5 class="mb-0">Create New Event</h5>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/events}" method="post">
+                    <form th:action="@{/events}" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="eventName" class="form-label">Event Name</label>
                             <input type="text" class="form-control" id="eventName" name="name" required>
@@ -101,7 +101,7 @@
                                 <input type="file" class="form-control" id="eventImageFile" name="imageFile" accept="image/*">
                             </div>
                         </div>
-                            
+
                         <button type="submit" class="btn btn-primary">Create Event</button>
                     </form>
                 </div>
@@ -129,5 +129,5 @@
             fileInput.style.display = 'block';
         });
     });
-    </script>
+</script>
 </html>
