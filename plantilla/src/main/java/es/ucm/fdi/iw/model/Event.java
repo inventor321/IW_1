@@ -52,6 +52,10 @@ public class Event {
         this.imageUrl = imageUrl;
     }
 
+    public void setOrg(int org) {
+        this.org = org;
+    }
+
     public Long getId() {
         return id;
     }
@@ -74,6 +78,10 @@ public class Event {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public int getOrg() {
+        return org;
     }
 
     // Getters and setters
