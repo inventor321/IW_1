@@ -2,6 +2,7 @@ package es.ucm.fdi.iw.controller;
 
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.repository.EventRepository;
+import es.ucm.fdi.iw.model.User;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
