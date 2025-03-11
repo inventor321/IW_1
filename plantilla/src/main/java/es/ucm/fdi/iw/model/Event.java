@@ -20,37 +20,73 @@ public class Event {
     private String imageUrl;
 
     @Transient // Evita conflictos con palabras reservadas
-    private Long org;
+    private long org;
 
     public Event() {
     }
 
-    public Event(String name, String description, LocalDateTime date, String location, String imageUrl) {
+    public Event(String name, String description, LocalDateTime date, String location, String imageUrl, long org) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.location = location;
         this.imageUrl = imageUrl;
+        this.org = org;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
 
-    public LocalDateTime getDate() { return date; }
-    public void setDate(LocalDateTime date) { this.date = date; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public String getDescription() {
+        return description;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public Long getOrg() { return org; }
-    public void setOrg(Long org) { this.org = org; }
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Long getOrg() {
+        return org;
+    }
+
+    public void setOrg(Long org) {
+        this.org = org;
+    }
 }

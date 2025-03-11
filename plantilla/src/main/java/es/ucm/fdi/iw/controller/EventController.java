@@ -42,32 +42,33 @@ public class EventController {
 
     @PostMapping
     public String createEvent(@RequestParam String name,
-                         @RequestParam String description,
-                         @RequestParam LocalDateTime date,
-                         @RequestParam String location,
-                         @RequestParam String imageSource,
-                         @RequestParam(required = false) String imageUrl,
-                         @RequestParam(required = false) MultipartFile imageFile,
-                         Authentication authentication) {
-    try {
-        String finalImagePath = null;
-        
-        if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
-            String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
-            Path staticPath = Paths.get("src/main/resources/static/img/events");
-            Files.createDirectories(staticPath);
-            Path filepath = staticPath.resolve(fileName);
-            Files.copy(imageFile.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
-            finalImagePath = "/img/events/" + fileName;
-        } else if ("url".equals(imageSource) && imageUrl != null && !imageUrl.isEmpty()) {
-            finalImagePath = imageUrl;
-        }
+            @RequestParam String description,
+            @RequestParam LocalDateTime date,
+            @RequestParam String location,
+            @RequestParam(required = false) String imageSource,
+            @RequestParam(required = false) String imageUrl,
+            @RequestParam(required = false) MultipartFile imageFile,
+            @RequestParam(required = false) long org,
+            Authentication authentication) {
+        try {
+            String finalImagePath = null;
 
-        Event event = new Event(name, description, date, location, finalImagePath);
-        eventRepository.save(event);
-        return "redirect:/events";
-    } catch (Exception e) {
-        return "redirect:/events/create?error=" + e.getMessage();
+            if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+                Path staticPath = Paths.get("src/main/resources/static/img/events");
+                Files.createDirectories(staticPath);
+                Path filepath = staticPath.resolve(fileName);
+                Files.copy(imageFile.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+                finalImagePath = "/img/events/" + fileName;
+            } else if ("url".equals(imageSource) && imageUrl != null && !imageUrl.isEmpty()) {
+                finalImagePath = imageUrl;
+            }
+
+            Event event = new Event(name, description, date, location, finalImagePath, org);
+            eventRepository.save(event);
+            return "redirect:/events";
+        } catch (Exception e) {
+            return "redirect:/events/create?error=" + e.getMessage();
+        }
     }
-}
 }
