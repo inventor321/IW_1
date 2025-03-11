@@ -64,11 +64,11 @@ def main(credentials_file, db_file_root, data_file_root):
   try:
       subprocess.run(["mvn",
                       "package", 
-                      "-DskipTests=true"], shell=True, check=True)
+                      "-DskipTests=true"], shell=False, check=True)
       jar = glob.glob("target/*.jar")[0]
       print(f"Deployment jar file is ready: {jar}")
-  except Exception as e:
-      print(f"Error: Could not build jar file. Exiting: {e}")
+  except:
+      print("Error: Could not build jar file. Exiting.")
 
   print(f"Loading credentials from `{credentials_file}` ... ")
   try:
@@ -106,8 +106,7 @@ def main(credentials_file, db_file_root, data_file_root):
           print(f"All files uploaded. Killing previous servers ...")
           c.run("tmux kill-server || true")
           print(f"creating a launch script (`run.sh`) for the web application ...")
-          jar = jar.replace("target\\", "")
-          c.run(f"echo 'SPRING_PROFILES_ACTIVE=container java -jar {jar}' > run.sh && chmod +x run.sh")
+          c.run(f"echo 'SPRING_PROFILES_ACTIVE=container java -jar $(basename {jar})' > run.sh && chmod +x run.sh")
           print(f"... and deploying in new tmux session `iw`; connect via `tmux a -t iw` to see logs")
           c.run(f"tmux new-session -d -s iw ./run.sh")
           print("Deployment complete, check logs for errors.")

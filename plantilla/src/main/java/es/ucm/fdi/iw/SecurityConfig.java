@@ -31,25 +31,27 @@ public class SecurityConfig {
 	/**
 	 * Main security configuration.
 	 * 
-	 * The first rule that matches will be followed - so if a rule decides to grant
-	 * access
+	 * The first rule that matches will be followed - so if a rule decides to grant access
 	 * to a resource, a later rule cannot deny that access, and vice-versa.
 	 * 
-	 * To disable security entirely, just add an .antMatchers("**").permitAll()
+	 * To disable security entirely, just add an .antMatchers("**").permitAll() 
 	 * as a first rule. Note that this may break an application that expects to have
 	 * login information available.
 	 */
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
 		// acceso a consola h2 en modo debug
 		String debugProperty = env.getProperty("es.ucm.fdi.debug");
 		if (debugProperty != null && Boolean.parseBoolean(debugProperty.toLowerCase())) {
 			http.csrf(csrf -> csrf
-					.ignoringRequestMatchers("/h2/**"));
+				.ignoringRequestMatchers("/h2/**")
+			);
 			http.authorizeHttpRequests(authorize -> authorize
-					.requestMatchers("/h2/**"));
+				.requestMatchers("/h2/**").permitAll()  // <-- no login for h2 console
+			);
+      http.headers(header->header.frameOptions(frameOptions->frameOptions.sameOrigin()));
 		}
 
 		http

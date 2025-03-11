@@ -23,21 +23,22 @@ public class EventController {
     public String listEvents(Model model) {
         List<Event> events = eventRepository.findAll();
         model.addAttribute("events", events);
-        return "events"; // Asegúrate de que tienes un archivo events.html en templates
+        return "events";
     }
 
     @PostMapping
     public String createEvent(@RequestParam String name,
-                              @RequestParam String description,
-                              @RequestParam LocalDateTime date,
-                              @RequestParam String location,
-                              @RequestParam(required = false) String imageUrl,
-                              Authentication authentication) {
-        
-        // Crear un evento con los valores proporcionados, incluyendo el nombre del organizador (org)
+            @RequestParam String description,
+            @RequestParam LocalDateTime date,
+            @RequestParam String location,
+            @RequestParam(required = false) String imageUrl,
+            Authentication authentication) {
+
+        // Crear un evento con los valores proporcionados, incluyendo el nombre del
+        // organizador (org)
         Event event = new Event(name, description, date, location, imageUrl);
-        eventRepository.save(event);  // Guardar el evento en la base de datos
-        
-        return "redirect:/events";  // Redirigir a la lista de eventos
+        eventRepository.save(event); // Guardar el evento en la base de datos
+
+        return "redirect:/events"; // Redirigir a la lista de eventos
     }
 }
