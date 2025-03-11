@@ -48,9 +48,11 @@ public class EventController {
                          @RequestParam String imageSource,
                          @RequestParam(required = false) String imageUrl,
                          @RequestParam(required = false) MultipartFile imageFile,
-                         Authentication authentication) {
+                         HttpSession session) {
     try {
         String finalImagePath = null;
+        User u = (User)session.getAttribute("u");
+        long id = u.getId();
         
         if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
             String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
@@ -63,7 +65,7 @@ public class EventController {
             finalImagePath = imageUrl;
         }
 
-        Event event = new Event(name, description, date, location, finalImagePath);
+        Event event = new Event(name, description, date, location, finalImagePath, id);
         eventRepository.save(event);
         return "redirect:/events";
     } catch (Exception e) {

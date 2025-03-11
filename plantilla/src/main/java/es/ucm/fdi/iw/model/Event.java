@@ -25,12 +25,13 @@ public class Event {
     public Event() {
     }
 
-    public Event(String name, String description, LocalDateTime date, String location, String imageUrl) {
+    public Event(String name, String description, LocalDateTime date, String location, String imageUrl, Long org) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.location = location;
         this.imageUrl = imageUrl;
+        this.org = org;
     }
 
     public Long getId() { return id; }
