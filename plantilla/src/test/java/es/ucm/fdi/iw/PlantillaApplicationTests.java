@@ -18,14 +18,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 class PlantillaApplicationTests {
 
-	@Autowired
-	private WebApplicationContext wac;
-	private MockMvc mockMvc;
-
+	@Autowired private WebApplicationContext wac;	
+	private MockMvc mockMvc;	
+	
 	@BeforeEach
 	public void setup() throws Exception {
-		this.mockMvc = MockMvcBuilders
-				.webAppContextSetup(this.wac).build();
+	    this.mockMvc = MockMvcBuilders
+			.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
@@ -35,21 +34,21 @@ class PlantillaApplicationTests {
 
 	@Test
 	public void aSimpleTest() throws Exception {
-		MvcResult mvcResult = this.mockMvc.perform(get("/api/status/leñe"))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(jsonPath("$.code").value("leñe"))
-				.andReturn();
-		Assertions.assertEquals("application/json",
-				mvcResult.getResponse().getContentType());
+	    MvcResult mvcResult = this.mockMvc.perform(get("/api/status/leñe"))
+	      .andDo(print()).andExpect(status().isOk())
+	      .andExpect(jsonPath("$.code").value("leñe"))
+	      .andReturn();	     
+	    Assertions.assertEquals("application/json", 
+	      mvcResult.getResponse().getContentType());
 	}
 
 	@Test
 	public void countUsers() throws Exception {
-		MvcResult mvcResult = this.mockMvc.perform(get("/api/users/count"))
-				.andDo(print()).andExpect(status().isOk())
-				.andExpect(jsonPath("$.count").value(2))
-				.andReturn();
-		Assertions.assertEquals("application/json",
-				mvcResult.getResponse().getContentType());
+	    MvcResult mvcResult = this.mockMvc.perform(get("/api/users/count"))
+	      .andDo(print()).andExpect(status().isOk())
+	      .andExpect(jsonPath("$.count").value(2))
+	      .andReturn();	     
+	    Assertions.assertEquals("application/json", 
+	      mvcResult.getResponse().getContentType());
 	}
 }

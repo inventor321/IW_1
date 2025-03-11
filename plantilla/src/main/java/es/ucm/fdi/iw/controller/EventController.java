@@ -37,7 +37,7 @@ public class EventController {
     public String listEvents(Model model) {
         List<Event> events = eventRepository.findAll();
         model.addAttribute("events", events);
-        return "events"; // Asegúrate de que tienes un archivo events.html en templates
+        return "events";
     }
 
     @PostMapping
