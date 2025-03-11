@@ -88,9 +88,10 @@
                     <div class="text-center">
                         <button th:href="@{${#authorization.expression('hasRole(''ORG'')')} ? '/org/event/edit/' + ${event.id} : '/user/event/' + ${event.id}}" 
                            th:if="${#authorization.expression('hasRole(''ORG'')')}"
+                           th:action="@{/edit-events}"
                            class="custom-btn w-21 mb-0">
                             EDITAR EVENTO
-                    </button>
+                        </button>
                     </div>                                       
                     
                 </div>
