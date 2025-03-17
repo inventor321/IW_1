@@ -26,8 +26,12 @@
                     <h1 class="display-4" th:text="${event.name}">Nombre del Evento</h1>
                     <p class="lead" th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">Fecha del Evento</p>
                     <p class="lead" th:text="${event.location}">Ubicación del Evento</p>
+                    
+                    <!-- Participate button-->
                     <div class="text-center">
-                        <button class="custom-btn w-50 mb-4">PARTICIPAR EN EL EVENTO</button>
+                        <form th:action="@{/user/event/participate/{id}(id=${event.id})}" method="post">
+                            <button type="submit" class="custom-btn w-50 mb-4">PARTICIPAR EN EL EVENTO</button>
+                        </form>
                     </div>
                     <div class="text-center">
                         <button th:href="@{${#authorization.expression('hasRole(''ORG'')')} ? '/org/event/edit/' + ${event.id} : '/user/event/' + ${event.id}}" 

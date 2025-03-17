@@ -3,6 +3,7 @@ package es.ucm.fdi.iw.controller;
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.repository.EventRepository;
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.model.Participation;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/events")
@@ -45,18 +48,18 @@ public class EventController {
 
     @PostMapping
     public String createEvent(@RequestParam String name,
-                         @RequestParam String description,
-                         @RequestParam LocalDateTime date,
-                         @RequestParam String location,
-                         @RequestParam String imageSource,
-                         @RequestParam(required = false) String imageUrl,
-                         @RequestParam(required = false) MultipartFile imageFile,
-                         HttpSession session) {
+            @RequestParam String description,
+            @RequestParam LocalDateTime date,
+            @RequestParam String location,
+            @RequestParam String imageSource,
+            @RequestParam(required = false) String imageUrl,
+            @RequestParam(required = false) MultipartFile imageFile,
+            HttpSession session) {
         try {
             String finalImagePath = null;
-            User u = (User)session.getAttribute("u");
+            User u = (User) session.getAttribute("u");
             long id = u.getId();
-            
+
             if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
                 String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
                 Path staticPath = Paths.get("src/main/resources/static/img/events");
@@ -82,9 +85,23 @@ public class EventController {
             return "redirect:/login";
         }
         Event event = eventRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
-        
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
         model.addAttribute("event", event);
         return "event";
     }
+
+    @PostMapping("/user/event/participate/{id}")
+    public String participateInEvent(@PathVariable Long id, Model model, HttpSession session) {
+
+        User u = (User) session.getAttribute("u");
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        Participation participation = new Participation(u, event);
+        model.addAttribute("participation", participation);
+
+        return "redirect:/event/" + id;
+    }
+
 }
