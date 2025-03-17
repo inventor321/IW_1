@@ -1,45 +1,48 @@
 package es.ucm.fdi.iw.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "participates")
-public class Participates {
-    
+@Table(name = "participation")
+public class Participation {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_event", nullable=false)
+    @JoinColumn(name = "id_user", nullable = false)
+
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "id_group", nullable=false)
-    private UserGroup userGroup;
+    @JoinColumn(name = "id_event", nullable = false)
+    private Event event;
 
-    public Participates() {
+    public Participation() {
     }
 
-    public Participates(User user, UserGroup userGroup) {
+    public Participation(User user, Event event) {
         this.user = user;
-        this.userGroup = userGroup;
-       
+        this.event = event;
     }
 
     public Long getId() {
         return id;
-    }   
+    }
 
     public User getUser() {
         return user;
-    }   
+    }
 
-    public UserGroup getUserGroup() {
-        return userGroup;
+    public Event getEvent() {
+        return event;
     }
 
     public void setId(Long id) {
@@ -50,8 +53,8 @@ public class Participates {
         this.user = user;
     }
 
-    public void setUserGroup(UserGroup userGroup) {
-        this.userGroup = userGroup;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
 }
