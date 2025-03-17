@@ -6,12 +6,14 @@ import es.ucm.fdi.iw.model.User;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,27 +52,39 @@ public class EventController {
                          @RequestParam(required = false) String imageUrl,
                          @RequestParam(required = false) MultipartFile imageFile,
                          HttpSession session) {
-    try {
-        String finalImagePath = null;
-        User u = (User)session.getAttribute("u");
-        long id = u.getId();
-        
-        if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
-            String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
-            Path staticPath = Paths.get("src/main/resources/static/img/events");
-            Files.createDirectories(staticPath);
-            Path filepath = staticPath.resolve(fileName);
-            Files.copy(imageFile.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
-            finalImagePath = "/img/events/" + fileName;
-        } else if ("url".equals(imageSource) && imageUrl != null && !imageUrl.isEmpty()) {
-            finalImagePath = imageUrl;
-        }
+        try {
+            String finalImagePath = null;
+            User u = (User)session.getAttribute("u");
+            long id = u.getId();
+            
+            if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+                Path staticPath = Paths.get("src/main/resources/static/img/events");
+                Files.createDirectories(staticPath);
+                Path filepath = staticPath.resolve(fileName);
+                Files.copy(imageFile.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+                finalImagePath = "/img/events/" + fileName;
+            } else if ("url".equals(imageSource) && imageUrl != null && !imageUrl.isEmpty()) {
+                finalImagePath = imageUrl;
+            }
 
-        Event event = new Event(name, description, date, location, finalImagePath, id);
-        eventRepository.save(event);
-        return "redirect:/events";
-    } catch (Exception e) {
-        return "redirect:/events/create?error=" + e.getMessage();
+            Event event = new Event(name, description, date, location, finalImagePath, id);
+            eventRepository.save(event);
+            return "redirect:/events";
+        } catch (Exception e) {
+            return "redirect:/events/create?error=" + e.getMessage();
+        }
     }
-}
+
+    @GetMapping("/{id}")
+    public String getEvent(@PathVariable Long id, Model model, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        Event event = eventRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+        
+        model.addAttribute("event", event);
+        return "event";
+    }
 }

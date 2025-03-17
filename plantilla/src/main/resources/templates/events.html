@@ -134,8 +134,7 @@
                         <h3 th:text="${event.name}">Event Name</h3>
                         <p th:text="${event.description}">Description</p>
                         <span class="event-date" th:text="${'Fecha: ' + #temporals.format(event.date, 'dd/MM/yyyy')}">Date</span>
-                        <a th:href="@{${#authorization.expression('hasRole(''ADMIN'')')} ? '/admin/event/' + ${event.id} : '/user/event/' + ${event.id}}" 
-                        class="btn btn-primary">
+                        <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-primary">
                             Ir al evento
                         </a>
                         

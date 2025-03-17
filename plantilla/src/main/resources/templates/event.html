@@ -79,7 +79,19 @@
         <main class="flex-shrink-0">
             <section class="hero">
                 <div class="container">
-                    <h1 class="display-4"  th:text="${event.name}">Nombre del Evento</h1>
+                    <!-- Delete button -->
+                    <form th:if="${#authorization.expression('hasRole(''ORG'')')}"
+                          th:action="@{/org/events/{id}/delete(id=${event.id})}"
+                          method="post"
+                          class="position-absolute top-0 end-0">
+                        <button type="submit" 
+                                class="btn btn-danger"
+                                onclick="return confirm('¿Estás seguro de que quieres eliminar este evento?')">
+                            <i class="bi bi-trash"></i> <img th:src="@{/img/delete.png}" src="/img/delete.png" alt="delete" width="32" height="32" class="d-inline-block align-text-top"/>
+                        </button>
+                    </form>
+                    
+                    <h1 class="display-4" th:text="${event.name}">Nombre del Evento</h1>
                     <p class="lead" th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">Fecha del Evento</p>
                     <p class="lead" th:text="${event.location}">Ubicación del Evento</p>
                     <div class="text-center">

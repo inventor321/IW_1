@@ -49,16 +49,6 @@ public class AdminController {
         return "admin";
     }
 
-    @Autowired
-    private EventService eventService;
-
-    @GetMapping("/event/{id}")
-    public String event(@PathVariable long id, Model model) {
-        Event event = entityManager.find(Event.class, id);
-        model.addAttribute("event", event);
-        return "event";
-    }
-
     @PostMapping("/toggle/{id}")
     public String toggleUser(@PathVariable long id, Model model) {
         log.info("Admin cambia estado de " + id);
