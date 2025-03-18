@@ -23,24 +23,29 @@
                     <ul class="navbar-nav ms-auto">
                         <th:block th:if="${u}">
                             <li class="nav-item mx-3">
+                                <!-- Boton Administrar -->
                                 <a class="nav-link" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/}">Administrar</a>
                             </li>
                            
                             <li class="nav-item mx-3">
+                                <!-- Boton Panel de creador-->
                                 <a class="nav-link" th:if="${#authorization.expression('hasRole(''ORG'')')}" th:href="@{/org/}">Panel de Creador</a>
                             </li>
 
                             <li class="nav-item mx-3">
+                                <!-- Boton Eventos-->
                                 <a class="nav-link" th:href="@{/events}">Events</a>
                             </li>
 
                             <li class="nav-item mx-2">
+                                <!-- Boton perfil usuario -->
                                 <a class="nav-link" th:href="@{/user/{id}(id=${u.id})}">
                                     <img class="iwthumb rounded" th:src="@{/user/{id}/pic(id=${u.id})}">
                                     <span th:text="${u.username}">Pepe</span>
                                 </a>
                             </li>
                             <li class="nav-item align-self-center me-4">
+                                <!-- Chat button -->
                                 <a th:href="@{${#authorization.expression('hasRole(''ADMIN'')')} ? '/admin/chat' : '/user/chat'}" 
                                    class="text-decoration-none">
                                     <button type="button" class="btn btn-outline-primary btn-sm position-relative">
@@ -52,43 +57,54 @@
                                 </a>
                             </li>
                             <li class="nav-item align-self-center">
+                                <!-- Formulario logout-->
                                 <form th:action="@{/logout}" method="post" class="d-inline">
+                                    <!-- Boton logout-->
                                     <button type="submit" class="btn btn-link nav-link">
                                         <i class="bi bi-box-arrow-right"></i> Logout
                                     </button>
                                 </form>
                             </li>
                         </th:block>
+
                         <th:block th:unless="${u}">
                             <li class="nav-item mx-3">
+                                <!-- Boton events-->
                                 <a class="nav-link" th:href="@{/events}">Events</a>
                             </li>
                             
-                            
                             <li class="nav-item mx-2">
+                                <!-- Boton register-->
                                 <a class="nav-link" th:href="@{/register}" href="/register">Register</a>
                             </li>
                             <li class="nav-item mx-2">
+                                <!-- Boton login-->
                                 <a class="nav-link" th:href="@{/login}" href="/login">Login</a>
                             </li>
                             <li class="nav-item debug align-self-center" th:if="${application.debug}">
+                                <!-- Formulario login Admin-->
                                 <form class="d-flex" th:action="@{/login}" method="post">
                                     <input type="hidden" name="username" value="ADMIN">
                                     <input type="hidden" name="password" value="aa">
+                                    <!-- Boton admin-->
                                     <button type="submit" class="btn btn-outline-danger btn-sm">ADMIN</button>
                                 </form>
                             </li>
                             <li class="nav-item debug align-self-center" th:if="${application.debug}">
+                                <!-- Formulario login Org-->
                                 <form class="d-flex" th:action="@{/login}" method="post">
                                     <input type="hidden" name="username" value="ORG">
                                     <input type="hidden" name="password" value="aa">
+                                    <!-- Boton org-->
                                     <button type="submit" class="btn btn-outline-danger btn-sm">ORG</button>
                                 </form>
                             </li>
                             <li class="nav-item debug align-self-center" th:if="${application.debug}">
+                                <!-- Formulario login User-->
                                 <form class="d-flex" th:action="@{/login}" method="post">
                                     <input type="hidden" name="username" value="USER">
                                     <input type="hidden" name="password" value="aa">
+                                    <!-- Boton user-->
                                     <button type="submit" class="btn btn-outline-danger btn-sm">USER</button>
                                 </form>
                             </li>

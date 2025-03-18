@@ -1,5 +1,8 @@
 package es.ucm.fdi.iw.model;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,19 +26,21 @@ public class Participation {
 
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)
-
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "id_event", nullable = false)
     private Event event;
 
+    Timestamp timestamp;
+
     public Participation() {
     }
 
-    public Participation(User user, Event event) {
+    public Participation(User user, Event event, Timestamp timestamp) {
         this.user = user;
         this.event = event;
+        this.timestamp = timestamp;
     }
 
 }

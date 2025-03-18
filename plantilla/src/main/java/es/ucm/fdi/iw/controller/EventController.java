@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -85,14 +86,21 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public String getEvent(@PathVariable Long id, Model model, Authentication authentication) {
+    public String getEvent(@PathVariable Long id, Model model, Authentication authentication, HttpSession session) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
+        User u = (User) session.getAttribute("u");
+        boolean isParticipating = entityManager
+                .createQuery("SELECT COUNT(p) FROM Participation p WHERE p.user = :user AND p.event = :event",
+                        Long.class)
+                .setParameter("user", u).setParameter("event", event).getSingleResult() > 0;
+
         model.addAttribute("event", event);
+        model.addAttribute("isParticipating", isParticipating);
         return "event";
     }
 
@@ -104,16 +112,16 @@ public class EventController {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-        boolean alreadyParticipating = entityManager
+        boolean isParticipating = entityManager
                 .createQuery("SELECT COUNT(p) FROM Participation p WHERE p.user = :user AND p.event = :event",
                         Long.class)
                 .setParameter("user", u).setParameter("event", event).getSingleResult() > 0;
 
-        if (alreadyParticipating) {
+        if (isParticipating) {
             return "redirect:/events/" + id;
         }
 
-        Participation participation = new Participation(u, event);
+        Participation participation = new Participation(u, event, new Timestamp(System.currentTimeMillis()));
         entityManager.persist(participation);
         entityManager.flush();
 

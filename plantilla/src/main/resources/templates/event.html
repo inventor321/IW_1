@@ -17,11 +17,12 @@
             <section class="hero">
                 <div class="container-fluid position-relative px-5">
 
-                    <!-- Delete button-->
+                    <!-- Formulario delete-->
                     <form th:if="${#authorization.expression('hasRole(''ORG'')')}"
                           th:action="@{/org/events/{id}/delete(id=${event.id})}"
                           method="post"
                           class="position-absolute top-0 end-0 px-5">
+                          <!-- Delete button-->
                         <button type="submit" 
                                 class="btn btn-outline-danger bg-white hover-danger"
                                 onclick="return confirm('¿Estás seguro de que quieres eliminar este evento?')">
@@ -36,8 +37,13 @@
                     
                     <!-- Participate button-->
                     <div class="text-center">
-                        <form th:action="@{/events/participate/{id}(id=${event.id})}" method="post">
-                            <button type="submit" class="custom-btn w-50 mb-4">PARTICIPAR EN EL EVENTO</button>
+                        
+                        <form th:if="${isParticipating}" th:action="" method="post">
+                            <button type="submit" class="custom-btn w-50 mb-4">Anular inscripción al evento</button>
+                        </form>
+
+                        <form th:if="${!isParticipating}" th:action="@{/events/participate/{id}(id=${event.id})}" method="post">
+                            <button type="submit" class="custom-btn w-50 mb-4">Apuntarse al evento</button>
                         </form>
                     </div>
 
