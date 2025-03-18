@@ -48,6 +48,7 @@ public class User implements Transferable<User.Transfer> {
     private String phonenumber;
 
     private boolean enabled;
+    @Column(nullable = false)
     private String roles; // split by ',' to separate roles
 
     @OneToMany
