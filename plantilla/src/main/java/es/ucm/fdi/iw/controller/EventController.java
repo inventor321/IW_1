@@ -104,6 +104,15 @@ public class EventController {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
+        boolean alreadyParticipating = entityManager
+                .createQuery("SELECT COUNT(p) FROM Participation p WHERE p.user = :user AND p.event = :event",
+                        Long.class)
+                .setParameter("user", u).setParameter("event", event).getSingleResult() > 0;
+
+        if (alreadyParticipating) {
+            return "redirect:/events/" + id;
+        }
+
         Participation participation = new Participation(u, event);
         entityManager.persist(participation);
         entityManager.flush();
