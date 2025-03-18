@@ -118,10 +118,6 @@
             <h2 class="text-center text-success">Próximos Eventos</h2>
             <section class="event-list">
                 <div class="event-card" th:each="event : ${events}">
-                    <div class="debug-info" th:if="${application.debug}">
-                        <p>Raw URL: <span th:text="${event.imageUrl}"></span></p>
-                        <p>Processed URL: <span th:text="@{${event.imageUrl}}"></span></p>
-                    </div>
                     <img th:if="${event.imageUrl}" 
                         th:src="@{${event.imageUrl}}"
                         class="img-fluid" 

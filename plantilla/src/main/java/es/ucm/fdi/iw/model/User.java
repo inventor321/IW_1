@@ -43,9 +43,9 @@ public class User implements Transferable<User.Transfer> {
     @Column(nullable = false)
     private String password;
 
-    private String firstName;
-    private String lastName;
+    private String Name;
     private String email;
+    private String phonenumber;
 
     private boolean enabled;
     private String roles; // split by ',' to separate roles
