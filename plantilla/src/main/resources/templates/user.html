@@ -1,59 +1,22 @@
 <!DOCTYPE html>
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
 
+<!-- Cabecera -->
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
+    <link rel="stylesheet" th:href="@{/css/event.css}">
     <title>Perfil de Usuario</title>
-    <style>
-        body {
-            background-color: #e8f5e9;
-        }
-        .profile-container {
-            max-width: 800px;
-            margin: auto;
-            background: #e8f5e9;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn {
-            padding: 10px 15px;
-            background-color: rgba(0, 128, 0, 0.5);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .preview {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-top: 10px;
-        }
-
-        .btn-green {
-            background-color: #448147;
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .btn-green2 {
-            background-color: #70cb76;
-            width: 100%;
-            margin-top: 10px;
-        }
-    </style>
 </head>
 
+<!-- Cuerpo -->
 <body class="d-flex flex-column h-100 bg-light">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
     <main class="flex-shrink-0" style="background-color: rgba(0, 128, 0, 0.5);">
         <div class="container mt-5 mb-4 profile-container">
             <h1 class="text-center">Perfil de <span th:text="${user.username}">Usuario</span></h1>
+            
+            <!-- Datos usuario -->
             <div class="mt-4 mb-4">
                 <h4>Datos de Usuario</h4>
                 <label for="username">Nombre de usuario</label>
@@ -62,9 +25,10 @@
                 <label for="email">Correo electrónico</label>
                 <input id="email" class="form-control" value="user@gmail.com" />
 
-                <button id="save" class="btn btn-success btn-green">Guardar Inforamción</button>
+                <button id="save" class="btn btn-success btn-green">Guardar Información</button>
             </div>
 
+            <!-- Panel foto de perfil-->
             <div class="row">
                 <div class="mb-3">
                     <label class="form-label">Image Source</label>
@@ -100,38 +64,7 @@
 
     <th:block th:replace="~{fragments/footer.html :: footer}" />
     <script th:src="@{/js/ajax-demo.js}"></script>
+    <script th:src="@{/js/user.js}"></script>
 </body>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlSource = document.getElementById('urlSource');
-        const fileSource = document.getElementById('fileSource');
-        const urlInput = document.getElementById('urlInput');
-        const fileInput = document.getElementById('fileInput');
-    
-        urlSource.addEventListener('change', function() {
-            urlInput.style.display = 'block';
-            fileInput.style.display = 'none';
-        });
-    
-        fileSource.addEventListener('change', function() {
-            urlInput.style.display = 'none';
-            fileInput.style.display = 'block';
-        });
-    });
-    
-    document.querySelector("#fetchImg").onclick = e => {
-        let url = document.querySelector("#imageUrl").value;
-        console.log("fetching ", url);
-        readImageUrlData(url, document.querySelector("#ver"));
-    };
-
-    imageFile.onchange = e => {
-        const [file] = imageFile.files
-        if (file) {
-            ver2.src = URL.createObjectURL(file)
-        }
-    }
-</script>
 
 </html>
