@@ -45,6 +45,9 @@
     <main class="flex-shrink-0 d-flex justify-content-center align-items-center mb-5">
         <div class="register-container">    
             <h2 class="text-center text-success">Regístrate</h2>
+            <div th:if="${error}" class="alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
             <form method="post" th:action="@{/register}">
                 <div class="mb-3">
                     <label for="email" class="form-label">Correo Electrónico</label>

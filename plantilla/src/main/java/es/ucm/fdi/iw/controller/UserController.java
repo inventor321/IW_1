@@ -69,30 +69,6 @@ public class UserController {
 		return passwordEncoder.encode(rawPassword);
 	}
 
-	@PostMapping("/register")
-	@Transactional
-	public String registerUser(@RequestParam String username,
-			@RequestParam String password,
-			@RequestParam String firstName,
-			@RequestParam String lastName,
-			Model model, HttpSession session) {
-		if (userRepository.findByUsername(username) != null) {
-			model.addAttribute("error", "El nombre de usuario ya existe.");
-			return "register";
-		}
-
-		User newUser = new User();
-		newUser.setUsername(username);
-		newUser.setPassword(encodePassword(password));
-		newUser.setFirstName(firstName);
-		newUser.setLastName(lastName);
-		newUser.setEnabled(true);
-		userRepository.save(newUser);
-		session.setAttribute("u", newUser);
-
-		return "redirect:/";
-	}
-
 	@GetMapping("/{id}")
 	public String index(@PathVariable long id, Model model, HttpSession session) {
 		User target = userRepository.findById(id).orElse(null);
