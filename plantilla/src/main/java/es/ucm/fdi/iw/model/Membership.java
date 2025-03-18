@@ -7,9 +7,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "membership")
+@Data
 public class Membership {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,29 +32,4 @@ public class Membership {
         this.user = user;
         this.usergroup = usergroup;
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public UserGroup getUsergroup() {
-        return usergroup;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setUsergroup(UserGroup usergroup) {
-        this.usergroup = usergroup;
-    }
-
 }

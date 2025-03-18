@@ -4,7 +4,9 @@ import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.repository.EventRepository;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.Participation;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,9 @@ public class EventController {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @GetMapping
     public String listEvents(Model model) {
@@ -91,7 +96,8 @@ public class EventController {
         return "event";
     }
 
-    @PostMapping("/user/event/participate/{id}")
+    @PostMapping("/participate/{id}")
+    @Transactional
     public String participateInEvent(@PathVariable Long id, Model model, HttpSession session) {
 
         User u = (User) session.getAttribute("u");
@@ -99,9 +105,10 @@ public class EventController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
         Participation participation = new Participation(u, event);
-        model.addAttribute("participation", participation);
+        entityManager.persist(participation);
+        entityManager.flush();
 
-        return "redirect:/event/" + id;
+        return "redirect:/events/" + id;
     }
 
 }

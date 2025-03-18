@@ -29,7 +29,7 @@
                     
                     <!-- Participate button-->
                     <div class="text-center">
-                        <form th:action="@{/user/event/participate/{id}(id=${event.id})}" method="post">
+                        <form th:action="@{/events/participate/{id}(id=${event.id})}" method="post">
                             <button type="submit" class="custom-btn w-50 mb-4">PARTICIPAR EN EL EVENTO</button>
                         </form>
                     </div>
