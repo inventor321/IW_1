@@ -43,7 +43,8 @@ public class User implements Transferable<User.Transfer> {
     @Column(nullable = false)
     private String password;
 
-    private String Name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String phonenumber;
 

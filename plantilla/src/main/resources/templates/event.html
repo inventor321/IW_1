@@ -37,14 +37,15 @@
                     
                     <!-- Participate button-->
                     <div class="text-center">
-                        
-                        <form th:if="${isParticipating}" th:action="" method="post">
-                            <button type="submit" class="custom-btn w-50 mb-4">Anular inscripción al evento</button>
-                        </form>
 
                         <form th:if="${!isParticipating}" th:action="@{/events/participate/{id}(id=${event.id})}" method="post">
                             <button type="submit" class="custom-btn w-50 mb-4">Apuntarse al evento</button>
                         </form>
+
+                        <form th:if="${isParticipating}" th:action="@{/events/withdraw/{id}(id=${event.id})}" method="post">
+                            <button type="submit" class="custom-btn w-50 mb-4">Anular inscripción al evento</button>
+                        </form>
+
                     </div>
 
                     <!-- Edit button -->

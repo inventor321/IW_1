@@ -75,7 +75,8 @@ public class RootController {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(encodePassword(password));
-        newUser.setName(name);
+        newUser.setFirstName(name);
+        // setLastName
         newUser.setEmail(email);
         newUser.setPhonenumber(phone);
         newUser.setEnabled(true);

@@ -2,6 +2,7 @@ package es.ucm.fdi.iw.controller;
 
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.repository.EventRepository;
+import es.ucm.fdi.iw.repository.ParticipationRepository;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.Participation;
 import jakarta.persistence.EntityManager;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.parser.Part;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,8 +27,6 @@ import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/events")
@@ -95,9 +95,12 @@ public class EventController {
 
         User u = (User) session.getAttribute("u");
         boolean isParticipating = entityManager
-                .createQuery("SELECT COUNT(p) FROM Participation p WHERE p.user = :user AND p.event = :event",
+                .createQuery(
+                        "SELECT COUNT(p) FROM Participation p WHERE p.user = :user AND p.event = :event AND p.enabled = true",
                         Long.class)
-                .setParameter("user", u).setParameter("event", event).getSingleResult() > 0;
+                .setParameter("user", u)
+                .setParameter("event", event)
+                .getSingleResult() > 0;
 
         model.addAttribute("event", event);
         model.addAttribute("isParticipating", isParticipating);
@@ -112,18 +115,53 @@ public class EventController {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-        boolean isParticipating = entityManager
-                .createQuery("SELECT COUNT(p) FROM Participation p WHERE p.user = :user AND p.event = :event",
-                        Long.class)
-                .setParameter("user", u).setParameter("event", event).getSingleResult() > 0;
+        try {
+            Participation p = entityManager.createQuery(
+                    "SELECT p FROM Participation p WHERE p.user = :user AND p.event = :event",
+                    Participation.class)
+                    .setParameter("user", u)
+                    .setParameter("event", event)
+                    .getSingleResult();
 
-        if (isParticipating) {
-            return "redirect:/events/" + id;
+            p.setEnabled(true);
+            p.setTimestamp(new Timestamp(System.currentTimeMillis()));
+
+            entityManager.merge(p);
+            entityManager.flush();
+
+        } catch (jakarta.persistence.NoResultException e) {
+            Participation p = new Participation(u, event, new Timestamp(System.currentTimeMillis()), true);
+
+            entityManager.persist(p);
+            entityManager.flush();
         }
 
-        Participation participation = new Participation(u, event, new Timestamp(System.currentTimeMillis()));
-        entityManager.persist(participation);
-        entityManager.flush();
+        return "redirect:/events/" + id;
+    }
+
+    @PostMapping("/withdraw/{id}")
+    @Transactional
+    public String withdrawFromEvent(@PathVariable Long id, Model model, HttpSession session) {
+        User u = (User) session.getAttribute("u");
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        try {
+            Participation p = entityManager.createQuery(
+                    "SELECT p FROM Participation p WHERE p.user = :user AND p.event = :event AND p.enabled = true",
+                    Participation.class)
+                    .setParameter("user", u)
+                    .setParameter("event", event)
+                    .getSingleResult();
+
+            p.setEnabled(false);
+            p.setTimestamp(new Timestamp(System.currentTimeMillis()));
+
+            entityManager.merge(p);
+            entityManager.flush();
+        } catch (jakarta.persistence.NoResultException e) {
+            return "redirect:/events/" + id;
+        }
 
         return "redirect:/events/" + id;
     }
