@@ -102,8 +102,10 @@ public class EventController {
                 .setParameter("event", event)
                 .getSingleResult() > 0;
 
+        List<User> participants = entityManager.createQuery("SELECT p.user FROM Participation p WHERE p.event = :event AND p.enabled = true", User.class).setParameter("event", event).getResultList();
         model.addAttribute("event", event);
         model.addAttribute("isParticipating", isParticipating);
+        model.addAttribute("participants", participants);
         return "event";
     }
 

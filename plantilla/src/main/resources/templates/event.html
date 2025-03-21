@@ -39,11 +39,11 @@
                     <div class="text-center">
 
                         <form th:if="${!isParticipating}" th:action="@{/events/participate/{id}(id=${event.id})}" method="post">
-                            <button type="submit" class="custom-btn w-50 mb-4">Apuntarse al evento</button>
+                            <button type="submit" class="custom-btn">Apuntarse al evento</button>
                         </form>
 
                         <form th:if="${isParticipating}" th:action="@{/events/withdraw/{id}(id=${event.id})}" method="post">
-                            <button type="submit" class="custom-btn w-50 mb-4">Anular inscripción al evento</button>
+                            <button type="submit" class="custom-btn2">Anular inscripción al evento</button>
                         </form>
 
                     </div>
@@ -73,7 +73,7 @@
                 <div class="participants">
                     <h5>Lista de Participantes</h5>
                     <ul class="list-group">
-                        <li class="list-group-item">No hay participantes aún.</li>
+                        <li class="list-group-item" th:each="participant: ${participants}" th:text="${participant.id}">No hay participantes aún.</li>
                     </ul>
                 </div>
 

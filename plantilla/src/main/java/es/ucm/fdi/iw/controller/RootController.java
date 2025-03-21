@@ -22,10 +22,10 @@ import es.ucm.fdi.iw.repository.*;
 public class RootController {
 
     @Autowired
-	private UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-	private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @ModelAttribute
     public void populateModel(HttpSession session, Model model) {
@@ -46,28 +46,27 @@ public class RootController {
         return "register"; // Asegúrate de que el archivo Thymeleaf se llama register.html
     }
 
-
     public String encodePassword(String rawPassword) {
-		return passwordEncoder.encode(rawPassword);
-	}
+        return passwordEncoder.encode(rawPassword);
+    }
 
     @PostMapping("/register")
     @Transactional
     public String registerUser(@RequestParam String username,
-                            @RequestParam String password,
-                            @RequestParam String name,  
-                            @RequestParam String email,
-                            @RequestParam String phone, 
-                            Model model, HttpSession session) {
-        if (userRepository.findByUsername(username).isPresent()) { 
+            @RequestParam String password,
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam String phone,
+            Model model, HttpSession session) {
+        if (userRepository.findByUsername(username).isPresent()) {
             model.addAttribute("error", "El nombre de usuario ya existe.");
             return "register";
         }
-        if (userRepository.findByEmail(email).isPresent()) { 
+        if (userRepository.findByEmail(email).isPresent()) {
             model.addAttribute("error", "El correo electronico ya esta registrado.");
             return "register";
         }
-        if (userRepository.findByPhonenumber(phone).isPresent()) { 
+        if (userRepository.findByPhonenumber(phone).isPresent()) {
             model.addAttribute("error", "El numero de telefono ya esta registrado.");
             return "register";
         }
@@ -81,15 +80,13 @@ public class RootController {
         newUser.setPhonenumber(phone);
         newUser.setEnabled(true);
         newUser.setRoles("USER");
-        
+
         userRepository.save(newUser);
         userRepository.flush();
         session.setAttribute("u", newUser);
 
         return "redirect:/";
     }
-
-
 
     @GetMapping("/event")
     public String event(Model model) {
@@ -105,5 +102,5 @@ public class RootController {
     public String chat(Model model) {
         return "chat";
     }
-    
+
 }
