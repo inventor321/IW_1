@@ -4,101 +4,7 @@
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
     <title>Eventos - Exchange Connect</title> 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f4f4f4;
-        }
-        .hero {
-            /* background: url('/img/events-bg.jpg') center/cover no-repeat; */
-            height: 50vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            background-blend-mode: overlay;
-            background-color: rgba(0, 128, 0, 0.5);
-        }
-        .btn-green {
-            background-color: #2e7d32;
-            color: white;
-        }
-        .btn-green:hover {
-            background-color: #1b5e20;
-        }
-        .placeholder-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 30vh;
-            color: #555;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .event-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .event-card {
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-
-        .event-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .event-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .event-details {
-            padding: 20px;
-        }
-
-        .event-details h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .event-details p {
-            font-size: 1rem;
-            margin-bottom: 10px;
-            color: #555;
-        }
-
-        .event-date {
-            display: block;
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 15px;
-        }
-
-        .btn {
-            padding: 10px 15px;
-            background-color: rgba(0, 128, 0, 0.5);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-    </style>
+    <link rel="stylesheet" th:href="@{/css/events.css}">
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -118,10 +24,6 @@
             <h2 class="text-center text-success">Próximos Eventos</h2>
             <section class="event-list">
                 <div class="event-card" th:each="event : ${events}">
-                    <div class="debug-info" th:if="${application.debug}">
-                        <p>Raw URL: <span th:text="${event.imageUrl}"></span></p>
-                        <p>Processed URL: <span th:text="@{${event.imageUrl}}"></span></p>
-                    </div>
                     <img th:if="${event.imageUrl}" 
                         th:src="@{${event.imageUrl}}"
                         class="img-fluid" 

@@ -48,7 +48,7 @@ public class OrgController {
     @GetMapping("/create-event")
     public String showCreateEventForm(Model model) {
         model.addAttribute("event", new Event());
-        return "createEvent";
+        return "create-event";
     }
     
 

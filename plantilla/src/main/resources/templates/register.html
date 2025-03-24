@@ -1,50 +1,26 @@
 <!DOCTYPE html>
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
 
+<!-- Cabecera -->
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
     <title>Registro - Exchange Connect</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #e8f5e9;
-        }
-        .register-container {
-            max-width: 500px;
-            margin: auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-top: 50px;
-        }
-
-        .btn {
-            padding: 10px 15px;
-            background-color: rgba(0, 128, 0, 0.5);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .btn-green {
-            background-color: #2e7d32;
-            color: white;
-        }
-        .btn-green:hover {
-            background-color: #1b5e20;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
 </head>
 
+<!-- Cuerpo -->
 <body class="d-flex flex-column h-100">
+    <!-- Navbar -->
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
     <main class="flex-shrink-0 d-flex justify-content-center align-items-center mb-5">
         <div class="register-container">    
             <h2 class="text-center text-success">Regístrate</h2>
+            <div th:if="${error}" class="alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+
+            <!-- Formulario registro -->
             <form method="post" th:action="@{/register}">
                 <div class="mb-3">
                     <label for="email" class="form-label">Correo Electrónico</label>
@@ -66,11 +42,13 @@
                     <label for="password" class="form-label">Contraseña</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="" required>
                 </div>
+                <!-- Register button -->
                 <button class="btn btn-green w-100" type="submit">Registrarse</button>
             </form>
         </div>
     </main>
 
+    <!-- Footer -->
     <th:block th:replace="~{fragments/footer.html :: footer}" />
 </body>
 

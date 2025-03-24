@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
 
+<!-- Cabecera -->
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
     <title>Administrador</title>
 </head>
 
+<!-- Cuerpo -->
 <body class="d-flex flex-column h-100">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
@@ -15,9 +17,11 @@
             
             <div class="row mt-4">
                 <div class="col">
+                    <!-- Create new event button -->
                     <a th:href="@{/org/create-event}" class="btn btn-primary me-2">
                         <i class="bi bi-plus-circle me-2"></i>Create New Event
                     </a>
+                    <!-- View events button -->
                     <a th:href="@{/events}" class="btn btn-primary me-2">
                         <i class="bi bi-list me-2"></i>View Events
                     </a>
@@ -25,6 +29,8 @@
             </div>
             <div class="container">
                 <h1 class="mt-5">Usuarios</h1>
+
+                <!-- Tabla usuarios -->
                 <table>
                     <thead>
                         <tr>
@@ -44,6 +50,7 @@
                                 </ul>
                             </td>
                             <td>
+                                <!-- Formulario toggle enable-->
                                 <form th:action="@{'/admin/toggle/' + ${user.id}}"
                                     th:method="post">
                                     <button
@@ -61,30 +68,11 @@
         </div>
     </main>
 
+    <!-- Footer -->
     <th:block th:replace="~{fragments/footer.html :: footer}" />
 
-    <script>
-        const toggles = document.querySelectorAll('.toggle');
-        toggles.forEach(toggle => {
-            toggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                const form = e.target.parentElement;
-                go(form.action, 'POST').then((d) => {
-                    if (d.enabled) {
-                        e.target.classList.remove('btn-primary');
-                        e.target.classList.add('btn-danger');
-                        e.target.textContent = 'Deshabilitar';
-                    } else {
-                        e.target.classList.remove('btn-danger');
-                        e.target.classList.add('btn-primary');
-                        e.target.textContent = 'Habilitar';
-                    } 
-                    console.log(d);
-                });
-            });
-        });
-    </script>
-    
+    <!-- Script -->
+    <script th:src="@{/js/admin.js}"></script>
 </body>
 
 </html>

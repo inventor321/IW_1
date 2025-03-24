@@ -1,0 +1,40 @@
+body {
+    background-color: #e8f5e9;
+}
+.profile-container {
+    max-width: 800px;
+    margin: auto;
+    background: #e8f5e9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    padding: 10px 15px;
+    background-color: rgba(0, 128, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.preview {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.btn-green {
+    background-color: #448147;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}
+.btn-green2 {
+    background-color: #70cb76;
+    width: 100%;
+    margin-top: 10px;
+}

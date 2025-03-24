@@ -1,59 +1,22 @@
 <!DOCTYPE html>
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
 
+<!-- Cabecera -->
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
+    <link rel="stylesheet" th:href="@{/css/event.css}">
     <title>Perfil de Usuario</title>
-    <style>
-        body {
-            background-color: #e8f5e9;
-        }
-        .profile-container {
-            max-width: 800px;
-            margin: auto;
-            background: #e8f5e9;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn {
-            padding: 10px 15px;
-            background-color: rgba(0, 128, 0, 0.5);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .preview {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-top: 10px;
-        }
-
-        .btn-green {
-            background-color: #448147;
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .btn-green2 {
-            background-color: #70cb76;
-            width: 100%;
-            margin-top: 10px;
-        }
-    </style>
 </head>
 
+<!-- Cuerpo -->
 <body class="d-flex flex-column h-100 bg-light">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
     <main class="flex-shrink-0" style="background-color: rgba(0, 128, 0, 0.5);">
         <div class="container mt-5 mb-4 profile-container">
             <h1 class="text-center">Perfil de <span th:text="${user.username}">Usuario</span></h1>
+            
+            <!-- Datos usuario -->
             <div class="mt-4 mb-4">
                 <h4>Datos de Usuario</h4>
                 <label for="username">Nombre de usuario</label>
@@ -62,37 +25,36 @@
                 <label for="email">Correo electrónico</label>
                 <input id="email" class="form-control" value="user@gmail.com" />
 
-                <button id="save" class="btn btn-success btn-green">Guardar Inforamción</button>
+                <button id="save" class="btn btn-success btn-green">Guardar Información</button>
             </div>
 
+            <!-- Panel foto de perfil-->
             <div class="row">
-                <div class="col-md-4 text-center">
-                    <img class="preview" id="avatar" alt="Foto de perfil" />
-                    <input type="file" id="f_avatar" accept="image/jpeg,image/png" class="form-control mt-2">
-                    <form th:action="@{/user/__${user.id}__/pic}">
-                        <button id="postAvatar" class="btn btn-primary btn-green">Actualizar foto de perfil</button>
-                    </form>
-                </div>
-                
-                <div class="col-md-8">
-                    <h4>Buscar libros o películas</h4>
-                    <div class="border p-3 rounded mb-3">
-                        <label for="isbn">ISBN</label>
-                        <input id="isbn" class="form-control" value="9780140328721" />
-                        <button id="fetchBook" class="btn btn-info btn-green">Buscar libro</button>
-                        <img class="preview" id="portada" alt="Portada del libro" />
+                <div class="mb-3">
+                    <label class="form-label">Image Source</label>
+                    <div class="mb-2">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="imageSource" id="urlSource" value="url" checked>
+                            <label class="form-check-label" for="urlSource">URL</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="imageSource" id="fileSource" value="file">
+                            <label class="form-check-label" for="fileSource">Local File</label>
+                        </div>
+                        <div id="urlInput" class="mb-3">
+                            <label for="imageUrl" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="imageUrl" name="imageUrl">
+                            <button id="fetchImg" class="btn btn-info btn-green">Buscar imagen</button>
+                            <img class="preview" id="ver" alt="Preview" />
+                        </div>
+                        <div id="fileInput" class="mb-3" style="display: none;">
+                            <label for="imageFile" class="form-label">Upload Image</label>
+                            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+                            <img class="preview" id="ver2" alt="Preview" />
+                        </div>
+                        
                         <form th:action="@{/user/__${user.id}__/pic}">
-                            <button id="postPortada" class="btn btn-secondary btn-green2">Usar como perfil</button>
-                        </form>
-                    </div>
-
-                    <div class="border p-3 rounded">
-                        <label for="imdb">IMDB</label>
-                        <input id="imdb" class="form-control" value="tt11286314" />
-                        <button id="fetchMovie" class="btn btn-info btn-green">Buscar película</button>
-                        <img class="preview" id="poster" alt="Poster de la película" />
-                        <form th:action="@{/user/__${user.id}__/pic}">
-                            <button id="postPoster" class="btn btn-secondary btn-green2">Usar como perfil</button>
+                            <button id="postAvatar" class="btn btn-primary btn-green">Actualizar foto de perfil</button>
                         </form>
                     </div>
                 </div>
@@ -102,6 +64,7 @@
 
     <th:block th:replace="~{fragments/footer.html :: footer}" />
     <script th:src="@{/js/ajax-demo.js}"></script>
+    <script th:src="@{/js/user.js}"></script>
 </body>
 
 </html>

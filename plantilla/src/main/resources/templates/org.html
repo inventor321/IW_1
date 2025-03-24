@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
 
+<!-- Cabecera -->
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
     <title>IW: Org</title>
 </head>
 
+<!-- Cuerpo -->
 <body class="d-flex flex-column h-100">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
@@ -15,9 +17,11 @@
             
             <div class="row mt-4">
                 <div class="col">
+                    <!-- Create event button-->
                     <a th:href="@{/org/create-event}" class="btn btn-primary me-2">
                         <i class="bi bi-plus-circle me-2"></i>Create New Event!
                     </a>
+                    <!-- View events button-->
                     <a th:href="@{/events}" class="btn btn-secondary">
                         <i class="bi bi-list me-2"></i>View Events
                     </a>
@@ -26,6 +30,7 @@
         </div> 
     </main>
 
+    <!-- Footer -->
     <th:block th:replace="~{fragments/footer.html :: footer}" />
 </body>
 
