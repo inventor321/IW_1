@@ -173,17 +173,14 @@ public class EventController {
 
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
-    public String deleteEvent(@PathVariable Long id, Authentication authentication, RedirectAttributes ra) {
+    public String deleteEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
         try {
-            if (authentication == null || !authentication.isAuthenticated()) {
-                return "redirect:/login";
-            }
 
             Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-            User user = (User) authentication.getPrincipal();
-            if (user.hasRole(User.Role.ADMIN) || event.getOrg().equals(user.getId())) {
+            User user = (User) session.getAttribute("u");
+            if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
                 eventRepository.delete(event);
                 ra.addFlashAttribute("message", "Event deleted successfully");
             } else {
@@ -193,7 +190,7 @@ public class EventController {
             return "redirect:/events";
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error deleting event: " + e.getMessage());
-            return "redirect:/events";
+            return "redirect:/";
         }
     }
 }

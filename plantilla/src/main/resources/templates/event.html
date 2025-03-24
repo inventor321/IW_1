@@ -19,8 +19,8 @@
 
                     <!-- Formulario delete-->
                     <form th:if="${#authorization.expression('hasRole(''ORG'')')}"
-                          th:action="@{/events/delete(id=${event.id})}"
-                          method="post"
+                        th:action="@{/events/delete/{id}(id=${event.id})}"
+                          method="get"
                           class="position-absolute top-0 end-0 px-5">
                           <!-- Delete button-->
                         <button type="submit" 
