@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -86,5 +88,31 @@ public class EventController {
         
         model.addAttribute("event", event);
         return "event";
+    }
+
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
+    public String deleteEvent(@PathVariable Long id, Authentication authentication, RedirectAttributes ra) {
+        try {
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return "redirect:/login";
+            }
+
+            Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+            User user = (User) authentication.getPrincipal();
+            if (user.hasRole(User.Role.ADMIN) || event.getOrg().equals(user.getId())) {
+                eventRepository.delete(event);
+                ra.addFlashAttribute("message", "Event deleted successfully");
+            } else {
+                ra.addFlashAttribute("error", "You don't have permission to delete this event");
+            }
+
+            return "redirect:/events";
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error deleting event: " + e.getMessage());
+            return "redirect:/events";
+        }
     }
 }

@@ -13,7 +13,7 @@
             <section class="hero">
                 <div class="container-fluid position-relative px-5">
                     <form th:if="${#authorization.expression('hasRole(''ORG'')')}"
-                          th:action="@{/org/events/{id}/delete(id=${event.id})}"
+                          th:action="@{/events/delete(id=${event.id})}"
                           method="post"
                           class="position-absolute top-0 end-0 px-5">
                         <button type="submit" 
