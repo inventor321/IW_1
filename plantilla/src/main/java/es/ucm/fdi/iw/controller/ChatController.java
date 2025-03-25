@@ -1,3 +1,5 @@
+package es.ucm.fdi.iw.controller;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
