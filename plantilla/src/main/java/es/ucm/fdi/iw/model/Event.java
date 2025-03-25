@@ -22,7 +22,6 @@ public class Event {
     private String location;
     private String imageUrl;
 
-    @Transient // Evita conflictos con palabras reservadas
     private Long org;
 
     public Event() {

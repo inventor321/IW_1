@@ -66,6 +66,9 @@ public class EventController {
         try {
             String finalImagePath = null;
             User u = (User) session.getAttribute("u");
+            if (u == null) {
+                 return "redirect:/login";
+            }
             long id = u.getId();
 
             if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
