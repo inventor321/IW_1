@@ -19,8 +19,8 @@
 
                     <!-- Formulario delete-->
                     <form th:if="${#authorization.expression('hasRole(''ORG'')')}"
-                        th:action="@{/events/delete/{id}(id=${event.id})}"
-                          method="get"
+                          th:action="@{/org/events/{id}/delete(id=${event.id})}"
+                          method="post"
                           class="position-absolute top-0 end-0 px-5">
                           <!-- Delete button-->
                         <button type="submit" 
@@ -81,14 +81,77 @@
                 <div class="chat-box">
                     <h5>Chat de Grupo</h5>
                     <div class="chat-messages" id="chatMessages">
-                        <p>No hay mensajes aún.</p>
+                        <div th:each="message : ${eventMessages}" class="message">
+                            <strong th:text="${message.sender.username}"></strong>
+                            <span th:text="${message.content}"></span>
+                            <small th:text="${#temporals.format(message.sentAt, 'HH:mm')}"></small>
+                        </div>
                     </div>
-                    <input type="text" class="form-control message-input" placeholder="Escribe un mensaje...">
-                    <button class="btn btn-success mt-2 w-100">Enviar</button>
+                    <form id="messageForm" class="message-form">
+                        <input type="text" 
+                            id="messageInput" 
+                            class="form-control message-input" 
+                            placeholder="Escribe un mensaje..."
+                            required>
+                        <input type="hidden" id="eventId" th:value="${event.id}">
+                        <button type="submit" class="btn btn-success mt-2 w-100">Enviar</button>
+                    </form>
                 </div>
             </div>
             
         </main>
+
+        <script th:inline="javascript">
+            document.getElementById('messageForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const messageInput = document.getElementById('messageInput');
+                const eventId = document.getElementById('eventId').value;
+                const message = messageInput.value.trim();
+                
+                if (!message) return;
+        
+                console.log('Enviando mensaje:', {eventId, message}); // Debug log
+        
+                fetch(`/event/${eventId}`, {  // URL actualizada
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+                    },
+                    body: JSON.stringify({
+                        content: message
+                    })
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Mensaje enviado:', data);
+                    
+                    const chatMessages = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message';
+                    messageDiv.innerHTML = `
+                        <strong>${data.from}</strong>
+                        <span>${data.text}</span>
+                        <small>${new Date(data.sent).toLocaleTimeString()}</small>
+                    `;
+                    chatMessages.appendChild(messageDiv);
+                    
+                    messageInput.value = '';
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al enviar el mensaje');
+                });
+            });
+        </script>
         
         <!-- Footer-->
         <th:block th:replace="~{fragments/footer.html :: footer}" />
