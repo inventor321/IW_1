@@ -1,0 +1,144 @@
+2025-03-11 14:31:27.435103+01:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "Select * [*]EVENTS EVENTS"; SQL statement:
+Select * EVENTS EVENTS [42000-232]
+2025-03-17 13:59:11.254693+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 13:59:11.281206+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:38:07.533667+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:38:07.550799+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:38:51.758016+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:38:51.775172+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:38:55.874694+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:38:55.887154+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:39:09.624083+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:39:09.636343+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:40:07.815337+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:40:07.829387+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:40:20.515285+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:40:20.525796+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:40:25.615980+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:40:25.625990+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:40:40.986148+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:40:40.995708+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:40:59.733265+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:40:59.759405+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:41:10.518952+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:41:10.528949+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:41:17.134906+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:41:17.155671+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:41:57.068698+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:41:57.096010+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:42:00.724353+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:42:00.733358+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:42:12.589129+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:42:12.610131+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:42:19.363168+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:42:19.374170+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:42:23.574260+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:42:23.586034+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:42:25.619561+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:42:25.629075+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:43:49.054913+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:43:49.069011+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:43:53.112331+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:43:53.127873+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:44:17.449175+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:44:17.481186+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:44:43.766572+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:44:43.777572+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-17 14:45:31.566507+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), [*]group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL"; expected "identifier"; SQL statement:
+create global temporary table HTE_message(rn_ integer not null, date_read timestamp(6), date_sent timestamp(6), group bigint, id bigint, recipient_id bigint, sender_id bigint, text varchar(255), primary key (rn_)) TRANSACTIONAL [42001-232]
+2025-03-17 14:45:31.596507+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists message add column [*]group bigint not null"; expected "identifier"; SQL statement:
+alter table if exists message add column group bigint not null [42001-232]
+2025-03-25 13:50:05.004673+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_URL CHARACTER VARYING(255)": "'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYP... (5911)"; SQL statement:
+insert into event (date,description,image_url,location,name,org,id) values (?,?,?,?,?,?,default) [22001-232]
