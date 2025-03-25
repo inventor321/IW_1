@@ -33,6 +33,5 @@ build/
 .vscode/
 
 credentials.json
-iwdb.*
 iwdata/
 deploy/
