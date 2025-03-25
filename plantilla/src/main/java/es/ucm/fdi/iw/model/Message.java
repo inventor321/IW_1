@@ -7,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -51,6 +53,7 @@ public class Message implements Transferable<Message.Transfer> {
 	@ManyToOne
 	private Event event; // Puede ser null para mensajes privados
 
+	@Enumerated(EnumType.STRING)
 	private MessageType type = MessageType.PRIVATE;
 
 	public enum MessageType {
