@@ -1,14 +1,18 @@
 package es.ucm.fdi.iw.controller;
 
+import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.repository.EventRepository;
 import es.ucm.fdi.iw.repository.ParticipationRepository;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.Participation;
 import jakarta.persistence.EntityManager;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,6 +39,8 @@ import java.util.List;
 @RequestMapping("/events")
 public class EventController {
 
+    private static final Logger log = LogManager.getLogger(UserController.class);
+
     @ModelAttribute
     public void populateModel(HttpSession session, Model model) {
         for (String name : new String[] { "u", "url", "ws" }) {
@@ -41,6 +48,8 @@ public class EventController {
         }
     }
 
+    @Autowired
+    private LocalData localData;
     @Autowired
     private EventRepository eventRepository;
 
@@ -67,7 +76,7 @@ public class EventController {
             String finalImagePath = null;
             User u = (User) session.getAttribute("u");
             if (u == null) {
-                 return "redirect:/login";
+                return "redirect:/login";
             }
             long id = u.getId();
 
@@ -107,7 +116,10 @@ public class EventController {
                 .setParameter("event", event)
                 .getSingleResult() > 0;
 
-        List<User> participants = entityManager.createQuery("SELECT p.user FROM Participation p WHERE p.event = :event AND p.enabled = true", User.class).setParameter("event", event).getResultList();
+        List<User> participants = entityManager
+                .createQuery("SELECT p.user FROM Participation p WHERE p.event = :event AND p.enabled = true",
+                        User.class)
+                .setParameter("event", event).getResultList();
         model.addAttribute("event", event);
         model.addAttribute("isParticipating", isParticipating);
         model.addAttribute("participants", participants);
@@ -173,14 +185,13 @@ public class EventController {
         return "redirect:/events/" + id;
     }
 
-
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     public String deleteEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
         try {
 
             Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
             User user = (User) session.getAttribute("u");
             if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
@@ -195,5 +206,39 @@ public class EventController {
             ra.addFlashAttribute("error", "Error deleting event: " + e.getMessage());
             return "redirect:/";
         }
+    }
+
+    @PostMapping("{id}/pic")
+    @ResponseBody
+    public String setPic(@RequestParam("photo") MultipartFile photo, @PathVariable long id,
+            HttpServletResponse response, HttpSession session, Model model) throws IOException {
+
+        Event target = entityManager.find(Event.class, id);
+        model.addAttribute("event", target);
+
+        /*
+         * // check permissions
+         * User requester = (User) session.getAttribute("u");
+         * if (requester.getId() != target.getId() &&
+         * !requester.hasRole(Role.ADMIN)) {
+         * throw new NoEsTuPerfilException();
+         * }
+         */
+
+        log.info("Updating photo for event {}", id);
+        File f = localData.getFile("event", "" + id + ".jpg");
+        if (photo.isEmpty()) {
+            log.info("failed to upload photo: empty file?");
+        } else {
+            try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f))) {
+                byte[] bytes = photo.getBytes();
+                stream.write(bytes);
+                log.info("Uploaded photo for {} into {}!", id, f.getAbsolutePath());
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                log.warn("Error uploading " + id + " ", e);
+            }
+        }
+        return "{\"status\":\"photo uploaded correctly\"}";
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -54,6 +55,9 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private EntityManager entityManager;
+
 	@ModelAttribute
 	public void populateModel(HttpSession session, Model model) {
 		for (String name : new String[] { "u", "url", "ws" }) {
@@ -74,5 +78,62 @@ public class UserController {
 		User target = userRepository.findById(id).orElse(null);
 		model.addAttribute("user", target);
 		return "user";
+	}
+
+	/**
+	 * Returns the default profile pic
+	 * 
+	 * @return
+	 */
+	private static InputStream defaultPic() {
+		return new BufferedInputStream(Objects.requireNonNull(
+				UserController.class.getClassLoader().getResourceAsStream(
+						"static/img/default-pic.jpg")));
+	}
+
+	/**
+	 * Downloads a profile pic for a user id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws IOException
+	 */
+	@GetMapping("{id}/pic")
+	public StreamingResponseBody getPic(@PathVariable long id) throws IOException {
+		File f = localData.getFile("user", "" + id + ".jpg");
+		InputStream in = new BufferedInputStream(f.exists() ? new FileInputStream(f) : UserController.defaultPic());
+		return os -> FileCopyUtils.copy(in, os);
+	}
+
+	@PostMapping("{id}/pic")
+	@ResponseBody
+	public String setPic(@RequestParam("photo") MultipartFile photo, @PathVariable long id,
+			HttpServletResponse response, HttpSession session, Model model) throws IOException {
+
+		User target = entityManager.find(User.class, id);
+		model.addAttribute("user", target);
+
+		// check permissions
+		User requester = (User) session.getAttribute("u");
+		if (requester.getId() != target.getId() &&
+				!requester.hasRole(Role.ADMIN)) {
+			throw new NoEsTuPerfilException();
+		}
+
+		log.info("Updating photo for user {}", id);
+		File f = localData.getFile("user", "" + id + ".jpg");
+		if (photo.isEmpty()) {
+			log.info("failed to upload photo: empty file?");
+		} else {
+			try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f))) {
+				byte[] bytes = photo.getBytes();
+				stream.write(bytes);
+				log.info("Uploaded photo for {} into {}!", id, f.getAbsolutePath());
+			} catch (Exception e) {
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				log.warn("Error uploading " + id + " ", e);
+			}
+		}
+		return "{\"status\":\"photo uploaded correctly\"}";
 	}
 }
