@@ -93,7 +93,8 @@ public class EventController {
 
             Event event = new Event(name, description, date, location, finalImagePath, id);
             eventRepository.save(event);
-            return "redirect:/events";
+            String ret = "redirect:/events/" + event.getId();
+            return ret;
         } catch (Exception e) {
             return "redirect:/events/create?error=" + e.getMessage();
         }

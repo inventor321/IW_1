@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import jakarta.persistence.EntityManager;
@@ -78,6 +79,13 @@ public class UserController {
 		User target = userRepository.findById(id).orElse(null);
 		model.addAttribute("user", target);
 		return "user";
+	}
+	
+	@GetMapping("/search")
+	public String search(@PathVariable long id, Model model, HttpSession session) {
+		User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+		String ret = "redirect:/user/" + user.getId();
+		return ret;
 	}
 
 	/**
