@@ -73,7 +73,11 @@
                 <div class="participants">
                     <h5>Lista de Participantes</h5>
                     <ul class="list-group">
-                        <li class="list-group-item" th:each="participant: ${participants}" th:text="${participant.id}">No hay participantes aún.</li>
+                        <li class="list-group-item" th:each="participant : ${participants}"
+                            th:attr="data-id=${participant.id}"
+                            th:text="${participant.username}"
+                            onclick="showUserInfo(this)">
+                        </li>
                     </ul>
                 </div>
 
