@@ -47,6 +47,7 @@ public class User implements Transferable<User.Transfer> {
     private String lastName;
     private String email;
     private String phonenumber;
+    private String imageUrl;
 
     private boolean enabled;
     @Column(nullable = false)
