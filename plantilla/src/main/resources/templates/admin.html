@@ -2,19 +2,21 @@
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
 
 <!-- Cabecera -->
+
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
     <title>Administrador</title>
 </head>
 
 <!-- Cuerpo -->
+
 <body class="d-flex flex-column h-100">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
     <main class="flex-shrink-0">
         <div class="container">
             <h1 class="mt-5">Administración</h1>
-            
+
             <div class="row mt-4">
                 <div class="col">
                     <!-- Create new event button -->
@@ -51,14 +53,11 @@
                             </td>
                             <td>
                                 <!-- Formulario toggle enable-->
-                                <form th:action="@{'/admin/toggle/' + ${user.id}}"
-                                    th:method="post">
-                                    <button
-                                        th:if="${user.enabled}" 
-                                        type="submit" class="toggle btn btn-danger">Deshabilitar</button> 
-                                    <button
-                                        th:unless="${user.enabled}" 
-                                        type="submit" class="toggle btn btn-primary">Habilitar</button> 
+                                <form th:action="@{'/admin/toggle/' + ${user.id}}" th:method="post">
+                                    <button th:if="${user.enabled}" type="submit"
+                                        class="toggle btn btn-danger">Deshabilitar</button>
+                                    <button th:unless="${user.enabled}" type="submit"
+                                        class="toggle btn btn-primary">Habilitar</button>
                                 </form>
                             </td>
                         </tr>

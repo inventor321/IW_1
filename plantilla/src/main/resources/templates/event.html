@@ -1,163 +1,114 @@
 <!DOCTYPE html>
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
-    
-    <!-- Cabecera -->
-    <head>
-        <th:block th:replace="~{fragments/head :: header}" />
-        <title>Eventos - Exchange Connect</title>
-        <link rel="stylesheet" th:href="@{/css/event.css}">
-    </head>
 
-    <!-- Cuerpo -->
-    <body class="d-flex flex-column h-100">
-        <header th:replace="~{fragments/nav.html :: nav}"></header>
-        <main class="flex-shrink-0">
+<!-- Cabecera -->
 
-            <!-- Info principal-->
-            <section class="hero">
-                <div class="container-fluid position-relative px-5">
+<head>
+    <th:block th:replace="~{fragments/head :: header}" />
+    <title>Eventos - Exchange Connect</title>
+    <link rel="stylesheet" th:href="@{/css/event.css}">
+</head>
 
-                    <!-- Formulario delete-->
-                    <form th:if="${#authorization.expression('hasRole(''ORG'')')}"
-                          th:action="@{/org/events/{id}/delete(id=${event.id})}"
-                          method="post"
-                          class="position-absolute top-0 end-0 px-5">
-                          <!-- Delete button-->
-                        <button type="submit" 
-                                class="btn btn-outline-danger bg-white hover-danger"
-                                onclick="return confirm('¿Estás seguro de que quieres eliminar este evento?')">
-                                <img th:src="@{/img/delete.png}" src="/img/delete.png" alt="delete" width="32" height="32"/>
-                        </button>
+<!-- Cuerpo -->
+
+<body class="d-flex flex-column h-100">
+    <header th:replace="~{fragments/nav.html :: nav}"></header>
+    <main class="flex-shrink-0">
+
+        <!-- Info principal-->
+        <section class="hero">
+            <div class="container-fluid position-relative px-5">
+
+                <!-- Formulario delete-->
+                <form th:if="${#authorization.expression('hasRole(''ORG'')')}"
+                    th:action="@{/org/events/{id}/delete(id=${event.id})}" method="post"
+                    class="position-absolute top-0 end-0 px-5">
+                    <!-- Delete button-->
+                    <button type="submit" class="btn btn-outline-danger bg-white hover-danger"
+                        onclick="return confirm('¿Estás seguro de que quieres eliminar este evento?')">
+                        <img th:src="@{/img/delete.png}" src="/img/delete.png" alt="delete" width="32" height="32" />
+                    </button>
+                </form>
+
+                <!-- Event info-->
+                <h1 class="display-4" th:text="${event.name}">Nombre del Evento</h1>
+                <p class="lead" th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">Fecha del Evento</p>
+                <p class="lead" th:text="${event.location}">Ubicación del Evento</p>
+
+                <!-- Participate button-->
+                <div class="text-center">
+
+                    <form th:if="${!isParticipating}" th:action="@{/events/participate/{id}(id=${event.id})}"
+                        method="post">
+                        <button type="submit" class="custom-btn">Apuntarse al evento</button>
                     </form>
-                    
-                    <!-- Event info-->
-                    <h1 class="display-4" th:text="${event.name}">Nombre del Evento</h1>
-                    <p class="lead" th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">Fecha del Evento</p>
-                    <p class="lead" th:text="${event.location}">Ubicación del Evento</p>
-                    
-                    <!-- Participate button-->
-                    <div class="text-center">
 
-                        <form th:if="${!isParticipating}" th:action="@{/events/participate/{id}(id=${event.id})}" method="post">
-                            <button type="submit" class="custom-btn">Apuntarse al evento</button>
-                        </form>
-
-                        <form th:if="${isParticipating}" th:action="@{/events/withdraw/{id}(id=${event.id})}" method="post">
-                            <button type="submit" class="custom-btn2">Anular inscripción al evento</button>
-                        </form>
-
-                    </div>
-
-                    <!-- Edit button -->
-                    <div class="text-center">
-                        <button th:href="@{${#authorization.expression('hasRole(''ORG'')')} ? '/org/event/edit/' + ${event.id} : '/user/event/' + ${event.id}}" 
-                           th:if="${#authorization.expression('hasRole(''ORG'')')}"
-                           class="custom-btn w-21 mb-0">
-                            EDITAR EVENTO
-                        </button>
-                    </div>   
-
-                </div>
-            </section>
-
-            <!-- Detalles del evento-->
-            <div class="container event-container mb-4">
-
-                <!-- Texto detalles-->
-                <div class="event-details">
-                    <img class="event-image" th:if="${event.imageUrl}" th:src="@{${event.imageUrl}}" alt="Imagen del evento">
-                    <p class="mt-3" th:text="${event.description}">Descripción del evento.</p>
-                </div>
-
-                <!-- Lista participantes-->
-                <div class="participants">
-                    <h5>Lista de Participantes</h5>
-                    <ul class="list-group">
-                        <li class="list-group-item" th:each="participant : ${participants}"
-                            th:attr="data-id=${participant.id}"
-                            th:text="${participant.username}"
-                            onclick="showUserInfo(this)">
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Chat box-->
-                <div class="chat-box">
-                    <h5>Chat de Grupo</h5>
-                    <div class="chat-messages" id="chatMessages">
-                        <div th:each="message : ${eventMessages}" class="message">
-                            <strong th:text="${message.sender.username}"></strong>
-                            <span th:text="${message.content}"></span>
-                            <small th:text="${#temporals.format(message.sentAt, 'HH:mm')}"></small>
-                        </div>
-                    </div>
-                    <form id="messageForm" class="message-form">
-                        <input type="text" 
-                            id="messageInput" 
-                            class="form-control message-input" 
-                            placeholder="Escribe un mensaje..."
-                            required>
-                        <input type="hidden" id="eventId" th:value="${event.id}">
-                        <button type="submit" class="btn btn-success mt-2 w-100">Enviar</button>
+                    <form th:if="${isParticipating}" th:action="@{/events/withdraw/{id}(id=${event.id})}" method="post">
+                        <button type="submit" class="custom-btn2">Anular inscripción al evento</button>
                     </form>
+
                 </div>
+
+                <!-- Edit button -->
+                <div class="text-center">
+                    <button
+                        th:href="@{${#authorization.expression('hasRole(''ORG'')')} ? '/org/event/edit/' + ${event.id} : '/user/event/' + ${event.id}}"
+                        th:if="${#authorization.expression('hasRole(''ORG'')')}" class="custom-btn w-21 mb-0">
+                        EDITAR EVENTO
+                    </button>
+                </div>
+
             </div>
-            
-        </main>
+        </section>
 
-        <script th:inline="javascript">
-            document.getElementById('messageForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const messageInput = document.getElementById('messageInput');
-                const eventId = document.getElementById('eventId').value;
-                const message = messageInput.value.trim();
-                
-                if (!message) return;
-        
-                console.log('Enviando mensaje:', {eventId, message}); // Debug log
-        
-                fetch(`/event/${eventId}`, {  // URL actualizada
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
-                    },
-                    body: JSON.stringify({
-                        content: message
-                    })
-                })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Mensaje enviado:', data);
-                    
-                    const chatMessages = document.getElementById('chatMessages');
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = 'message';
-                    messageDiv.innerHTML = `
-                        <strong>${data.from}</strong>
-                        <span>${data.text}</span>
-                        <small>${new Date(data.sent).toLocaleTimeString()}</small>
-                    `;
-                    chatMessages.appendChild(messageDiv);
-                    
-                    messageInput.value = '';
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error al enviar el mensaje');
-                });
-            });
-        </script>
-        
-        <!-- Footer-->
-        <th:block th:replace="~{fragments/footer.html :: footer}" />
-    </body>
+        <!-- Detalles del evento-->
+        <div class="container event-container mb-4">
+
+            <!-- Texto detalles-->
+            <div class="event-details">
+                <img class="event-image" th:if="${event.imageUrl}" th:src="@{${event.imageUrl}}"
+                    alt="Imagen del evento">
+                <p class="mt-3" th:text="${event.description}">Descripción del evento.</p>
+            </div>
+
+            <!-- Lista participantes-->
+            <div class="participants">
+                <h5>Lista de Participantes</h5>
+                <!-- Lista participantes -->
+                <ul class="list-group">
+                    <a th:each="participant : ${participants}" th:href="@{/user/{id}(id=${participant.id})}"
+                        class="list-group-item list-group-item-action" th:attr="data-id=${participant.id}"
+                        th:text="${participant.username}">
+                    </a>
+                </ul>
+            </div>
+
+            <!-- Chat box-->
+            <div class="chat-box">
+                <h5>Chat de Grupo</h5>
+                <div class="chat-messages" id="chatMessages">
+                    <div th:each="message : ${eventMessages}" class="message">
+                        <strong th:text="${message.sender.username}"></strong>
+                        <span th:text="${message.content}"></span>
+                        <small th:text="${#temporals.format(message.sentAt, 'HH:mm')}"></small>
+                    </div>
+                </div>
+                <form id="messageForm" class="message-form">
+                    <input type="text" id="messageInput" class="form-control message-input"
+                        placeholder="Escribe un mensaje..." required>
+                    <input type="hidden" id="eventId" th:value="${event.id}">
+                    <button type="submit" class="btn btn-success mt-2 w-100">Enviar</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Script -->
+    <script th:src="@{/js/event.js}"></script>
+
+    <!-- Footer-->
+    <th:block th:replace="~{fragments/footer.html :: footer}" />
+</body>
+
 </html>
