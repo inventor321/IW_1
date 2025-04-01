@@ -20,6 +20,7 @@ import es.ucm.fdi.iw.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 /**
  * Site administration.
@@ -50,7 +51,9 @@ public class AdminController {
     }
 
     @PostMapping("/toggle/{id}")
+    @Transactional
     public String toggleUser(@PathVariable long id, Model model) {
+        System.err.println("saludos");
         log.info("Admin cambia estado de " + id);
         User target = entityManager.find(User.class, id);
         target.setEnabled(!target.isEnabled());
