@@ -83,10 +83,11 @@ public class UserController {
 		model.addAttribute("user", target);
 		return "user";
 	}
-	
+
 	@GetMapping("/search")
 	public String search(@PathVariable long id, Model model, HttpSession session) {
-		User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 		String ret = "redirect:/user/" + user.getId();
 		return ret;
 	}
@@ -148,5 +149,4 @@ public class UserController {
 		return "{\"status\":\"photo uploaded correctly\"}";
 	}
 
-	
 }
