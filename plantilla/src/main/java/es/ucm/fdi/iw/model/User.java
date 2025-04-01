@@ -43,9 +43,13 @@ public class User implements Transferable<User.Transfer> {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = true)
     private String firstName;
-    private String lastName;
+
+    @Column(nullable = true)
     private String email;
+
+    @Column(nullable = true)
     private String phonenumber;
 
     private boolean enabled;
@@ -79,13 +83,15 @@ public class User implements Transferable<User.Transfer> {
     public static class Transfer {
         private long id;
         private String username;
+        private String firstName;
+        private String email;
         private int totalReceived;
         private int totalSent;
     }
 
     @Override
     public Transfer toTransfer() {
-        return new Transfer(id, username, received.size(), sent.size());
+        return new Transfer(id, username, firstName, email, received.size(), sent.size());
     }
 
     @Override
