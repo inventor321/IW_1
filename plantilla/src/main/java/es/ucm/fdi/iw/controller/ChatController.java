@@ -85,16 +85,23 @@ public class ChatController {
             @RequestBody Map<String, String> messageData,
             @AuthenticationPrincipal User user) {
 
+        System.out.println("Debug: Received message data: " + messageData);
+
         try {
             Event event = entityManager.find(Event.class, eventId);
             if (event == null) {
                 return ResponseEntity.notFound().build();
             }
 
+            String content = messageData.get("content");
+            if (content == null || content.trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
             Message message = new Message();
             message.setSender(user);
             message.setEvent(event);
-            message.setText(messageData.get("content"));
+            message.setText(content);
             message.setDateSent(LocalDateTime.now());
             message.setType(Message.MessageType.EVENT);
 
@@ -114,6 +121,7 @@ public class ChatController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            System.err.println("Error processing message: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }

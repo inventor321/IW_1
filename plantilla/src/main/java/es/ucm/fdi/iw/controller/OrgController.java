@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpSession;
  * Access to this end-point is authenticated - see SecurityConfig
  */
 @Controller
-@RequestMapping("org")
+@RequestMapping("/org")
 public class OrgController {
 
     @Autowired

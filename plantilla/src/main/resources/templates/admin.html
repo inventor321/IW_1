@@ -1,77 +1,97 @@
 <!DOCTYPE html>
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
 
-<!-- Cabecera -->
-
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
-    <title>Administrador</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <title>Panel de Administración</title>
 </head>
 
-<!-- Cuerpo -->
-
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100 bg-light">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
-    <main class="flex-shrink-0">
-        <div class="container">
-            <h1 class="mt-5">Administración</h1>
-
-            <div class="row mt-4">
-                <div class="col">
-                    <!-- Create new event button -->
-                    <a th:href="@{/org/create-event}" class="btn btn-primary me-2">
-                        <i class="bi bi-plus-circle me-2"></i>Create New Event
-                    </a>
-                    <!-- View events button -->
-                    <a th:href="@{/events}" class="btn btn-primary me-2">
-                        <i class="bi bi-list me-2"></i>View Events
-                    </a>
+    <main class="flex-shrink-0" style="background-color: rgba(0, 128, 0, 0.5);">
+        <div class="container mt-5 mb-4 admin-container">
+            <h1 class="text-center mb-4">Panel de Administración</h1>
+            
+            <!-- Actions Panel -->
+            <div class="row mt-4 mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Acciones Rápidas</h4>
+                        </div>
+                        <div class="card-body">
+                            <a th:href="@{/org/create-event}" class="btn btn-success me-2">
+                                <i class="bi bi-plus-circle me-2"></i>Crear Nuevo Evento
+                            </a>
+                            <a th:href="@{/events}" class="btn btn-info me-2">
+                                <i class="bi bi-list me-2"></i>Ver Eventos
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="container">
-                <h1 class="mt-5">Usuarios</h1>
 
-                <!-- Tabla usuarios -->
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Nombre & Apellidos</th>
-                            <th>Roles</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="user : ${users}">
-                            <td th:text="${user.id}">1</td>
-                            <td th:text="${user.firstName + ' ' + user.lastName}">Nombre</td>
-                            <td>
-                                <ul>
-                                    <li th:text="${user.roles}">Role</li>
-                                </ul>
-                            </td>
-                            <td>
-                                <!-- Formulario toggle enable-->
-                                <form th:action="@{'/admin/toggle/' + ${user.id}}" th:method="post">
-                                    <button th:if="${user.enabled}" type="submit"
-                                        class="toggle btn btn-danger">Deshabilitar</button>
-                                    <button th:unless="${user.enabled}" type="submit"
-                                        class="toggle btn btn-primary">Habilitar</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Users Management -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Gestión de Usuarios</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Roles</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="user : ${users}">
+                                    <td th:text="${user.id}">1</td>
+                                    <td>
+                                        <img th:if="${user.imageUrl}" th:src="${user.imageUrl}" 
+                                             class="avatar me-2" alt="Avatar">
+                                        <span th:text="${user.username}">username</span>
+                                    </td>
+                                    <td th:text="${user.email}">email</td>
+                                    <td>
+                                        <span class="badge bg-primary" th:each="role : ${user.roles}" 
+                                              th:text="${role}">ROLE</span>
+                                    </td>
+                                    <td>
+                                        <span th:class="${user.enabled ? 'badge bg-success' : 'badge bg-danger'}"
+                                              th:text="${user.enabled ? 'Activo' : 'Inactivo'}">
+                                            Estado
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form th:action="@{'/admin/toggle/' + ${user.id}}" 
+                                              method="post" class="d-inline">
+                                            <button type="submit" 
+                                                    th:class="${user.enabled ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm'}"
+                                                    th:text="${user.enabled ? 'Deshabilitar' : 'Habilitar'}">
+                                                Toggle
+                                            </button>
+                                        </form>
+                                        <a th:href="@{'/user/' + ${user.id}}" 
+                                           class="btn btn-info btn-sm">Ver Perfil</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
     <th:block th:replace="~{fragments/footer.html :: footer}" />
-
-    <!-- Script -->
     <script th:src="@{/js/admin.js}"></script>
 </body>
-
 </html>
