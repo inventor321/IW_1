@@ -36,4 +36,8 @@ public class Event {
         this.org = org;
     }
 
+    public void setImage(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
 }

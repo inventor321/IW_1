@@ -1,6 +1,7 @@
 package es.ucm.fdi.iw.controller;
 
 import es.ucm.fdi.iw.LocalData;
+import es.ucm.fdi.iw.controller.UserController.NoEsTuPerfilException;
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.repository.EventRepository;
 import es.ucm.fdi.iw.repository.ParticipationRepository;
@@ -21,9 +22,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
@@ -34,6 +37,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 @Controller
 @RequestMapping("/events")
@@ -63,7 +67,7 @@ public class EventController {
         return "events";
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public String createEvent(@RequestParam String name,
             @RequestParam String description,
             @RequestParam LocalDateTime date,
@@ -71,34 +75,41 @@ public class EventController {
             @RequestParam String imageSource,
             @RequestParam(required = false) String imageUrl,
             @RequestParam(required = false) MultipartFile imageFile,
-            HttpSession session) {
+            HttpSession session,
+            RedirectAttributes ra) {
         try {
-            String finalImagePath = null;
             User u = (User) session.getAttribute("u");
             if (u == null) {
                 return "redirect:/login";
             }
-            long id = u.getId();
+
+            Event event = new Event(name, description, date, location, null, u.getId());
+            eventRepository.save(event);
 
             if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
-                String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
-                Path staticPath = Paths.get("src/main/resources/static/img/events");
-                Files.createDirectories(staticPath);
-                Path filepath = staticPath.resolve(fileName);
-                Files.copy(imageFile.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
-                finalImagePath = "/img/events/" + fileName;
+                File f = localData.getFile("event", event.getId() + ".jpg");
+                try (BufferedOutputStream stream = 
+                        new BufferedOutputStream(new FileOutputStream(f))) {
+                    stream.write(imageFile.getBytes());
+                    event.setImage("/event/" + event.getId() + ".jpg");
+                    log.info("Saved image for event {} at {}", event.getId(), f.getAbsolutePath());
+                }
             } else if ("url".equals(imageSource) && imageUrl != null && !imageUrl.isEmpty()) {
-                finalImagePath = imageUrl;
+                event.setImage(imageUrl);
+                log.info("Set URL image for event {}: {}", event.getId(), imageUrl);
             }
 
-            Event event = new Event(name, description, date, location, finalImagePath, id);
+            // Update event with image URL
             eventRepository.save(event);
-            String ret = "redirect:/events/" + event.getId();
-            return ret;
+            ra.addFlashAttribute("message", "Event created successfully!");
+            return "redirect:/events/" + event.getId();
         } catch (Exception e) {
-            return "redirect:/events/create?error=" + e.getMessage();
+            log.error("Error creating event", e);
+            ra.addFlashAttribute("error", "Error creating event: " + e.getMessage());
+            return "redirect:/login";
         }
     }
+
 
     @GetMapping("/{id}")
     public String getEvent(@PathVariable Long id, Model model, Authentication authentication, HttpSession session) {

@@ -142,3 +142,18 @@ alter table if exists message add column group bigint not null [42001-232]
 2025-03-25 13:50:05.004673+01:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_URL CHARACTER VARYING(255)": "'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYP... (5911)"; SQL statement:
 insert into event (date,description,image_url,location,name,org,id) values (?,?,?,?,?,?,default) [22001-232]
+2025-04-01 14:13:36.883034+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_URL CHARACTER VARYING(255)": "'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUSExMVFhUXGRoZ... (24855)"; SQL statement:
+update event set date=?,description=?,image_url=?,location=?,name=?,org=? where id=? [22001-232]
+2025-04-01 14:15:26.120885+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_URL CHARACTER VARYING(255)": "'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUSExMVFhUXGRoZ... (24855)"; SQL statement:
+update event set date=?,description=?,image_url=?,location=?,name=?,org=? where id=? [22001-232]
+2025-04-01 14:16:37.144094+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_URL CHARACTER VARYING(255)": "'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUSExMVFhUXGRoZ... (24855)"; SQL statement:
+update event set date=?,description=?,image_url=?,location=?,name=?,org=? where id=? [22001-232]
+2025-04-01 14:22:01.731521+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_URL CHARACTER VARYING(255)": "'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUSExMVFhUXGRoZ... (24855)"; SQL statement:
+update event set date=?,description=?,image_url=?,location=?,name=?,org=? where id=? [22001-232]
+2025-04-01 14:26:45.486648+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE_URL CHARACTER VARYING(255)": "'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUSExMVFhUXGRoZ... (24855)"; SQL statement:
+update event set date=?,description=?,image_url=?,location=?,name=?,org=? where id=? [22001-232]
