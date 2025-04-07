@@ -4,8 +4,8 @@ body {
 .profile-container {
     max-width: 800px;
     margin: auto;
-    background: #e8f5e9;
-    padding: 20px;
+    background: white;
+    padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -21,10 +21,13 @@ body {
 }
 
 .preview {
-    max-width: 100%;
+    max-width: 200px;
+    max-height: 200px;
     height: auto;
-    border-radius: 10px;
+    border-radius: 5px;
     margin-top: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: block;
 }
 
 .btn-green {
@@ -32,9 +35,35 @@ body {
     color: white;
     width: 100%;
     margin-top: 10px;
+    transition: all 0.3s ease;
 }
+
 .btn-green2 {
     background-color: #70cb76;
     width: 100%;
+    margin-top: 10px;
+}
+
+.form-control {
+    margin-bottom: 1rem;
+}
+
+.btn-green:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+#urlInput, #fileInput {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.form-check-inline {
+    margin-right: 15px;
+}
+
+.btn-green {
     margin-top: 10px;
 }

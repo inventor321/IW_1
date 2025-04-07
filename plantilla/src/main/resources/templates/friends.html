@@ -23,17 +23,22 @@
                     <div class="row">
                         <div class="col-md-4 mb-3" th:each="friend : ${friends}">
                             <div class="friend-card">
-                                <img th:src="${friend.imageUrl ?: '/img/default-avatar.png'}" 
-                                     class="friend-avatar" alt="Friend avatar">
+                                <img th:src="@{/user/{id}/pic(id=${friend.id})}" 
+                                     class="friend-avatar" 
+                                     alt="Friend avatar"
+                                     onerror="this.src='/img/default-avatar.png';">
                                 <div class="friend-info">
                                     <h5 th:text="${friend.username}">Username</h5>
                                     <p class="text-muted" th:text="${friend.email}">email@example.com</p>
                                     <div class="btn-group">
                                         <a th:href="@{'/user/' + ${friend.id}}" 
-                                           class="btn btn-info btn-sm">
+                                           class="btn btn-info btn-sm me-2">
                                             <i class="bi bi-person"></i> Ver Perfil
                                         </a>
-                                        <!-- Add any other friend-specific actions here -->
+                                        <a th:href="@{'/messages/chat/' + ${friend.id}}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="bi bi-chat-dots"></i> Enviar Mensaje
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -51,8 +56,10 @@
                     <div class="row">
                         <div class="col-md-4 mb-3" th:each="request : ${pendingRequests}">
                             <div class="friend-card">
-                                <img th:src="${request.user1.imageUrl ?: '/img/default-avatar.png'}" 
-                                     class="friend-avatar" alt="User avatar">
+                                <img th:src="@{/user/{id}/pic(id=${request.user1.id})}" 
+                                     class="friend-avatar" 
+                                     alt="User avatar"
+                                     onerror="this.src='/img/default-avatar.png';">
                                 <div class="friend-info">
                                     <h5 th:text="${request.user1.username}">Username</h5>
                                     <p class="text-muted" th:text="${request.user1.email}">email@example.com</p>
@@ -86,8 +93,10 @@
                     <div class="row">
                         <div class="col-md-4 mb-3" th:each="user : ${suggestions}">
                             <div class="friend-card">
-                                <img th:src="${user.imageUrl ?: '/img/default-avatar.png'}" 
-                                     class="friend-avatar" alt="User avatar">
+                                <img th:src="@{/user/{id}/pic(id=${user.id})}" 
+                                     class="friend-avatar" 
+                                     alt="User avatar"
+                                     onerror="this.src='/img/default-avatar.png';">
                                 <div class="friend-info">
                                     <h5 th:text="${user.username}">Username</h5>
                                     <p class="text-muted" th:text="${user.email}">email@example.com</p>
