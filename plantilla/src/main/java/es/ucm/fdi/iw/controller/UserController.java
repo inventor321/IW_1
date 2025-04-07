@@ -27,6 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import lombok.Data;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -147,6 +148,70 @@ public class UserController {
 			}
 		}
 		return "{\"status\":\"photo uploaded correctly\"}";
+	}
+
+	@PostMapping("/{id}/update")
+	@ResponseBody
+	@Transactional
+	public ResponseEntity<String> updateUser(
+			@PathVariable long id, 
+			@RequestBody UserUpdateDTO updateData,
+			HttpSession session) {
+		
+		User requester = (User)session.getAttribute("u");
+		User target = entityManager.find(User.class, id);
+		
+		// Check if user exists and requester has permission
+		if (target == null || target.getId() != requester.getId()) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permiso para actualizar este usuario");
+		}
+
+		try {
+			// Check if username is already taken by another user
+			Long existingCount = entityManager.createQuery(
+				"SELECT COUNT(u) FROM User u WHERE u.username = :username AND u.id != :userId", 
+				Long.class)
+				.setParameter("username", updateData.getUsername())
+				.setParameter("userId", id)
+				.getSingleResult();
+
+			if (existingCount > 0) {
+				return ResponseEntity.badRequest().body("El nombre de usuario ya está en uso");
+			}
+
+			// Update user data
+			target.setUsername(updateData.getUsername());
+			target.setEmail(updateData.getEmail());
+			entityManager.flush();
+
+			return ResponseEntity.ok("Usuario actualizado correctamente");
+		} catch (Exception e) {
+			log.error("Error updating user: {}", e.getMessage(), e);
+			return ResponseEntity.internalServerError().body("Error al actualizar el usuario");
+		}
+	}
+
+	// DTO class for user updates
+	@Data
+	private static class UserUpdateDTO {
+		private String username;
+		private String email;
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+		public String getEmail() {
+			return email;
+		}
+
+		public void setEmail(String email) {
+			this.email = email;
+		}
 	}
 
 }
