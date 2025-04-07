@@ -24,14 +24,13 @@
                 <div th:case="${u.id}" class="mt-4 mb-4">
                     <h4>Datos de Usuario</h4>
                     <label for="username">Nombre de usuario</label>
-                    <input id="username" class="form-control" 
-                           th:value="${user.username}" 
-                           th:data-user-id="${user.id}" />
-
+                    <input id="username" class="form-control" th:value="${user.username}" th:data-user-id="${user.id}" />
+                    <label for="fname">Nombre Completo</label>
+                    <input id="fname" class="form-control" th:value="${user.firstName}" />
                     <label for="email">Correo electrónico</label>
-                    <input id="email" class="form-control" 
-                           th:value="${user.email}" />
-
+                    <input id="email" class="form-control" th:value="${user.email}" />
+                    <label for="pnumber">Numero de telefono</label>
+                    <input id="pnumber" class="form-control" th:value="${user.phonenumber}" />
                     <button id="save" class="btn btn-success btn-green mt-3">
                         <i class="bi bi-check-circle"></i> Guardar Información
                     </button>
@@ -40,9 +39,12 @@
                     <h4>Datos de Usuario</h4>
                     <label for="username">Nombre de usuario</label>
                     <p id="username" class="form-control" th:text="${user.username}">Sample</p>
-
+                    <label for="fname">Nombre Completo</label>
+                    <p id="fname" class="form-control" th:text="${user.firstName}">Sample</p>
                     <label for="email">Correo electrónico</label>
                     <p id="email" class="form-control" th:text="${user.email}">Sample</p>
+                    <label for="pnumber">Numero de telefono</label>
+                    <p id="pnumber" class="form-control" th:text="${user.phonenumber}">Sample</p>
                 </div>
             </th:block>
 
@@ -89,7 +91,11 @@
 
             <!-- Solicitar amistad-->
             <th:block th:if="${user.id != u.id}">
-                <button id="friendReq" class="btn btn-primary btn-green">Solicitar amistad</button>
+                <form th:action="@{'/friends/request/' + ${user.id}}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-primary btn-green">
+                        <p class="bi bi-person-plus">Solicitar amistad</p>
+                    </button>
+                </form>
             </th:block>
         </div>
     </main>

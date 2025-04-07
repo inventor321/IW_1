@@ -105,6 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveButton = document.getElementById('save');
     const usernameInput = document.getElementById('username');
     const emailInput = document.getElementById('email');
+    const fnameInput = document.getElementById('fname');
+    const pnumberInput = document.getElementById('pnumber');
     const userId = usernameInput.getAttribute('data-user-id');
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.content || 
                       document.querySelector('input[name="_csrf"]')?.value;
@@ -117,7 +119,9 @@ document.addEventListener('DOMContentLoaded', function() {
     saveButton.addEventListener('click', function() {
         const userData = {
             username: usernameInput.value,
-            email: emailInput.value
+            email: emailInput.value,
+            fname: fnameInput.value,
+            pnumber: pnumberInput.value
         };
 
         fetch(`/user/${userId}/update`, {

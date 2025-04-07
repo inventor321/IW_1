@@ -85,10 +85,11 @@ public class UserController {
 		return "user";
 	}
 
-	@GetMapping("/search")
-	public String search(@PathVariable long id, Model model, HttpSession session) {
-		User user = userRepository.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+	@PostMapping("/search")
+	@ResponseBody
+	public String search(@RequestParam String username, Model model, HttpSession session) {
+		User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+		model.addAttribute("user", user);
 		String ret = "redirect:/user/" + user.getId();
 		return ret;
 	}
@@ -182,6 +183,8 @@ public class UserController {
 			// Update user data
 			target.setUsername(updateData.getUsername());
 			target.setEmail(updateData.getEmail());
+			target.setFirstName(updateData.getFname());
+			target.setPhonenumber(updateData.getPnumber());
 			entityManager.flush();
 
 			return ResponseEntity.ok("Usuario actualizado correctamente");
@@ -196,6 +199,8 @@ public class UserController {
 	private static class UserUpdateDTO {
 		private String username;
 		private String email;
+		private String fname;
+		private String pnumber;
 
 		public String getUsername() {
 			return username;
@@ -211,6 +216,22 @@ public class UserController {
 
 		public void setEmail(String email) {
 			this.email = email;
+		}
+
+		public String getFname() {
+			return fname;
+		}
+
+		public void setFname(String fname) {
+			this.fname = fname;
+		}
+
+		public String getPnumber() {
+			return pnumber;
+		}
+
+		public void setPnumber(String pnumber) {
+			this.pnumber = pnumber;
 		}
 	}
 
