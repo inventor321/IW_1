@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpSession;
  * Access to this end-point is authenticated - see SecurityConfig
  */
 @Controller
-@RequestMapping("org")
+@RequestMapping("/org")
 public class OrgController {
 
     @Autowired
@@ -44,12 +44,5 @@ public class OrgController {
         log.info("Org acaba de entrar");
         return "org";
     }
-
-    @GetMapping("/create-event")
-    public String showCreateEventForm(Model model) {
-        model.addAttribute("event", new Event());
-        return "create-event";
-    }
-    
 
 }

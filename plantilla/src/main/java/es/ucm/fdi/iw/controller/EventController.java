@@ -8,12 +8,9 @@ import es.ucm.fdi.iw.repository.ParticipationRepository;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.Participation;
 import jakarta.persistence.EntityManager;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.http.HttpStatus;
@@ -29,7 +26,9 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,13 +36,14 @@ import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @Controller
 @RequestMapping("/events")
 public class EventController {
-
-    private static final Logger log = LogManager.getLogger(UserController.class);
 
     @ModelAttribute
     public void populateModel(HttpSession session, Model model) {
@@ -52,8 +52,11 @@ public class EventController {
         }
     }
 
+
     @Autowired
     private LocalData localData;
+
+
     @Autowired
     private EventRepository eventRepository;
 
@@ -67,8 +70,16 @@ public class EventController {
         return "events";
     }
 
-    @PostMapping("/create")
-    public String createEvent(@RequestParam String name,
+    @GetMapping("/create")
+    @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
+    public String showCreateEventForm(Model model) {
+        model.addAttribute("event", new Event());
+        return "create-event";
+    }
+
+    @PostMapping("/created")
+    @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
+    public String created(@RequestParam String name,
             @RequestParam String description,
             @RequestParam LocalDateTime date,
             @RequestParam String location,
@@ -79,9 +90,6 @@ public class EventController {
             RedirectAttributes ra) {
         try {
             User u = (User) session.getAttribute("u");
-            if (u == null) {
-                return "redirect:/login";
-            }
 
             Event event = new Event(name, description, date, location, null, u.getId());
             eventRepository.save(event);
@@ -92,11 +100,9 @@ public class EventController {
                         new BufferedOutputStream(new FileOutputStream(f))) {
                     stream.write(imageFile.getBytes());
                     event.setImage("/event/" + event.getId() + ".jpg");
-                    log.info("Saved image for event {} at {}", event.getId(), f.getAbsolutePath());
                 }
             } else if ("url".equals(imageSource) && imageUrl != null && !imageUrl.isEmpty()) {
                 event.setImage(imageUrl);
-                log.info("Set URL image for event {}: {}", event.getId(), imageUrl);
             }
 
             // Update event with image URL
@@ -104,7 +110,6 @@ public class EventController {
             ra.addFlashAttribute("message", "Event created successfully!");
             return "redirect:/events/" + event.getId();
         } catch (Exception e) {
-            log.error("Error creating event", e);
             ra.addFlashAttribute("error", "Error creating event: " + e.getMessage());
             return "redirect:/login";
         }
@@ -218,39 +223,5 @@ public class EventController {
             ra.addFlashAttribute("error", "Error deleting event: " + e.getMessage());
             return "redirect:/";
         }
-    }
-
-    @PostMapping("{id}/pic")
-    @ResponseBody
-    public String setPic(@RequestParam("photo") MultipartFile photo, @PathVariable long id,
-            HttpServletResponse response, HttpSession session, Model model) throws IOException {
-
-        Event target = entityManager.find(Event.class, id);
-        model.addAttribute("event", target);
-
-        /*
-         * // check permissions
-         * User requester = (User) session.getAttribute("u");
-         * if (requester.getId() != target.getId() &&
-         * !requester.hasRole(Role.ADMIN)) {
-         * throw new NoEsTuPerfilException();
-         * }
-         */
-
-        log.info("Updating photo for event {}", id);
-        File f = localData.getFile("event", "" + id + ".jpg");
-        if (photo.isEmpty()) {
-            log.info("failed to upload photo: empty file?");
-        } else {
-            try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f))) {
-                byte[] bytes = photo.getBytes();
-                stream.write(bytes);
-                log.info("Uploaded photo for {} into {}!", id, f.getAbsolutePath());
-            } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                log.warn("Error uploading " + id + " ", e);
-            }
-        }
-        return "{\"status\":\"photo uploaded correctly\"}";
     }
 }

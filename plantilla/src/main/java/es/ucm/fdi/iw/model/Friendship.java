@@ -1,6 +1,7 @@
 package es.ucm.fdi.iw.model;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -41,5 +42,51 @@ public class Friendship {
         ACCEPTED,
         BLOCKED,
         DECLINED
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = Timestamp.from(Instant.now());
+        status = FriendshipStatus.PENDING;
+    }
+
+    public void accept() {
+        this.status = FriendshipStatus.ACCEPTED;
+        this.isAccepted = true;
+        this.acceptedAt = Timestamp.from(Instant.now());
+    }
+
+    public void decline() {
+        this.status = FriendshipStatus.DECLINED;
+        this.isAccepted = false;
+    }
+
+    public void block() {
+        this.status = FriendshipStatus.BLOCKED;
+        this.isAccepted = false;
+    }
+
+    public boolean isPending() {
+        return this.status == FriendshipStatus.PENDING;
+    }
+
+    public boolean isAccepted() {
+        return this.status == FriendshipStatus.ACCEPTED;
+    }
+
+    public boolean isBlocked() {
+        return this.status == FriendshipStatus.BLOCKED;
+    }
+
+    public boolean isDeclined() {
+        return this.status == FriendshipStatus.DECLINED;
+    }
+
+    // Helper method to create a friendship request
+    public static Friendship createRequest(User from, User to) {
+        Friendship friendship = new Friendship();
+        friendship.setUser1(from);
+        friendship.setUser2(to);
+        return friendship;
     }
 }

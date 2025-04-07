@@ -17,49 +17,66 @@
             <h1 class="text-center">Perfil de <span th:text="${user.username}">Usuario</span></h1>
             
             <!-- Datos usuario -->
-            <div class="mt-4 mb-4">
-                <h4>Datos de Usuario</h4>
-                <label for="username">Nombre de usuario</label>
-                <input id="username" class="form-control" th:value="${user.username}" />
+            <th:block th:switch="${user.id}">
+                <div th:case="${u.id}" class="mt-4 mb-4">
+                    <h4>Datos de Usuario</h4>
+                    <label for="username">Nombre de usuario</label>
+                    <input id="username" class="form-control" th:value="${user.username}" />
 
-                <label for="email">Correo electrónico</label>
-                <input id="email" class="form-control" value="user@gmail.com" />
+                    <label for="email">Correo electrónico</label>
+                    <input id="email" class="form-control" th:value="${user.email}" />
 
-                <button id="save" class="btn btn-success btn-green">Guardar Información</button>
-            </div>
+                    <button id="save" class="btn btn-success btn-green">Guardar Información</button>
+                </div>
+                <div th:case="*" class="mt-4 mb-4">
+                    <h4>Datos de Usuario</h4>
+                    <label for="username">Nombre de usuario</label>
+                    <p id="username" class="form-control" th:text="${user.username}">Sample</p>
+
+                    <label for="email">Correo electrónico</label>
+                    <p id="email" class="form-control" th:text="${user.email}">Sample</p>
+                </div>
+            </th:block>
 
             <!-- Panel foto de perfil-->
-            <div class="row">
-                <div class="mb-3">
-                    <label class="form-label">Image Source</label>
-                    <div class="mb-2">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="imageSource" id="urlSource" value="url" checked>
-                            <label class="form-check-label" for="urlSource">URL</label>
+            <th:block th:if="${user.id == u.id}">
+                <div class="row">
+                    <div class="mb-3">
+                        <label class="form-label">Image Source</label>
+                        <div class="mb-2">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="imageSource" id="urlSource" value="url" checked>
+                                <label class="form-check-label" for="urlSource">URL</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="imageSource" id="fileSource" value="file">
+                                <label class="form-check-label" for="fileSource">Local File</label>
+                            </div>
+                            <div id="urlInput" class="mb-3">
+                                <label for="imageUrl" class="form-label">Image URL</label>
+                                <input type="url" class="form-control" id="imageUrl" name="imageUrl">
+                                <button id="fetchImg" class="btn btn-info btn-green">Buscar imagen</button>
+                                <img class="preview" id="ver" th:src="${user.imageUrl}" alt="Preview" />
+                            </div>
+                            <div id="fileInput" class="mb-3" style="display: none;">
+                                <label for="imageFile" class="form-label">Upload Image</label>
+                                <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+                                <img class="preview" id="ver2" th:src="${user.imageUrl}" alt="Preview" />
+                            </div>
+                            
+                            <!-- Formulario subir imagen-->
+                            <form method="post" th:action="@{/user/__${user.id}__/pic}" enctype="multipart/form-data">
+                                <button id="postAvatar" class="btn btn-primary btn-green">Actualizar foto de perfil</button>
+                            </form>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="imageSource" id="fileSource" value="file">
-                            <label class="form-check-label" for="fileSource">Local File</label>
-                        </div>
-                        <div id="urlInput" class="mb-3">
-                            <label for="imageUrl" class="form-label">Image URL</label>
-                            <input type="url" class="form-control" id="imageUrl" name="imageUrl">
-                            <button id="fetchImg" class="btn btn-info btn-green">Buscar imagen</button>
-                            <img class="preview" id="ver" alt="Preview" />
-                        </div>
-                        <div id="fileInput" class="mb-3" style="display: none;">
-                            <label for="imageFile" class="form-label">Upload Image</label>
-                            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
-                            <img class="preview" id="ver2" alt="Preview" />
-                        </div>
-                        
-                        <!-- Formulario subir imagen-->
-                        <form method="post" th:action="@{/user/__${user.id}__/pic}" enctype="multipart/form-data">
-                            <button id="postAvatar" class="btn btn-primary btn-green">Actualizar foto de perfil</button>
-                        </form>
                     </div>
                 </div>
-            </div>
+            </th:block>
+
+            <!-- Solicitar amistad-->
+            <th:block th:if="${user.id != u.id}">
+                <button id="friendReq" class="btn btn-primary btn-green">Solicitar amistad</button>
+            </th:block>
         </div>
     </main>
 

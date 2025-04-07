@@ -22,7 +22,13 @@
                 <!-- Botones -->
                 <div>
                     <a href="/events" class="btn btn-green btn-lg me-2">Explorar Eventos</a>
-                    <a href="/register" class="btn btn-outline-light btn-lg">Regístrate</a>
+                    <th:block th:if="${u}">
+                        <button id="search" class="btn btn-outline-light btn-lg">Buscar amigos</button>
+                        <input type="hidden" id="username" class="form-control"/>
+                    </th:block>
+                    <th:block th:unless="${u}">
+                        <a href="/register" class="btn btn-outline-light btn-lg">Regístrate</a>
+                    </th:block>
                 </div>
             </div>
         </section>
@@ -52,6 +58,7 @@
 
     <!-- Footer -->
     <th:block th:replace="~{fragments/footer.html :: footer}" />
+    <script th:src="@{/js/index.js}"></script>
 </body>
 
 </html>

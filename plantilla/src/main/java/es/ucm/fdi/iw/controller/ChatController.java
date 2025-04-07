@@ -3,11 +3,16 @@ package es.ucm.fdi.iw.controller;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import es.ucm.fdi.iw.model.*;
 
@@ -22,7 +27,57 @@ public class ChatController {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @PostMapping("/event/{eventId}")
+    @Transactional
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> sendEventMessage(
+            @PathVariable Long eventId,
+            @RequestBody Map<String, String> messageData,
+            HttpSession session) {
+
+        User user = (User) session.getAttribute("u");
+
+        System.out.println("Debug: Received message for event " + eventId);
+        System.out.println("Debug: Message content: " + messageData.get("content"));
+        System.out.println("Debug: User: " + user.getUsername());
+
+        try {
+            Event event = entityManager.find(Event.class, eventId);
+            if (event == null) {
+                System.out.println("Debug: Event not found: " + eventId);
+                return ResponseEntity.notFound().build();
+            }
+
+            Message message = new Message();
+            message.setSender(user);
+            message.setEvent(event);
+            message.setText(messageData.get("content"));
+            message.setDateSent(LocalDateTime.now());
+            message.setType(Message.MessageType.EVENT);
+
+            entityManager.persist(message);
+            entityManager.flush();
+
+            System.out.println("Debug: Message saved successfully with ID: " + message.getId());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("from", user.getUsername());
+            response.put("text", message.getText());
+            response.put("dateSent", message.getDateSent().toString());
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("Error saving message: ");
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+   
+    @PostMapping("/events/{eventId}")
     @Transactional
     @ResponseBody
     public ResponseEntity<Map<String, Object>> sendEventMessage(
@@ -30,36 +85,43 @@ public class ChatController {
             @RequestBody Map<String, String> messageData,
             @AuthenticationPrincipal User user) {
 
-        System.out.println("Recibido mensaje para evento: " + eventId);
-        System.out.println("Contenido: " + messageData.get("content"));
-        System.out.println("Usuario: " + user.getUsername());
-
-        Event event = entityManager.find(Event.class, eventId);
-        if (event == null) {
-            System.out.println("Evento no encontrado: " + eventId);
-            return ResponseEntity.notFound().build();
-        }
-
-        Message m = new Message();
-        m.setSender(user);
-        m.setEvent(event);
-        m.setText(messageData.get("content"));
-        m.setDateSent(LocalDateTime.now());
-        m.setType(Message.MessageType.EVENT);
+        System.out.println("Debug: Received message data: " + messageData);
 
         try {
-            entityManager.persist(m);
+            Event event = entityManager.find(Event.class, eventId);
+            if (event == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            String content = messageData.get("content");
+            if (content == null || content.trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Message message = new Message();
+            message.setSender(user);
+            message.setEvent(event);
+            message.setText(content);
+            message.setDateSent(LocalDateTime.now());
+            message.setType(Message.MessageType.EVENT);
+
+            entityManager.persist(message);
             entityManager.flush();
-            System.out.println("Mensaje guardado con ID: " + m.getId());
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("from", user.getUsername());
-            response.put("text", m.getText());
-            response.put("sent", m.getDateSent().toString());
+            response.put("text", message.getText());
+            response.put("dateSent", message.getDateSent().toString());
+
+            // Broadcast the message to all subscribers
+            simpMessagingTemplate.convertAndSend(
+                "/topic/events/" + eventId,
+                response
+            );
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            System.err.println("Error al guardar el mensaje: " + e.getMessage());
+            System.err.println("Error processing message: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
@@ -124,5 +186,62 @@ public class ChatController {
 
         entityManager.remove(message);
         return ResponseEntity.ok().build();
+    }
+
+    @MessageMapping("/test")
+    @SendTo("/topic/test")
+    public Map<String, Object> handleTestMessage(String message) {
+        System.out.println("Received test message: " + message);
+        try {
+            Map<String, Object> response = new HashMap<>();
+            response.put("timestamp", LocalDateTime.now().toString());
+            response.put("message", message);
+            response.put("status", "received");
+            
+            System.out.println("Sending response: " + response);
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return errorResponse;
+        }
+    }
+
+    @MessageMapping("/chat/{eventId}")
+    @SendTo("/topic/chat/{eventId}")
+    public Map<String, Object> handleChatMessage(@DestinationVariable Long eventId, 
+                                               @Payload Map<String, String> messageData,
+                                               @AuthenticationPrincipal User user) {
+        System.out.println("Received chat message for event " + eventId);
+        
+        try {
+            Event event = entityManager.find(Event.class, eventId);
+            if (event == null) {
+                throw new RuntimeException("Event not found");
+            }
+
+            Message message = new Message();
+            message.setSender(user);
+            message.setEvent(event);
+            message.setText(messageData.get("content"));
+            message.setDateSent(LocalDateTime.now());
+            message.setType(Message.MessageType.EVENT);
+
+            entityManager.persist(message);
+            entityManager.flush();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("from", user.getUsername());
+            response.put("text", message.getText());
+            response.put("dateSent", message.getDateSent().toString());
+            
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to process message: " + e.getMessage());
+            return errorResponse;
+        }
     }
 }

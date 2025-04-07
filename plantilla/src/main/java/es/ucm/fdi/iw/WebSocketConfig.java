@@ -20,12 +20,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("*");
+        registry.addEndpoint("/ws")
+               .withSockJS(); // Añade SockJS para mejor compatibilidad
         // allowedOrigins allows proxying; see https://stackoverflow.com/questions/33977803
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/queue");
+        config.setApplicationDestinationPrefixes("/app"); // Añade esta línea
     }
 }
