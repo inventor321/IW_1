@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,11 +65,18 @@ public class AdminController {
     @PostMapping("/toggle/{id}")
     @Transactional
     @ResponseBody
-    public String toggleUser(@PathVariable long id, Model model) {
-        System.err.println("saludos");
-        log.info("Admin cambia estado de " + id);
-        User target = entityManager.find(User.class, id);
-        target.setEnabled(!target.isEnabled());
-        return "{\"enabled\":" + target.isEnabled() + "}";
+    public ResponseEntity<String> toggleUser(@PathVariable long id, Model model) {
+        try {
+            log.info("Admin cambia estado de " + id);
+            User target = entityManager.find(User.class, id);
+            if (target == null) {
+                return ResponseEntity.badRequest().body("{\"error\": \"Usuario no encontrado\"}");
+            }
+            target.setEnabled(!target.isEnabled());
+            return ResponseEntity.ok("{\"enabled\":" + target.isEnabled() + "}");
+        } catch (Exception e) {
+            log.error("Error toggling user: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("{\"error\": \"Error al cambiar estado del usuario\"}");
+        }
     }
 }

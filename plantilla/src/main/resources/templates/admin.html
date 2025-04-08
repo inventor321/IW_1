@@ -5,6 +5,8 @@
     <th:block th:replace="~{fragments/head :: header}" />
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <title>Panel de Administración</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 
 <body class="d-flex flex-column h-100 bg-light">
@@ -65,18 +67,20 @@
                                               th:text="${role}">ROLE</span>
                                     </td>
                                     <td>
-                                        <span th:class="${user.enabled ? 'badge bg-success' : 'badge bg-danger'}"
-                                              th:text="${user.enabled ? 'Activo' : 'Inactivo'}">
+                                        <span class="status-badge badge"
+                                              th:classappend="${user.enabled ? 'bg-success' : 'bg-danger'}"
+                                              th:text="${user.enabled ? 'Activo' : 'Inactivo'}"
+                                              th:data-user-id="${user.id}">
                                             Estado
                                         </span>
                                     </td>
                                     <td>
                                         <form th:action="@{'/admin/toggle/' + ${user.id}}" 
                                               method="post" class="d-inline">
-                                            <button type="submit" 
-                                                    th:class="${user.enabled ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm'}"
-                                                    th:text="${user.enabled ? 'Deshabilitar' : 'Habilitar'}">
-                                                Toggle
+                                            <button th:data-user-id="${user.id}"
+                                                    class="btn toggle-user"
+                                                    th:classappend="${user.enabled ? 'btn-danger' : 'btn-success'}"
+                                                    th:text="${user.enabled ? 'Inhabilitar' : 'Habilitar'}">
                                             </button>
                                         </form>
                                         <a th:href="@{'/user/' + ${user.id}}" 

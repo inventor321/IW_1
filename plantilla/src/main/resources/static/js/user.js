@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    // Profile photo handling code
     const profilePhotoForm = document.getElementById('profilePhotoForm');
     const urlSource = document.getElementById('urlSource');
     const fileSource = document.getElementById('fileSource');
@@ -9,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewUrl = document.getElementById('ver');
     const previewFile = document.getElementById('ver2');
     const fetchImgBtn = document.getElementById('fetchImg');
-    const postAvatarBtn = document.getElementById('postAvatar');
 
     // Toggle input visibility
     urlSource?.addEventListener('change', () => {
@@ -22,45 +22,93 @@ document.addEventListener('DOMContentLoaded', function() {
         fileInput.style.display = 'block';
     });
 
-    // Preview URL image
-    fetchImgBtn.addEventListener('click', () => {
+    // Preview image handlers
+    fetchImgBtn?.addEventListener('click', () => {
         const url = imageUrlInput.value;
         if (url) {
             previewUrl.src = url;
         }
     });
 
-    // Preview file image
-    imageFileInput.addEventListener('change', function(e) {
+    imageFileInput?.addEventListener('change', function () {
         if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewFile.src = e.target.result;
-            };
-            reader.readAsDataURL(this.files[0]);
+            const file = this.files[0];
+            previewFile.src = URL.createObjectURL(file);
         }
     });
 
-    // Handle form submission
-    document.getElementById('profilePhotoForm').addEventListener('submit', async function(e) {
+    // User data update handling
+    const saveButton = document.getElementById('save');
+    if (saveButton) {
+        saveButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('username').getAttribute('data-user-id');
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+            
+            const userData = {
+                username: document.getElementById('username').value,
+                firstName: document.getElementById('fname').value,
+                email: document.getElementById('email').value,
+                phonenumber: document.getElementById('pnumber').value
+            };
+
+            fetch(`/user/${userId}/update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+                return response.text();
+            })
+            .then(result => {
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success position-fixed top-0 end-0 m-3';
+                alert.innerHTML = '<i class="bi bi-check-circle me-2"></i>Datos actualizados correctamente';
+                document.body.appendChild(alert);
+                setTimeout(() => alert.remove(), 3000);
+                setTimeout(() => location.reload(), 1500);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-danger position-fixed top-0 end-0 m-3';
+                alert.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i>${error.message}`;
+                document.body.appendChild(alert);
+                setTimeout(() => alert.remove(), 3000);
+            });
+        });
+    }
+
+    // Profile photo form submission
+    profilePhotoForm?.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         const formData = new FormData();
         const userId = document.getElementById('username').getAttribute('data-user-id');
         const imageSource = document.querySelector('input[name="imageSource"]:checked').value;
-        
+
         if (imageSource === 'url') {
             const imageUrl = document.getElementById('imageUrl').value;
             if (!imageUrl) {
                 alert('Por favor, introduce una URL válida');
                 return;
             }
-            
+
             try {
                 // Fetch the image from the URL first
                 const response = await fetch(imageUrl);
                 const blob = await response.blob();
-                
+
                 // Create a File object from the blob
                 const file = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
                 formData.append('photo', file);
@@ -89,92 +137,17 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: formData
         })
-        .then(response => {
-            if (!response.ok) throw new Error('Error al actualizar la imagen');
-            return response.text();
-        })
-        .then(() => {
-            alert('Foto de perfil actualizada correctamente');
-            location.reload();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert(error.message);
-        });
-    });
-
-    const saveButton = document.getElementById('save');
-    const usernameInput = document.getElementById('username');
-    const emailInput = document.getElementById('email');
-    const fnameInput = document.getElementById('fname');
-    const pnumberInput = document.getElementById('pnumber');
-    const userId = usernameInput.getAttribute('data-user-id');
-    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content || 
-                      document.querySelector('input[name="_csrf"]')?.value;
-
-    if (!csrfToken) {
-        console.error('CSRF token not found');
-        return;
-    }
-
-    saveButton.addEventListener('click', function() {
-        const userData = {
-            username: usernameInput.value,
-            email: emailInput.value,
-            fname: fnameInput.value,
-            pnumber: pnumberInput.value
-        };
-
-        fetch(`/user/${userId}/update`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify(userData)
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Datos actualizados correctamente');
+            .then(response => {
+                if (!response.ok) throw new Error('Error al actualizar la imagen');
+                return response.text();
+            })
+            .then(() => {
+                alert('Foto de perfil actualizada correctamente');
                 location.reload();
-            } else {
-                return response.text().then(text => {
-                    throw new Error(text || 'Error al actualizar los datos');
-                });
-            }
-        })
-        .catch(error => {
-            alert(error.message);
-            console.error('Error:', error);
-        });
-    });
-
-    // Preview URL image
-    document.querySelector("#fetchImg")?.addEventListener('click', () => {
-        const url = imageUrlInput.value;
-        if (url) {
-            previewUrl.src = url;
-        }
-    });
-
-    // Preview file image
-    imageFileInput?.addEventListener('change', function() {
-        if (this.files && this.files[0]) {
-            const file = this.files[0];
-            previewFile.src = URL.createObjectURL(file);
-        }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);
+            });
     });
 });
-
-document.querySelector("#fetchImg").onclick = e => {
-    let url = document.querySelector("#imageUrl").value;
-    console.log("fetching ", url);
-    readImageUrlData(url, document.querySelector("#ver"));
-};
-
-imageFile.onchange = e => {
-    const [file] = imageFile.files
-    if (file) {
-        ver2.src = URL.createObjectURL(file)
-    }
-}

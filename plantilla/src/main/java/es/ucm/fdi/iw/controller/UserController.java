@@ -2,6 +2,7 @@ package es.ucm.fdi.iw.controller;
 
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.Event;
+import es.ucm.fdi.iw.model.Friendship.FriendshipStatus;
 import es.ucm.fdi.iw.model.Message;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.User.Role;
@@ -79,16 +80,37 @@ public class UserController {
 	}
 
 	@GetMapping("/{id}")
-	public String index(@PathVariable long id, Model model, HttpSession session) {
-		User target = userRepository.findById(id).orElse(null);
-		model.addAttribute("user", target);
+	public String getUser(@PathVariable long id, Model model, HttpSession session) {
+		User currentUser = (User) session.getAttribute("u");
+		User targetUser = entityManager.find(User.class, id);
+
+		// Check if users are friends using JPQL
+		boolean areFriends = entityManager.createQuery(
+				"SELECT COUNT(f) > 0 FROM Friendship f " +
+						"WHERE ((f.user1.id = :currentUserId AND f.user2.id = :targetUserId) OR " +
+						"(f.user1.id = :targetUserId AND f.user2.id = :currentUserId)) " +
+						"AND f.status = :status",
+				Boolean.class)
+				.setParameter("currentUserId", currentUser.getId())
+				.setParameter("targetUserId", id)
+				.setParameter("status", FriendshipStatus.ACCEPTED)
+				.getSingleResult();
+
+		model.addAttribute("user", targetUser);
+		model.addAttribute("u", currentUser);
+		model.addAttribute("areFriends", areFriends);
+
+		log.info("Friendship status between {} and {}: {}",
+				currentUser.getUsername(), targetUser.getUsername(), areFriends);
+
 		return "user";
 	}
 
 	@PostMapping("/search")
 	@ResponseBody
 	public String search(@RequestParam String username, Model model, HttpSession session) {
-		User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 		model.addAttribute("user", user);
 		String ret = "redirect:/user/" + user.getId();
 		return ret;
@@ -123,117 +145,76 @@ public class UserController {
 	@ResponseBody
 	@Transactional
 	public ResponseEntity<String> postUserPic(
-	        @PathVariable long id, 
-	        @RequestParam("photo") MultipartFile photo,
-	        HttpSession session) {
-	    
-	    User target = entityManager.find(User.class, id);
-	    User requester = (User)session.getAttribute("u");
-	    
-		if (target == null || target.getId() != requester.getId()) {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-	            .body("No tienes permiso para modificar este usuario");
-	    }
+			@PathVariable long id,
+			@RequestParam("photo") MultipartFile photo,
+			HttpSession session) {
 
-	    try {
-	        File f = localData.getFile("user", id + ".jpg");
-	        try (BufferedOutputStream stream = 
-	                new BufferedOutputStream(new FileOutputStream(f))) {
-	            stream.write(photo.getBytes());
-	            target.setImageUrl("/user/" + id + "/pic");
-	            entityManager.persist(target);
-	            log.info("Successfully uploaded photo for user {}", id);
-	            return ResponseEntity.ok("Foto actualizada con éxito");
-	        }
-	    } catch (Exception e) {
-	        log.warn("Error uploading photo for user {}: {}", id, e);
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	            .body("Error al subir la foto: " + e.getMessage());
-	    }
+		User target = entityManager.find(User.class, id);
+		User requester = (User) session.getAttribute("u");
+
+		if (target == null || target.getId() != requester.getId()) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body("No tienes permiso para modificar este usuario");
+		}
+
+		try {
+			File f = localData.getFile("user", id + ".jpg");
+			try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f))) {
+				stream.write(photo.getBytes());
+				target.setImageUrl("/user/" + id + "/pic");
+				entityManager.persist(target);
+				log.info("Successfully uploaded photo for user {}", id);
+				return ResponseEntity.ok("Foto actualizada con éxito");
+			}
+		} catch (Exception e) {
+			log.warn("Error uploading photo for user {}: {}", id, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error al subir la foto: " + e.getMessage());
+		}
 	}
 
 	@PostMapping("/{id}/update")
 	@ResponseBody
 	@Transactional
 	public ResponseEntity<String> updateUser(
-			@PathVariable long id, 
+			@PathVariable long id,
 			@RequestBody UserUpdateDTO updateData,
 			HttpSession session) {
-		
-		User requester = (User)session.getAttribute("u");
-		User target = entityManager.find(User.class, id);
-		
-		// Check if user exists and requester has permission
-		if (target == null || target.getId() != requester.getId()) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permiso para actualizar este usuario");
-		}
 
 		try {
-			// Check if username is already taken by another user
-			Long existingCount = entityManager.createQuery(
-				"SELECT COUNT(u) FROM User u WHERE u.username = :username AND u.id != :userId", 
-				Long.class)
-				.setParameter("username", updateData.getUsername())
-				.setParameter("userId", id)
-				.getSingleResult();
+			User requester = (User) session.getAttribute("u");
+			User target = entityManager.find(User.class, id);
 
-			if (existingCount > 0) {
-				return ResponseEntity.badRequest().body("El nombre de usuario ya está en uso");
+			if (target == null || target.getId() != requester.getId()) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN)
+						.body("No tienes permiso para modificar este usuario");
 			}
 
-			// Update user data
 			target.setUsername(updateData.getUsername());
+			target.setFirstName(updateData.getFirstName());
 			target.setEmail(updateData.getEmail());
-			target.setFirstName(updateData.getFname());
-			target.setPhonenumber(updateData.getPnumber());
+			target.setPhonenumber(updateData.getPhonenumber());
+
+			entityManager.merge(target);
 			entityManager.flush();
+
+			// Update session
+			session.setAttribute("u", target);
 
 			return ResponseEntity.ok("Usuario actualizado correctamente");
 		} catch (Exception e) {
 			log.error("Error updating user: {}", e.getMessage(), e);
-			return ResponseEntity.internalServerError().body("Error al actualizar el usuario");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error al actualizar el usuario: " + e.getMessage());
 		}
 	}
 
-	// DTO class for user updates
 	@Data
-	private static class UserUpdateDTO {
+	public static class UserUpdateDTO {
 		private String username;
+		private String firstName;
 		private String email;
-		private String fname;
-		private String pnumber;
-
-		public String getUsername() {
-			return username;
-		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
-		public void setEmail(String email) {
-			this.email = email;
-		}
-
-		public String getFname() {
-			return fname;
-		}
-
-		public void setFname(String fname) {
-			this.fname = fname;
-		}
-
-		public String getPnumber() {
-			return pnumber;
-		}
-
-		public void setPnumber(String pnumber) {
-			this.pnumber = pnumber;
-		}
+		private String phonenumber;
 	}
 
 }

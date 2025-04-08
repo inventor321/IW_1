@@ -1,6 +1,7 @@
 body {
     background-color: #e8f5e9;
 }
+
 .profile-container {
     max-width: 800px;
     margin: auto;
@@ -36,6 +37,8 @@ body {
     width: 100%;
     margin-top: 10px;
     transition: all 0.3s ease;
+    padding: 10px 20px;
+    border-radius: 25px;
 }
 
 .btn-green2 {
@@ -50,7 +53,7 @@ body {
 
 .btn-green:hover {
     transform: translateY(-2px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 #urlInput, #fileInput {
@@ -64,6 +67,32 @@ body {
     margin-right: 15px;
 }
 
-.btn-green {
-    margin-top: 10px;
+.btn i {
+    margin-right: 8px;
+}
+
+.profile-avatar {
+    max-width: 600px;
+    max-height: 600px;
+}
+
+.friend-status {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.friend-status .badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background-color: #28a745 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.friend-status .badge i {
+    font-size: 1rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
