@@ -119,36 +119,37 @@ public class UserController {
 		return os -> FileCopyUtils.copy(in, os);
 	}
 
-	@PostMapping("{id}/pic")
+	@PostMapping("/{id}/pic")
 	@ResponseBody
-	public String setPic(@RequestParam("photo") MultipartFile photo, @PathVariable long id,
-			HttpServletResponse response, HttpSession session, Model model) throws IOException {
+	@Transactional
+	public ResponseEntity<String> postUserPic(
+	        @PathVariable long id, 
+	        @RequestParam("photo") MultipartFile photo,
+	        HttpSession session) {
+	    
+	    User target = entityManager.find(User.class, id);
+	    User requester = (User)session.getAttribute("u");
+	    
+		if (target == null || target.getId() != requester.getId()) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+	            .body("No tienes permiso para modificar este usuario");
+	    }
 
-		User target = entityManager.find(User.class, id);
-		model.addAttribute("user", target);
-
-		// check permissions
-		User requester = (User) session.getAttribute("u");
-		if (requester.getId() != target.getId() &&
-				!requester.hasRole(Role.ADMIN)) {
-			throw new NoEsTuPerfilException();
-		}
-
-		log.info("Updating photo for user {}", id);
-		File f = localData.getFile("user", "" + id + ".jpg");
-		if (photo.isEmpty()) {
-			log.info("failed to upload photo: empty file?");
-		} else {
-			try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f))) {
-				byte[] bytes = photo.getBytes();
-				stream.write(bytes);
-				log.info("Uploaded photo for {} into {}!", id, f.getAbsolutePath());
-			} catch (Exception e) {
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				log.warn("Error uploading " + id + " ", e);
-			}
-		}
-		return "{\"status\":\"photo uploaded correctly\"}";
+	    try {
+	        File f = localData.getFile("user", id + ".jpg");
+	        try (BufferedOutputStream stream = 
+	                new BufferedOutputStream(new FileOutputStream(f))) {
+	            stream.write(photo.getBytes());
+	            target.setImageUrl("/user/" + id + "/pic");
+	            entityManager.persist(target);
+	            log.info("Successfully uploaded photo for user {}", id);
+	            return ResponseEntity.ok("Foto actualizada con éxito");
+	        }
+	    } catch (Exception e) {
+	        log.warn("Error uploading photo for user {}: {}", id, e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	            .body("Error al subir la foto: " + e.getMessage());
+	    }
 	}
 
 	@PostMapping("/{id}/update")

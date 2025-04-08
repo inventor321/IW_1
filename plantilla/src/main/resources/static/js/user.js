@@ -42,34 +42,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Handle form submission
-    profilePhotoForm?.addEventListener('submit', function(e) {
+    document.getElementById('profilePhotoForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const formData = new FormData(this);
+        const formData = new FormData();
         const userId = document.getElementById('username').getAttribute('data-user-id');
-
-        // Remove any existing file or url
-        formData.delete('photo');
+        const imageSource = document.querySelector('input[name="imageSource"]:checked').value;
         
-        // Add the correct photo data
-        if (urlSource.checked) {
-            formData.append('photo', imageUrlInput.value);
-            formData.append('isUrl', 'true');
-        } else {
-            if (imageFileInput.files.length > 0) {
-                formData.append('photo', imageFileInput.files[0]);
-                formData.append('isUrl', 'false');
-            } else {
-                alert('Por favor, selecciona una imagen');
+        if (imageSource === 'url') {
+            const imageUrl = document.getElementById('imageUrl').value;
+            if (!imageUrl) {
+                alert('Por favor, introduce una URL válida');
                 return;
             }
+            
+            try {
+                // Fetch the image from the URL first
+                const response = await fetch(imageUrl);
+                const blob = await response.blob();
+                
+                // Create a File object from the blob
+                const file = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
+                formData.append('photo', file);
+                formData.append('imageSource', 'file');
+            } catch (error) {
+                console.error('Error fetching image:', error);
+                alert('Error al obtener la imagen desde la URL');
+                return;
+            }
+        } else {
+            const fileInput = document.getElementById('imageFile');
+            if (!fileInput.files.length) {
+                alert('Por favor, selecciona un archivo');
+                return;
+            }
+            formData.append('photo', fileInput.files[0]);
+            formData.append('imageSource', 'file');
         }
 
-        const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
-        if (!csrfToken) {
-            console.error('CSRF token not found');
-            return;
-        }
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
 
         fetch(`/user/${userId}/pic`, {
             method: 'POST',
@@ -78,23 +89,13 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: formData
         })
-        .then(response => response.text())
-        .then(text => {
-            try {
-                const data = JSON.parse(text);
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                alert('Foto de perfil actualizada correctamente');
-                location.reload();
-            } catch (e) {
-                if (text.includes('success')) {
-                    alert('Foto de perfil actualizada correctamente');
-                    location.reload();
-                } else {
-                    throw new Error(text || 'Error al actualizar la imagen');
-                }
-            }
+        .then(response => {
+            if (!response.ok) throw new Error('Error al actualizar la imagen');
+            return response.text();
+        })
+        .then(() => {
+            alert('Foto de perfil actualizada correctamente');
+            location.reload();
         })
         .catch(error => {
             console.error('Error:', error);

@@ -21,29 +21,27 @@
             
             <!-- Datos usuario -->
             <th:block th:switch="${user.id}">
+                <!-- Vista para tu propio perfil (editable) -->
                 <div th:case="${u.id}" class="mt-4 mb-4">
-                    <h4>Datos de Usuario</h4>
-                    <label for="username">Nombre de usuario</label>
-                    <input id="username" class="form-control" th:value="${user.username}" th:data-user-id="${user.id}" />
-                    <label for="fname">Nombre Completo</label>
+                    <!-- ...campos editables... -->
+                    <input id="username" class="form-control" th:value="${user.username}" />
                     <input id="fname" class="form-control" th:value="${user.firstName}" />
-                    <label for="email">Correo electrónico</label>
                     <input id="email" class="form-control" th:value="${user.email}" />
-                    <label for="pnumber">Numero de telefono</label>
                     <input id="pnumber" class="form-control" th:value="${user.phonenumber}" />
-                    <button id="save" class="btn btn-success btn-green mt-3">
-                        <i class="bi bi-check-circle"></i> Guardar Información
-                    </button>
                 </div>
+
+                <!-- Vista para perfil de otros usuarios (solo lectura) -->
                 <div th:case="*" class="mt-4 mb-4">
-                    <h4>Datos de Usuario</h4>
-                    <label for="username">Nombre de usuario</label>
+                    <div class="text-center mb-3">
+                        <img th:src="@{/user/{id}/pic(id=${user.id})}" 
+                             class="profile-avatar"
+                             alt="Profile avatar"
+                             onerror="this.src='/img/default-avatar.png';">
+                    </div>
+                    <!-- ...campos de solo lectura... -->
                     <p id="username" class="form-control" th:text="${user.username}">Sample</p>
-                    <label for="fname">Nombre Completo</label>
                     <p id="fname" class="form-control" th:text="${user.firstName}">Sample</p>
-                    <label for="email">Correo electrónico</label>
                     <p id="email" class="form-control" th:text="${user.email}">Sample</p>
-                    <label for="pnumber">Numero de telefono</label>
                     <p id="pnumber" class="form-control" th:text="${user.phonenumber}">Sample</p>
                 </div>
             </th:block>
