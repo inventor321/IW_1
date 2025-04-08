@@ -107,10 +107,8 @@ public class UserController {
 	}
 
 	@PostMapping("/search")
-	@ResponseBody
-	public String search(@RequestParam String username, Model model, HttpSession session) {
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+	public String search(@RequestParam(value="username") String username, Model model, HttpSession session) {
+		User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found " + username));
 		model.addAttribute("user", user);
 		String ret = "redirect:/user/" + user.getId();
 		return ret;

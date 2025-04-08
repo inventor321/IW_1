@@ -24,8 +24,8 @@
                     <a href="/events" class="btn btn-green btn-lg me-2">Explorar Eventos</a>
                     <th:block th:if="${u}">
                         <button id="search" class="btn btn-outline-light btn-lg">Buscar amigos</button>
-                        <form th:action="@{/user/search}" method="post" id="enterusername" class="searchform" style="display: none;">
-                            <input type="text" id="username" class="form-control-search"/>
+                        <form action="#" method="post" th:action="@{/user/search}" id="enterusername" class="searchform" style="display: none;">
+                            <input type="text" th:name="username" id="username" class="form-control-search"/>
                             <button type="submit" class="lupa">
                                 <img th:src="@{/img/search.png}" src="/img/search.png" alt="icon" width="32" height="32"/>
                             </button>
