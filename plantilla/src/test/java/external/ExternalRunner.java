@@ -1,6 +1,7 @@
 package external;
 
 import com.intuit.karate.junit5.Karate;
+import com.intuit.karate.*;
 
 class ExternalRunner {
     
@@ -13,4 +14,10 @@ class ExternalRunner {
     Karate testWs() {
         return Karate.run("ws").relativeTo(getClass());
     }  
+
+    @Karate.Test
+    Karate testEvent() {
+        return Karate.run("event").relativeTo(getClass());
+        
+    }
 }

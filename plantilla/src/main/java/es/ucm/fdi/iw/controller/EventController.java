@@ -39,8 +39,6 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-
 @Controller
 @RequestMapping("/events")
 public class EventController {
@@ -52,10 +50,8 @@ public class EventController {
         }
     }
 
-
     @Autowired
     private LocalData localData;
-
 
     @Autowired
     private EventRepository eventRepository;
@@ -96,8 +92,7 @@ public class EventController {
 
             if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
                 File f = localData.getFile("event", event.getId() + ".jpg");
-                try (BufferedOutputStream stream = 
-                        new BufferedOutputStream(new FileOutputStream(f))) {
+                try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f))) {
                     stream.write(imageFile.getBytes());
                     event.setImage("/event/" + event.getId() + ".jpg");
                 }
@@ -114,7 +109,6 @@ public class EventController {
             return "redirect:/login";
         }
     }
-
 
     @GetMapping("/{id}")
     public String getEvent(@PathVariable Long id, Model model, Authentication authentication, HttpSession session) {
