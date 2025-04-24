@@ -74,11 +74,16 @@
             <!-- Lista participantes-->
             <div class="participants">
                 <h5>Lista de Participantes</h5>
-                <!-- Lista participantes -->
                 <ul class="list-group">
-                    <a th:each="participant : ${participants}" th:href="@{/user/{id}(id=${participant.id})}"
-                        class="list-group-item list-group-item-action" th:attr="data-id=${participant.id}"
-                        th:text="${participant.username}">
+                    <a th:each="participant : ${participants}" 
+                       th:href="@{/user/{id}(id=${participant.id})}"
+                       class="list-group-item list-group-item-action d-flex align-items-center" 
+                       th:attr="data-id=${participant.id}">
+                        <img th:src="@{/user/{id}/pic(id=${participant.id})}" 
+                             class="participant-avatar me-2" 
+                             alt="Avatar"
+                             onerror="this.src='/img/default-avatar.png';">
+                        <span th:text="${participant.username}">Username</span>
                     </a>
                 </ul>
             </div>
