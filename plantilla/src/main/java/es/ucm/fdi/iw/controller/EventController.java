@@ -3,6 +3,7 @@ package es.ucm.fdi.iw.controller;
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.controller.UserController.NoEsTuPerfilException;
 import es.ucm.fdi.iw.model.Event;
+import es.ucm.fdi.iw.model.Event.Category;
 import es.ucm.fdi.iw.repository.EventRepository;
 import es.ucm.fdi.iw.repository.ParticipationRepository;
 import es.ucm.fdi.iw.model.User;
@@ -13,6 +14,7 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.parser.Part;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -34,10 +36,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/events")
@@ -60,10 +61,40 @@ public class EventController {
     private EntityManager entityManager;
 
     @GetMapping
-    public String listEvents(Model model) {
-        List<Event> events = eventRepository.findAll();
+    public String listEvents(Model model,
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false, defaultValue = "name") String criteria,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        List<Event> events;
+        query = null;
+
+        /*if (query != null && !query.isEmpty()) {
+            switch (criteria) {
+                case "name":
+                    events = eventRepository.findByNameContainingIgnoreCase(query);
+                    break;
+                case "category":
+                    events = eventRepository.findByCategoryContainingIgnoreCase(query);
+                    break;
+                case "date":
+                    {
+                        events = eventRepository.findAll();
+                    }
+                    break;
+                case "location":
+                    events = eventRepository.findByLocationContainingIgnoreCase(query);
+                    break;
+                default:
+                    events = eventRepository.findAll();
+            }
+        } else*/ {
+            events = eventRepository.findAllByActiveTrueOrderByDateAsc();
+        }
+
         model.addAttribute("events", events);
-        return "events";
+        return "events"; // Renderiza la pagina de eventos
     }
 
     @GetMapping("/create")
@@ -82,12 +113,15 @@ public class EventController {
             @RequestParam String imageSource,
             @RequestParam(required = false) String imageUrl,
             @RequestParam(required = false) MultipartFile imageFile,
+            @RequestParam String category,
             HttpSession session,
             RedirectAttributes ra) {
         try {
             User u = (User) session.getAttribute("u");
 
-            Event event = new Event(name, description, date, location, null, u.getId());
+            Category cat = Category.valueOf(category);
+
+            Event event = new Event(name, description, date, location, null, u.getId(), cat);
             eventRepository.save(event);
 
             if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
@@ -196,25 +230,25 @@ public class EventController {
         return "redirect:/events/" + id;
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/disable/{id}")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
-    public String deleteEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
+    @Transactional
+    public String disableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
         try {
-
+            User user = (User) session.getAttribute("u");
             Event event = eventRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-            User user = (User) session.getAttribute("u");
             if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
-                eventRepository.delete(event);
-                ra.addFlashAttribute("message", "Event deleted successfully");
+                eventRepository.disableEventById(id); // Llama al método personalizado
+                ra.addFlashAttribute("message", "Event disabled successfully");
             } else {
-                ra.addFlashAttribute("error", "You don't have permission to delete this event");
+                ra.addFlashAttribute("error", "You don't have permission to disable this event");
             }
 
             return "redirect:/events";
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error deleting event: " + e.getMessage());
+            ra.addFlashAttribute("error", "Error disabling event: " + e.getMessage());
             return "redirect:/";
         }
     }

@@ -37,6 +37,21 @@
                             <input type="text" class="form-control" id="eventLocation" name="location" required>
                         </div>
                         <div class="mb-3">
+                            <label for="eventCategory" class="form-label">Categoría</label>
+                            <select id="eventCategory" name="category" class="form-control" required>
+                                <option value="" disabled selected>Selecciona una categoría</option>
+                                <option value="CULTURA_Y_ARTE">Cultura y Arte</option>
+                                <option value="MUSICA_Y_ESPECTACULOS">Música y Espectáculos</option>
+                                <option value="OCIO_Y_VIDA_NOCTURNA">Ocio y Vida Nocturna</option>
+                                <option value="NATURALEZA_Y_AIRE_LIBRE">Naturaleza y Aire Libre</option>
+                                <option value="GASTRONOMIA">Gastronomía</option>
+                                <option value="BIENESTAR_Y_DESARROLLO_PERSONAL">Bienestar y Desarrollo Personal</option>
+                                <option value="JUEGOS_Y_ENTRETENIMIENTO">Juegos y Entretenimiento</option>
+                                <option value="DEPORTES_Y_ACTIVIDADES_FISICAS">Deportes y Actividades Físicas</option>
+                                <option value="NETWORKING_Y_PROFESIONALES">Networking y Profesionales</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Image Source</label>
                             <div class="mb-2">
                                 <div class="form-check form-check-inline">
@@ -74,17 +89,6 @@
 </body>
 
 <script>
-    function toLocalISOString(date) {
-        const localDate = new Date(date - date.getTimezoneOffset() * 60000);
-        localDate.setSeconds(null);
-        localDate.setMilliseconds(null);
-        return localDate.toISOString().slice(0, -1);
-    }
-
-    window.addEventListener("load", () => {
-        document.getElementById("eventDate").value = toLocalISOString(new Date());
-    });
-
     document.addEventListener('DOMContentLoaded', function() {
         const urlSource = document.getElementById('urlSource');
         const fileSource = document.getElementById('fileSource');

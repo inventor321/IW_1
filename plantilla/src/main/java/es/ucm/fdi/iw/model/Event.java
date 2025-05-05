@@ -24,20 +24,47 @@ public class Event {
 
     private Long org;
 
+    @Enumerated(EnumType.STRING) // Almacena el nombre de la categoría como texto
+    private Category category;
+
+    private boolean active = true; // Por defecto, los eventos están habilitados
+
     public Event() {
     }
 
-    public Event(String name, String description, LocalDateTime date, String location, String imageUrl, Long org) {
+    public Event(String name, String description, LocalDateTime date, String location, String imageUrl, Long org,
+            Category category) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.location = location;
         this.imageUrl = imageUrl;
         this.org = org;
+        this.category = category;
+        this.active = true; // Por defecto, el evento está habilitado
     }
 
     public void setImage(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public enum Category {
+        CULTURA_Y_ARTE,
+        MUSICA_Y_ESPECTACULOS,
+        OCIO_Y_VIDA_NOCTURNA,
+        NATURALEZA_Y_AIRE_LIBRE,
+        GASTRONOMIA,
+        BIENESTAR_Y_DESARROLLO_PERSONAL,
+        JUEGOS_Y_ENTRETENIMIENTO,
+        DEPORTES_Y_ACTIVIDADES_FISICAS,
+        NETWORKING_Y_PROFESIONALES
+    }
 }

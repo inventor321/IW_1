@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import es.ucm.fdi.iw.model.EventService;
 import es.ucm.fdi.iw.model.Event;
 
 import es.ucm.fdi.iw.model.User;
