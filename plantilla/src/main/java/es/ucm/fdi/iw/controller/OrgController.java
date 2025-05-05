@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +16,11 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import es.ucm.fdi.iw.model.Event;
+import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.repository.EventRepository;
 import es.ucm.fdi.iw.repository.ParticipationRepository;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +55,7 @@ public class OrgController {
         log.info("Org acaba de entrar");
 
         // Obtener todos los eventos activos
-        List<Event> events = eventRepository.findAllByActiveTrueOrderByDateAsc();
+        List<Event> events = eventRepository.findAll();
 
         // Añadir la cantidad de participantes a cada evento
         Map<Long, Long> participantCounts = new HashMap<>();
@@ -65,6 +68,49 @@ public class OrgController {
         model.addAttribute("events", events);
         model.addAttribute("participantCounts", participantCounts);
         return "org";
+    }
+
+    @PostMapping("/events/{id}/disable")
+    @PreAuthorize("hasRole('ORG')")
+    @Transactional
+    public String disableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
+        try {
+            User user = (User) session.getAttribute("u");
+            Event event = eventRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+            if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
+                eventRepository.disableEventById(id); // Llama al método personalizado
+                ra.addFlashAttribute("message", "Event disabled successfully");
+            } else {
+                ra.addFlashAttribute("error", "You don't have permission to disable this event");
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al deshabilitar el evento: " + e.getMessage());
+        }
+
+        return "redirect:/org/";
+    }
+
+    @PostMapping("/events/{id}/enable")
+    @PreAuthorize("hasRole('ORG')")
+    @Transactional
+    public String enableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
+        try {
+            User user = (User) session.getAttribute("u");
+            Event event = eventRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+            if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
+                eventRepository.enableEventById(id); // Llama al método personalizado
+                ra.addFlashAttribute("message", "Event enabled successfully");
+            } else {
+                ra.addFlashAttribute("error", "You don't have permission to enable this event");
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al habilitar el evento: " + e.getMessage());
+        }
+        return "redirect:/org/";
     }
 
 }

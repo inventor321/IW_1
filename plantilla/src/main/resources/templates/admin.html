@@ -107,6 +107,7 @@
                                     <th>Nombre</th>
                                     <th>Fecha</th>
                                     <th>Participantes</th>
+                                    <th>Categoría</th> <!-- Nueva columna -->
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -120,28 +121,32 @@
                                         <span th:text="${event.name}">Título del Evento</span>
                                     </td>
                                     <td th:text="${#temporals.format(event.date, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
-                                    <td>0</td><!-- <td th:text="${event?.participants?.size() ?: 0}">0</td>  -->
+                                    <td th:text="${participantCounts[event.id]}">0</td> <!-- Muestra la cantidad de participantes -->
+                                    <td th:text="${event.category}">Categoría</td> <!-- Nueva columna -->
                                     <td>
-                                        Estado
-                                        <!-- <span th:class="${event.active ? 'badge bg-success' : 'badge bg-danger'}"
-                                              th:text="${event.active ? 'Activo' : 'Finalizado'}">
-                                            
-                                        </span> -->
+                                        <span th:class="${event.active ? 'badge bg-success' : 'badge bg-danger'}"
+                                              th:text="${event.active ? 'Activo' : 'Inactivo'}">
+                                        </span>
                                     </td>
                                     <td>
                                         <a th:href="@{'/events/' + ${event.id}}" class="btn btn-info btn-sm">
                                             <i class="bi bi-eye"></i> Ver
                                         </a>
-                                        <!-- Only show edit/delete for ADMIN or matching ORG -->
-                                        <th:block th:if="${#authorization.expression('hasRole(''ADMIN'')') || (event.org == session.u.id)}">
-                                            <a th:href="@{'/events/' + ${event.id} + '/edit'}" class="btn btn-warning btn-sm">
-                                                <i class="bi bi-pencil"></i> Editar
-                                            </a>
-                                            <form th:action="@{'/events/' + ${event.id} + '/delete'}" 
-                                                  method="post" class="d-inline">
+                                        <!-- Botón para deshabilitar -->
+                                        <th:block th:if="${event.active}">
+                                            <form th:action="@{/admin/events/{id}/disable(id=${event.id})}" method="post" class="d-inline">
                                                 <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('¿Estás seguro de eliminar este evento?')">
-                                                    <i class="bi bi-trash"></i> Eliminar
+                                                        onclick="return confirm('¿Estás seguro de que quieres deshabilitar este evento?')">
+                                                    <i class="bi bi-x-circle"></i> Deshabilitar
+                                                </button>
+                                            </form>
+                                        </th:block>
+                                        <!-- Botón para habilitar -->
+                                        <th:block th:if="${!event.active}">
+                                            <form th:action="@{/admin/events/{id}/enable(id=${event.id})}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-success btn-sm"
+                                                        onclick="return confirm('¿Estás seguro de que quieres habilitar este evento?')">
+                                                    <i class="bi bi-check-circle"></i> Habilitar
                                                 </button>
                                             </form>
                                         </th:block>

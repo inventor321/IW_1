@@ -235,7 +235,7 @@ public class EventController {
         return "redirect:/events/" + id;
     }
 
-    @GetMapping("/{id}/disable")
+    @PostMapping("/{id}/disable")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     @Transactional
     public String disableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
@@ -251,35 +251,38 @@ public class EventController {
                 ra.addFlashAttribute("error", "You don't have permission to disable this event");
             }
 
-            return "redirect:/org/";
+            return "redirect:/events";
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error disabling event: " + e.getMessage());
             return "redirect:/";
         }
     }
 
-    @PostMapping("/{id}/delete")
-    @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
-    public String deleteEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
-        try {
 
+    @PostMapping("/{id}/enable")
+    @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
+    @Transactional
+    public String enableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
+        try {
+            User user = (User) session.getAttribute("u");
             Event event = eventRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-            User user = (User) session.getAttribute("u");
             if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
-                eventRepository.delete(event);
-                ra.addFlashAttribute("message", "Event deleted successfully");
+                event.setActive(true); // Habilita el evento
+                eventRepository.save(event);
+                ra.addFlashAttribute("message", "Event enabled successfully");
             } else {
-                ra.addFlashAttribute("error", "You don't have permission to delete this event");
+                ra.addFlashAttribute("error", "You don't have permission to enable this event");
             }
 
-            return "redirect:/org/";
+            return "redirect:/events";
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error deleting event: " + e.getMessage());
+            ra.addFlashAttribute("error", "Error enabling event: " + e.getMessage());
             return "redirect:/";
         }
     }
+
 
     @GetMapping("/{id}/edit")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
