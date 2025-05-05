@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
       initialView: 'timeGridWeek',
       nowIndicator: true,
       headerToolbar: {
-        left: 'prev, next, hoy',
+        left: 'prev, next, today',
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
       },
@@ -66,13 +66,10 @@ document.addEventListener('DOMContentLoaded', function() {
         {
           title: 'Click for Google',
           url: 'http://google.com/',
-          start: '2023-01-28'
+          start: '2025-05-05'
         }
       ]
     };
-
-    var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), calendarOptions);
-    calendar.render();
 
     var calendar2 = new FullCalendar.Calendar(document.getElementById('calendar2'), calendarOptions);
     calendar2.render();

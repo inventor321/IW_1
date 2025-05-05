@@ -23,17 +23,6 @@
             <th:block th:switch="${user.id}">
                 <!-- Vista para tu propio perfil (editable) -->
                 <div th:case="${u.id}" class="mt-4 mb-4">
-                    <button class='modal-trigger'>Calendario</button>
-                    <div class='modal'>
-                        <div class='modal-overlay'>
-                        </div>
-                        <div class='modal-wrapper'>
-                            <div class='modal-content'>
-                                <div id='calendar2'>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     Username
                     <input id="username" class="form-control" 
                            th:value="${user.username}" 
@@ -71,6 +60,21 @@
                     <p id="email" class="form-control" th:text="${user.email}">Sample</p>
                     Número de teléfono
                     <p id="pnumber" class="form-control" th:text="${user.phonenumber}">Sample</p>
+                </div>
+            </th:block>
+         
+            <!-- Calendario de eventos-->
+            <th:block th:if="${user.id == u.id}">
+                <button class='modal-trigger'>Calendario</button>
+                <div class='modal'>
+                    <div class='modal-overlay'>
+                    </div>
+                    <div class='modal-wrapper'>
+                        <div class='modal-content'>
+                            <div id='calendar2'>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </th:block>
 
