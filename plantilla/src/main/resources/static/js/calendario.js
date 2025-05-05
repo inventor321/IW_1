@@ -13,15 +13,19 @@ document.addEventListener('DOMContentLoaded', function() {
       selectable: true,
       selectMirror: true,
       dayMaxEvents: true, // allow "more" link when too many events
+      titleFormat: '',
       events: [
       ]
     };
 
     var calendar2 = new FullCalendar.Calendar(document.getElementById('calendar2'), calendarOptions);
-    calendar2.addEvent({
-      title: 'Second Event',
-      start: '2025-05-08T12:30:00'
-    })
+    for(i = 0; i < lEventosJS.length; i++){
+      calendar2.addEvent({
+        title: lEventosJS[i].name,
+        start: lEventosJS[i].date,
+        url: '/events/' + lEventosJS[i].id
+      });
+    }
     calendar2.render();
 
     /*

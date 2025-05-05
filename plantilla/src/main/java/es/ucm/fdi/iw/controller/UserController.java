@@ -102,6 +102,12 @@ public class UserController {
 
 		log.info("Friendship status between {} and {}: {}",
 				currentUser.getUsername(), targetUser.getUsername(), areFriends);
+		
+		List<Event> lEventos = entityManager
+				.createQuery("SELECT p.event FROM Participation p WHERE p.user = :user AND p.enabled = true",
+						Event.class)
+				.setParameter("user", targetUser).getResultList();
+		model.addAttribute("lEventos", lEventos);
 
 		return "user";
 	}
