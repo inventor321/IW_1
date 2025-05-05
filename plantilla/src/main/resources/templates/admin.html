@@ -92,6 +92,66 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Events Management -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Gestión de Eventos</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Fecha</th>
+                                    <th>Participantes</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="event : ${events}">
+                                    <td th:text="${event.id}">1</td>
+                                    <td>
+                                        <img th:if="${event.imageUrl}" th:src="${event.imageUrl}" 
+                                             class="event-thumb me-2" alt="Event">
+                                        <span th:text="${event.name}">Título del Evento</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(event.date, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                                    <td>0</td><!-- <td th:text="${event?.participants?.size() ?: 0}">0</td>  -->
+                                    <td>
+                                        Estado
+                                        <!-- <span th:class="${event.active ? 'badge bg-success' : 'badge bg-danger'}"
+                                              th:text="${event.active ? 'Activo' : 'Finalizado'}">
+                                            
+                                        </span> -->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{'/events/' + ${event.id}}" class="btn btn-info btn-sm">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                        <!-- Only show edit/delete for ADMIN or matching ORG -->
+                                        <th:block th:if="${#authorization.expression('hasRole(''ADMIN'')') || (event.org == session.u.id)}">
+                                            <a th:href="@{'/events/' + ${event.id} + '/edit'}" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-pencil"></i> Editar
+                                            </a>
+                                            <form th:action="@{'/events/' + ${event.id} + '/delete'}" 
+                                                  method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('¿Estás seguro de eliminar este evento?')">
+                                                    <i class="bi bi-trash"></i> Eliminar
+                                                </button>
+                                            </form>
+                                        </th:block>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 

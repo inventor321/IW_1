@@ -12,6 +12,13 @@
     object-fit: cover;
 }
 
+.event-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
 .table {
     margin-bottom: 0;
 }
@@ -35,4 +42,28 @@
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
     margin: 0 2px;
+}
+
+.table th {
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.85em;
+    padding: 0.5em 0.75em;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
 }

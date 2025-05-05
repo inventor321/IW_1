@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import es.ucm.fdi.iw.model.EventService;
-import es.ucm.fdi.iw.model.Event;
-
 import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.repository.EventRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -37,6 +35,9 @@ public class AdminController {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @ModelAttribute
     public void populateModel(HttpSession session, Model model) {
@@ -55,6 +56,7 @@ public class AdminController {
                 .createQuery("SELECT u FROM User u", User.class)
                 .getResultList();
             model.addAttribute("users", users);
+            model.addAttribute("events", eventRepository.findAll());
             return "admin"; // This should match exactly with the template name (without .html)
         } catch (Exception e) {
             log.error("Error loading users: " + e.getMessage());

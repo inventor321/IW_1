@@ -36,8 +36,6 @@ import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/events")
@@ -196,7 +194,7 @@ public class EventController {
         return "redirect:/events/" + id;
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/{id}/delete")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     public String deleteEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
         try {
@@ -216,6 +214,73 @@ public class EventController {
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error deleting event: " + e.getMessage());
             return "redirect:/";
+        }
+    }
+
+    @GetMapping("/{id}/edit")
+    @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
+    public String editEvent(Model model, @PathVariable Long id, HttpSession session, RedirectAttributes ra) {
+
+        User u = (User) session.getAttribute("u");
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        if (u.hasRole(User.Role.ORG) && !event.getOrg().equals(u.getId())) {
+            ra.addFlashAttribute("error", "You don't have permission to edit this event");
+            return "redirect:/events/" + id;
+        }
+        
+        model.addAttribute("event", event);
+        return "create-event";
+    }
+
+    @PostMapping("/{id}/update")
+    @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
+    @Transactional
+    public String updateEvent(@PathVariable Long id,
+                            @RequestParam String name,
+                            @RequestParam String description,
+                            @RequestParam LocalDateTime date,
+                            @RequestParam String location,
+                            @RequestParam String imageSource,
+                            @RequestParam(required = false) String imageUrl,
+                            @RequestParam(required = false) MultipartFile imageFile,
+                            HttpSession session,
+                            RedirectAttributes ra) {
+        try {
+            User u = (User) session.getAttribute("u");
+            Event event = eventRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+            // Verify permissions
+            if (u.hasRole(User.Role.ORG) && !event.getOrg().equals(u.getId())) {
+                ra.addFlashAttribute("error", "You don't have permission to edit this event");
+                return "redirect:/events/" + id;
+            }
+
+            // Update event details
+            event.setName(name);
+            event.setDescription(description);
+            event.setDate(date);
+            event.setLocation(location);
+
+            // Handle image update
+            if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
+                File f = localData.getFile("event", event.getId() + ".jpg");
+                try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f))) {
+                    stream.write(imageFile.getBytes());
+                    event.setImage("/event/" + event.getId() + ".jpg");
+                }
+            } else if ("url".equals(imageSource) && imageUrl != null && !imageUrl.isEmpty()) {
+                event.setImage(imageUrl);
+            }
+
+            eventRepository.save(event);
+            ra.addFlashAttribute("message", "Event updated successfully!");
+            return "redirect:/events/" + event.getId();
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error updating event: " + e.getMessage());
+            return "redirect:/events/" + id;
         }
     }
 }

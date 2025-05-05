@@ -21,7 +21,7 @@
 
                 <!-- Formulario delete-->               
                 <form th:if="${#authorization.expression('hasAnyRole(''ORG'', ''ADMIN'')')}"
-                    th:action="@{/events/delete/(${event.id})}" method="post"
+                    th:action="@{/events/(${event.id})/delete}" method="post"
                     class="position-absolute top-0 end-0 px-5">
                     <!-- Delete button-->
                     <button type="submit" class="btn btn-outline-danger bg-white hover-danger"
@@ -51,11 +51,11 @@
 
                 <!-- Edit button -->
                 <div class="text-center">
-                    <button
-                        th:href="@{${#authorization.expression('hasRole(''ORG'')')} ? '/org/event/edit/' + ${event.id} : '/user/event/' + ${event.id}}"
-                        th:if="${#authorization.expression('hasRole(''ORG'')')}" class="custom-btn w-21 mb-0">
+                    <a th:href="@{'/events/' + ${event.id} + '/edit'}" 
+                       th:if="${#authorization.expression('hasRole(''ORG'')')}" 
+                       class="custom-btn w-21 mb-0 text-decoration-none">
                         EDITAR EVENTO
-                    </button>
+                    </a>
                 </div>
 
             </div>

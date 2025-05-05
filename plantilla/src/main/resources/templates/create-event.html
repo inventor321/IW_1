@@ -16,25 +16,24 @@
             <!-- Event Creation Form -->
             <div class="card mt-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Create New Event</h5>
+                    <h5 class="mb-0" th:text="${event.id != null ? 'Edit Event' : 'Create New Event'}">Create New Event</h5>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/events/created}" method="post" enctype="multipart/form-data">
+                    <form th:action="@{${event.id != null ? '/events/' + event.id + '/update' : '/events/created'}}" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="eventName" class="form-label">Event Name</label>
-                            <input type="text" class="form-control" id="eventName" name="name" required>
-                        </div>
+                            <input type="text" class="form-control" id="eventName" name="name" required th:value="${event?.name}">                        </div>
                         <div class="mb-3">
                             <label for="eventDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="eventDescription" name="description" rows="3" required></textarea>
+                            <textarea class="form-control" id="eventDescription" name="description" rows="3" required th:text="${event.description}"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="eventDate" class="form-label">Date</label>
-                            <input type="datetime-local" class="form-control" id="eventDate" name="date" required>
+                            <input type="datetime-local" class="form-control" id="eventDate" name="date" required th:value="${event != null ? #temporals.format(event.date, 'yyyy-MM-dd''T''HH:mm') : ''}">
                         </div>
                         <div class="mb-3">
                             <label for="eventLocation" class="form-label">Location</label>
-                            <input type="text" class="form-control" id="eventLocation" name="location" required>
+                            <input type="text" class="form-control" id="eventLocation" name="location" required th:value="${event?.location}">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Image Source</label>
@@ -63,7 +62,10 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Create Event</button>
+                        <button type="submit" class="btn btn-primary" 
+                                th:text="${event.id != null ? 'Update Event' : 'Create Event'}">
+                            Create Event
+                        </button>
                     </form>
                 </div>
             </div>
