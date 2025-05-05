@@ -27,4 +27,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Modifying
     @Query("UPDATE Event e SET e.active = false WHERE e.id = :id")
     void disableEventById(@Param("id") Long id);
+
+    @Query("SELECT e FROM Event e WHERE e.org = :orgId")
+    List<Event> findAllByOrg(@Param("orgId") long orgId);
 }

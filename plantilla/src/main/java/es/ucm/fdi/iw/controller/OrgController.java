@@ -16,7 +16,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.repository.EventRepository;
+import es.ucm.fdi.iw.repository.ParticipationRepository;
 import jakarta.servlet.http.HttpSession;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Site administration.
@@ -30,6 +35,9 @@ public class OrgController {
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private ParticipationRepository participationRepository;
+
     @ModelAttribute
     public void populateModel(HttpSession session, Model model) {
         for (String name : new String[] { "u", "url", "ws" }) {
@@ -42,7 +50,20 @@ public class OrgController {
     @GetMapping("/")
     public String index(Model model) {
         log.info("Org acaba de entrar");
-        model.addAttribute("events", eventRepository.findAllByActiveTrueOrderByDateAsc());
+
+        // Obtener todos los eventos activos
+        List<Event> events = eventRepository.findAllByActiveTrueOrderByDateAsc();
+
+        // Añadir la cantidad de participantes a cada evento
+        Map<Long, Long> participantCounts = new HashMap<>();
+        for (Event event : events) {
+            long count = participationRepository.countByEventId(event.getId());
+            participantCounts.put(event.getId(), count);
+            log.info("Event ID: {}, Participant Count: {}", event.getId(), count);
+        }
+
+        model.addAttribute("events", events);
+        model.addAttribute("participantCounts", participantCounts);
         return "org";
     }
 

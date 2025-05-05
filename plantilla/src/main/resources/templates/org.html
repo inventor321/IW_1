@@ -47,6 +47,7 @@
                                     <th>Nombre</th>
                                     <th>Fecha</th>
                                     <th>Participantes</th>
+                                    <th>Categoría</th> <!-- Nueva columna -->
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -60,30 +61,17 @@
                                         <span th:text="${event.name}">Título del Evento</span>
                                     </td>
                                     <td th:text="${#temporals.format(event.date, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
-                                    <td>0</td><!-- <td th:text="${event?.participants?.size() ?: 0}">0</td>  -->
+                                    <td th:text="${participantCounts[event.id]}">0</td> <!-- Muestra la cantidad de participantes -->
+                                    <td th:text="${event.category}">Categoría</td> <!-- Nueva columna -->
                                     <td>
                                         <span th:class="${event.active ? 'badge bg-success' : 'badge bg-danger'}"
                                               th:text="${event.active ? 'Activo' : 'Finalizado'}">
-                                            
                                         </span>
                                     </td>
                                     <td>
                                         <a th:href="@{'/events/' + ${event.id}}" class="btn btn-info btn-sm">
                                             <i class="bi bi-eye"></i> Ver
                                         </a>
-                                        <!-- Only show edit/delete for ADMIN or matching ORG -->
-                                        <th:block th:if="${#authorization.expression('hasRole(''ADMIN'')') || (event.org == session.u.id)}">
-                                            <a th:href="@{'/events/' + ${event.id} + '/edit'}" class="btn btn-warning btn-sm">
-                                                <i class="bi bi-pencil"></i> Editar
-                                            </a>
-                                            <form th:action="@{'/events/' + ${event.id} + '/disable'}" 
-                                                  method="get" class="d-inline">
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('¿Estás seguro de eliminar este evento?')">
-                                                    <i class="bi bi-trash"></i> Eliminar
-                                                </button>
-                                            </form>
-                                        </th:block>
                                     </td>
                                 </tr>
                             </tbody>

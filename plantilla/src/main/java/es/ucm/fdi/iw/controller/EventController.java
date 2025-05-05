@@ -39,6 +39,8 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/events")
@@ -59,6 +61,9 @@ public class EventController {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private ParticipationRepository participationRepository;
 
     @GetMapping
     public String listEvents(Model model,
@@ -344,4 +349,6 @@ public class EventController {
             return "redirect:/events/" + id;
         }
     }
+
+
 }
