@@ -42,7 +42,7 @@ public class OrgController {
     @GetMapping("/")
     public String index(Model model) {
         log.info("Org acaba de entrar");
-        model.addAttribute("events", eventRepository.findAll());
+        model.addAttribute("events", eventRepository.findAllByActiveTrueOrderByDateAsc());
         return "org";
     }
 

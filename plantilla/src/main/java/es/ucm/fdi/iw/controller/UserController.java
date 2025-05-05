@@ -103,12 +103,19 @@ public class UserController {
 		log.info("Friendship status between {} and {}: {}",
 				currentUser.getUsername(), targetUser.getUsername(), areFriends);
 
+		List<Event> lEventos = entityManager
+				.createQuery("SELECT p.event FROM Participation p WHERE p.user = :user AND p.enabled = true",
+						Event.class)
+				.setParameter("user", targetUser).getResultList();
+		model.addAttribute("lEventos", lEventos);
+
 		return "user";
 	}
 
 	@PostMapping("/search")
-	public String search(@RequestParam(value="username") String username, Model model, HttpSession session) {
-		User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found " + username));
+	public String search(@RequestParam(value = "username") String username, Model model, HttpSession session) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found " + username));
 		model.addAttribute("user", user);
 		String ret = "redirect:/user/" + user.getId();
 		return ret;

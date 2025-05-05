@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.repository.EventRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
@@ -56,7 +53,7 @@ public class AdminController {
                 .createQuery("SELECT u FROM User u", User.class)
                 .getResultList();
             model.addAttribute("users", users);
-            model.addAttribute("events", eventRepository.findAll());
+            model.addAttribute("events", eventRepository.findAllByActiveTrueOrderByDateAsc());
             return "admin"; // This should match exactly with the template name (without .html)
         } catch (Exception e) {
             log.error("Error loading users: " + e.getMessage());

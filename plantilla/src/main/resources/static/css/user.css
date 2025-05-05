@@ -2,6 +2,10 @@ body {
     background-color: #e8f5e9;
 }
 
+h4{
+    padding-top: 20px;
+}
+
 .profile-container {
     max-width: 800px;
     margin: auto;
@@ -97,6 +101,21 @@ body {
     margin: 0 auto;
   }
 
+  .modal-trigger{
+    background-color: #448147;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+    border-radius: 25px;
+}
+
+.modal-trigger:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 .modal {
     display: none;
     position: absolute;
@@ -125,8 +144,8 @@ body {
     position: absolute;
     z-index: 9999;
     top: 6em;
-    left: 50%;
-    width: 600px;
+    left: 43%;
+    width: 700px;
     margin-left: -16em;
     background-color: #fff;
     box-shadow: 0 0 1.5em hsla(0, 0%, 0%, 0.35);

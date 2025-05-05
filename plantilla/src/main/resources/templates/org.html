@@ -62,11 +62,10 @@
                                     <td th:text="${#temporals.format(event.date, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
                                     <td>0</td><!-- <td th:text="${event?.participants?.size() ?: 0}">0</td>  -->
                                     <td>
-                                        Estado
-                                        <!-- <span th:class="${event.active ? 'badge bg-success' : 'badge bg-danger'}"
+                                        <span th:class="${event.active ? 'badge bg-success' : 'badge bg-danger'}"
                                               th:text="${event.active ? 'Activo' : 'Finalizado'}">
                                             
-                                        </span> -->
+                                        </span>
                                     </td>
                                     <td>
                                         <a th:href="@{'/events/' + ${event.id}}" class="btn btn-info btn-sm">
@@ -77,8 +76,8 @@
                                             <a th:href="@{'/events/' + ${event.id} + '/edit'}" class="btn btn-warning btn-sm">
                                                 <i class="bi bi-pencil"></i> Editar
                                             </a>
-                                            <form th:action="@{'/events/' + ${event.id} + '/delete'}" 
-                                                  method="post" class="d-inline">
+                                            <form th:action="@{'/events/' + ${event.id} + '/disable'}" 
+                                                  method="get" class="d-inline">
                                                 <button type="submit" class="btn btn-danger btn-sm"
                                                         onclick="return confirm('¿Estás seguro de eliminar este evento?')">
                                                     <i class="bi bi-trash"></i> Eliminar
