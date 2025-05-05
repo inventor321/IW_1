@@ -154,6 +154,9 @@
     </main>
 
     <th:block th:replace="~{fragments/footer.html :: footer}" />
+    <script th:inline="javascript">
+        var lEventosJS = /*[[${lEventos}]]*/ "Test";
+    </script>
     <script th:src="@{/js/user.js}"></script>
     <script th:src="@{/js/index.global.js}"></script>
     <script th:src="@{/js/calendario.js}"></script>
