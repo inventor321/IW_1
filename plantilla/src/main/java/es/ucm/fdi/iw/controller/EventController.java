@@ -68,33 +68,49 @@ public class EventController {
     @GetMapping
     public String listEvents(Model model,
             @RequestParam(required = false) String query,
-            @RequestParam(required = false, defaultValue = "name") String criteria,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam(required = false, defaultValue = "name") String criteria) {
 
-        List<Event> events;
-        query = null;
+        List<Event> events = null;
 
-        /*if (query != null && !query.isEmpty()) {
+        if (query != null) {
+
             switch (criteria) {
                 case "name":
-                    events = eventRepository.findByNameContainingIgnoreCase(query);
+                    events = eventRepository.findByActiveTrueAndNameContainingIgnoreCase(query);
                     break;
                 case "category":
-                    events = eventRepository.findByCategoryContainingIgnoreCase(query);
+                    // events =
+                    // eventRepository.findByActiveTrueAndCategoryContainingIgnoreCase(query);
                     break;
-                case "date":
-                    {
-                        events = eventRepository.findAll();
-                    }
+                case "default":
+                    events = eventRepository.findAllByActiveTrueOrderByDateAsc();
                     break;
-                case "location":
-                    events = eventRepository.findByLocationContainingIgnoreCase(query);
-                    break;
-                default:
-                    events = eventRepository.findAll();
             }
-        } else*/ {
+
+        } else {
+
+            /*
+             * if (query != null && !query.isEmpty()) {
+             * switch (criteria) {
+             * case "name":
+             * events = eventRepository.findByNameContainingIgnoreCase(query);
+             * break;
+             * case "category":
+             * events = eventRepository.findByCategoryContainingIgnoreCase(query);
+             * break;
+             * case "date":
+             * {
+             * events = eventRepository.findAll();
+             * }
+             * break;
+             * case "location":
+             * events = eventRepository.findByLocationContainingIgnoreCase(query);
+             * break;
+             * default:
+             * events = eventRepository.findAll();
+             * }
+             * } else
+             */
             events = eventRepository.findAllByActiveTrueOrderByDateAsc();
         }
 
@@ -114,11 +130,13 @@ public class EventController {
     public String created(@RequestParam String name,
             @RequestParam String description,
             @RequestParam LocalDateTime date,
+            @RequestParam LocalDateTime ending,
             @RequestParam String location,
             @RequestParam String imageSource,
             @RequestParam(required = false) String imageUrl,
             @RequestParam(required = false) MultipartFile imageFile,
             @RequestParam String category,
+            @RequestParam Integer aforo,
             HttpSession session,
             RedirectAttributes ra) {
         try {
@@ -126,7 +144,7 @@ public class EventController {
 
             Category cat = Category.valueOf(category);
 
-            Event event = new Event(name, description, date, location, null, u.getId(), cat);
+            Event event = new Event(name, description, date, ending, location, null, u.getId(), aforo, cat);
             eventRepository.save(event);
 
             if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
@@ -258,7 +276,6 @@ public class EventController {
         }
     }
 
-
     @PostMapping("/{id}/enable")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     @Transactional
@@ -283,7 +300,6 @@ public class EventController {
         }
     }
 
-
     @GetMapping("/{id}/edit")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     public String editEvent(Model model, @PathVariable Long id, HttpSession session, RedirectAttributes ra) {
@@ -296,7 +312,7 @@ public class EventController {
             ra.addFlashAttribute("error", "You don't have permission to edit this event");
             return "redirect:/events/" + id;
         }
-        
+
         model.addAttribute("event", event);
         return "create-event";
     }
@@ -305,16 +321,18 @@ public class EventController {
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     @Transactional
     public String updateEvent(@PathVariable Long id,
-                            @RequestParam String name,
-                            @RequestParam String description,
-                            @RequestParam LocalDateTime date,
-                            @RequestParam String location,
-                            @RequestParam String imageSource,
-                            @RequestParam String category,
-                            @RequestParam(required = false) String imageUrl,
-                            @RequestParam(required = false) MultipartFile imageFile,
-                            HttpSession session,
-                            RedirectAttributes ra) {
+            @RequestParam String name,
+            @RequestParam String description,
+            @RequestParam LocalDateTime date,
+            @RequestParam LocalDateTime end,
+            @RequestParam String location,
+            @RequestParam String imageSource,
+            @RequestParam String category,
+            @RequestParam Integer aforo,
+            @RequestParam(required = false) String imageUrl,
+            @RequestParam(required = false) MultipartFile imageFile,
+            HttpSession session,
+            RedirectAttributes ra) {
         try {
             User u = (User) session.getAttribute("u");
             Event event = eventRepository.findById(id)
@@ -330,8 +348,10 @@ public class EventController {
             event.setName(name);
             event.setDescription(description);
             event.setDate(date);
+            event.setEnding(end);
             event.setLocation(location);
             event.setCategory(Category.valueOf(category));
+            event.setAforo(aforo);
 
             // Handle image update
             if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
@@ -352,6 +372,5 @@ public class EventController {
             return "redirect:/events/" + id;
         }
     }
-
 
 }
