@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Exchange Connect - Footer</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="css/styles.css">
+</head>
+
+<body>
+    <footer th:fragment="footer" class="footer mt-auto py-3" style="background-color: rgba(0, 128, 0, 0.5); color: white;">
+        <div class="container text-center">
+            <span>Forma parte de nuestra comunidad en <strong>Exchange Connect</strong>. Encuentra y únete a eventos para socializar.</span>
+            <div class="mt-2">
+                <a href="#" class="text-white me-3">Términos y Condiciones</a>
+                <a href="#" class="text-white me-3">Política de Privacidad</a>
+                <a href="#" class="text-white">Contacto</a>
+            </div>
+            <div class="mt-3">
+                <a href="https://github.com/inventor321/IW_1/tree/main" class="text-white">Código abierto en GitHub</a>
+            </div>
+        </div>
+        
+        <!-- Bootstrap -->
+        <script th:src="@{/js/bootstrap.bundle-5.3.3.js}" src="js/bootstrap.bundle-5.3.3.js"></script>
+
+        <!-- Websockets -->
+        <script th:src="@{/js/stomp.js}" src="js/stomp.js"></script>
+        <script th:src="@{/js/iw.js}" src="js/iw.js"></script>
+    </footer>
+</body>
+
+</html>

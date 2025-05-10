@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Cabecera -->
+<head>
+    <th:block th:replace="~{fragments/head :: header}" />
+    <title>Inicio de sesión</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+
+<!-- Cuerpo -->
+<body class="d-flex flex-column h-100">
+    <!-- Navbar -->
+    <header th:replace="~{fragments/nav.html :: nav}"></header>
+
+    <main class="flex-shrink-0 d-flex justify-content-center align-items-center">
+        <div class="login-container">
+            <h2 class="text-center text-success">Inicia sesión</h2>
+
+            <!-- Formulario login-->
+            <form class="form-signin" method="post" th:action="@{/login}">
+                <p th:if="${loginError != false}" class="text-danger text-center">
+                    Error en nombre de usuario o contraseña. Inténtalo otra vez.
+                </p>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Usuario</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="" required>
+                </div>
+                <!-- Boton iniciar sesion -->
+                <button class="btn btn-green w-100" type="submit">Iniciar sesión</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <th:block th:replace="~{fragments/footer.html :: footer}" />
+</body>
+
+</html>
