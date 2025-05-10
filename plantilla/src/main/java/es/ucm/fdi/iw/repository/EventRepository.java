@@ -15,26 +15,15 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long> {
     // Ordena todos los eventos por fecha en orden ascendente
     List<Event> findAll();
-
     List<Event> findAllByOrderByDateAsc();
-
     List<Event> findByCategory(Event.Category category);
-
     List<Event> findByDate(LocalDateTime date);
-
     List<Event> findByNameContaining(String name);
-
-    List<Event> findByNameContainingIgnoreCase(String name);
-
-    List<Event> findByActiveTrueAndNameContainingIgnoreCase(String name);
-
-    // List<Event> findByActiveTrueAndCategoryContainingIgnoreCase(String query);
-
     List<Event> findAllByActiveTrueOrderByDateAsc(); // Busca solo eventos habilitados y los ordena por fecha
-
-    // List<Event> findByLocationContainingIgnoreCase(String query);
-
-    // List<Event> findByCategoryContainingIgnoreCase(String query);
+    /*List<Event> findByNameContainingIgnoreCase(String query);
+    List<Event> findByLocationContainingIgnoreCase(String query);
+    List<Event> findByCategoryContainingIgnoreCase(String query);
+    */
 
     @Modifying
     @Query("UPDATE Event e SET e.active = false WHERE e.id = :id")
@@ -46,5 +35,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE e.org = :orgId")
     List<Event> findAllByOrg(@Param("orgId") long orgId);
-
 }

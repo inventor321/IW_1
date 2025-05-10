@@ -13,10 +13,6 @@ body {
     background-color: rgba(0, 128, 0, 0.5);
 }
 
-.form-control{
-    margin-bottom: 10px;
-}
-
 .btn {
     padding: 10px 15px;
     background-color: rgba(0, 128, 0, 0.5);
@@ -25,7 +21,6 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-bottom: 10px;
 }
 
 .btn-green {

@@ -55,11 +55,9 @@ public class AdminController {
 
     private static final Logger log = LogManager.getLogger(AdminController.class);
 
-    @GetMapping("/")
-    public String index(Model model, HttpSession session) {
+    @GetMapping("/")  // Changed from "" to "/"
+    public String index(Model model) {
         log.info("Admin acaba de entrar");
-        User currentUser = (User) session.getAttribute("u");
-        model.addAttribute("u", currentUser);
         try {
             // Obtener todos los eventos activos
             List<Event> events = eventRepository.findAll();
@@ -73,8 +71,8 @@ public class AdminController {
             }
 
             List<User> users = entityManager
-                    .createQuery("SELECT u FROM User u", User.class)
-                    .getResultList();
+                .createQuery("SELECT u FROM User u", User.class)
+                .getResultList();
             model.addAttribute("users", users);
             model.addAttribute("events", events);
             model.addAttribute("participantCounts", participantCounts);

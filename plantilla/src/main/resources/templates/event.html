@@ -41,8 +41,6 @@
                 <!-- Event info-->
                 <h1 class="display-4" th:text="${event.name}">Nombre del Evento</h1>
                 <p class="lead" th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">Fecha del Evento</p>
-                <p class="lead">hasta</p>
-                <p class="lead" th:text="${#temporals.format(event.ending, 'dd MMMM yyyy HH:mm')}">Fecha del Evento</p>
                 <p class="lead" th:text="${event.location}">Ubicación del Evento</p>
 
                 <!-- Participate button-->

@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
       calendar2.addEvent({
         title: lEventosJS[i].name,
         start: lEventosJS[i].date,
-        end: lEventosJS[i].ending,
         url: '/events/' + lEventosJS[i].id
       });
     }

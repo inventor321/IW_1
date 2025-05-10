@@ -51,10 +51,8 @@ public class OrgController {
     private static final Logger log = LogManager.getLogger(OrgController.class);
 
     @GetMapping("/")
-    public String index(Model model, HttpSession session) {
+    public String index(Model model) {
         log.info("Org acaba de entrar");
-        User currentUser = (User) session.getAttribute("u");
-        model.addAttribute("u", currentUser);
 
         // Obtener todos los eventos activos
         List<Event> events = eventRepository.findAll();
