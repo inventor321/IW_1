@@ -19,24 +19,26 @@
         <section class="hero">
             <div class="container-fluid position-relative px-5">
 
-                <!-- Botón para activar o deshabilitar -->
-                <form th:if="${event.active && #authorization.expression('hasAnyRole(''ORG'', ''ADMIN'')')}"
-                    th:action="@{/events/{id}/disable(id=${event.id})}" method="post"
+                <!-- Formulario delete-->               
+                <form th:if="${#authorization.expression('hasAnyRole(''ORG'', ''ADMIN'')')}"
+                    th:action="@{/events/(${event.id})/disable}" method="post"
                     class="position-absolute top-0 end-0 px-5">
+                    <!-- Delete button-->
                     <button type="submit" class="btn btn-outline-danger bg-white hover-danger"
-                        onclick="return confirm('¿Estás seguro de que quieres deshabilitar este evento?')">
+                        onclick="return confirm('¿Estás seguro de que quieres eliminar este evento?')">
                         <img th:src="@{/img/delete.png}" src="/img/delete.png" alt="delete" width="32" height="32" />
                     </button>
                 </form>
 
-                <form th:if="${!event.active && #authorization.expression('hasAnyRole(''ORG'', ''ADMIN'')')}"
+
+                <!-- <form th:if="${!event.active && #authorization.expression('hasAnyRole(''ORG'', ''ADMIN'')')}"
                     th:action="@{/events/{id}/enable(id=${event.id})}" method="post"
                     class="position-absolute top-0 end-0 px-5">
                     <button type="submit" class="btn btn-outline-success bg-white hover-success"
                         onclick="return confirm('¿Estás seguro de que quieres habilitar este evento?')">
                         <img th:src="@{/img/enable.png}" src="/img/enable.png" alt="enable" width="32" height="32" />
                     </button>
-                </form>
+                </form> -->
 
                 <!-- Event info-->
                 <h1 class="display-4" th:text="${event.name}">Nombre del Evento</h1>
@@ -62,7 +64,7 @@
                     <a th:href="@{'/events/' + ${event.id} + '/edit'}" 
                        th:if="${#authorization.expression('hasAnyRole(''ORG'', ''ADMIN'')')}" 
                        class="custom-btn w-21 mb-0 text-decoration-none">
-                        Editar Evento
+                        EDITAR EVENTO
                     </a>
                 </div>
 

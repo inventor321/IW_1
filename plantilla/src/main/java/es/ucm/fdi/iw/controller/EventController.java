@@ -1,11 +1,9 @@
 package es.ucm.fdi.iw.controller;
 
 import es.ucm.fdi.iw.LocalData;
-import es.ucm.fdi.iw.controller.UserController.NoEsTuPerfilException;
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.model.Event.Category;
 import es.ucm.fdi.iw.repository.EventRepository;
-import es.ucm.fdi.iw.repository.ParticipationRepository;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.Participation;
 import jakarta.persistence.EntityManager;
@@ -13,34 +11,25 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.parser.Part;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+
 
 @Controller
 @RequestMapping("/events")
@@ -61,9 +50,6 @@ public class EventController {
 
     @Autowired
     private EntityManager entityManager;
-
-    @Autowired
-    private ParticipationRepository participationRepository;
 
     @GetMapping
     public String listEvents(Model model,
@@ -291,7 +277,7 @@ public class EventController {
         User u = (User) session.getAttribute("u");
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
-
+        
         if (u.hasRole(User.Role.ORG) && !event.getOrg().equals(u.getId())) {
             ra.addFlashAttribute("error", "You don't have permission to edit this event");
             return "redirect:/events/" + id;
