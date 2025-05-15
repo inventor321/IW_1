@@ -30,3 +30,43 @@ body {
 .btn-green:hover {
     background-color: #1b5e20;
 }
+
+.chat-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+
+.message-sent {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.message-received {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.message-sent span, .message-received span {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background-color: #007bff;
+    color: white;
+}
+
+.message-received span {
+    background-color: #e9ecef;
+    color: black;
+}
+
+.list-group-item-warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5em 0.75em;
+}

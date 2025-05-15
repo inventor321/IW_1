@@ -61,12 +61,13 @@
                             </li>
                             <li class="nav-item align-self-center me-4">
                                 <!-- Chat button -->
-                                <a th:href="@{${#authorization.expression('hasRole(''ADMIN'')')} ? '/admin/chat' : '/user/chat'}" 
-                                   class="text-decoration-none">
+                                <a th:href="@{/chat/conversations}" class="text-decoration-none">
                                     <button type="button" class="btn btn-outline-primary btn-sm position-relative">
-                                        ✉️ <span id="nav-unread" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
-                                            +99 
-                                            <span class="visually-hidden">unread messages</span>
+                                        ✉️ 
+                                        <span id="nav-unread" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary"
+                                              th:if="${unreadCount > 0}" 
+                                              th:text="${unreadCount}">
+                                            0
                                         </span>
                                     </button>
                                 </a>

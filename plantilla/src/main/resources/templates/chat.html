@@ -14,32 +14,36 @@
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
     <main class="flex-shrink-0 container mt-4">
-        <div class="hero">
-            <h1>Chat con Usuarios</h1>
-        </div>
-
-        <div class="mt-4">
-            <label for="searchUser" class="form-label">Buscar usuario</label>
-            <input type="text" id="searchUser" class="form-control" placeholder="Ingrese el nombre del usuario">
-            <ul id="userList" class="list-group mt-2"></ul>
-        </div>
-
-        <div class="mt-4 border rounded p-3 bg-white">
-            <h4>Chat</h4>
-            <div id="chatBox" class="border p-3" style="height: 300px; overflow-y: auto; background-color: #fff;"></div>
-            <div class="mt-3">
-                <input type="text" id="message" class="form-control" placeholder="Escribe tu mensaje...">
-                <!-- Send button-->
-                <button id="sendMsg" class="btn btn-green mt-2">Enviar</button>
+        <div class="card">
+            <div class="card-header">
+                <h5>Chat con <span th:text="${chatPartnerName}">Usuario</span></h5>
+            </div>
+            <div class="card-body chat-container">
+                <!-- Mensajes -->
+                <div id="chatBox" class="border p-3" style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
+                    <div th:each="message : ${messages}">
+                        <div th:class="${message.sender.id == currentUserId ? 'message-sent' : 'message-received'}">
+                            <strong th:text="${message.sender.username}">Sender</strong>:
+                            <span th:text="${message.text}">Message content</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <!-- Formulario para enviar mensajes -->
+                <form th:action="@{/chat/send}" method="post">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="message" placeholder="Escribe tu mensaje..." required>
+                        <input type="hidden" name="receiverId" th:value="${chatPartnerId}">
+                        <button class="btn btn-primary" type="submit">Enviar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
     <th:block th:replace="~{fragments/footer.html :: footer}" />
-    
-    <!-- Script -->
-    <script src="/js/chat.js"></script>
 </body>
 
 </html>

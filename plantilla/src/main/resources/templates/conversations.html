@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="h-100">
+<head>
+    <title>Mis Conversaciones</title>
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+</head>
+<body class="d-flex flex-column h-100">
+    <!-- Navbar -->
+    <header th:replace="~{fragments/nav.html :: nav}"></header>
+
+    <main class="flex-shrink-0 container mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Mis Conversaciones</h5>
+            </div>
+            <div class="card-body chat-container">
+                <!-- Lista de conversaciones -->
+                <div class="list-group">
+                    <div th:each="conversation : ${conversations}">
+                        <a th:href="@{'/chat/' + ${conversation[0].id}}" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                           th:classappend="${conversation[1] > 0 ? 'list-group-item-warning' : ''}">
+                            <span>
+                                <strong th:text="${conversation[0].username}">Usuario</strong>
+                            </span>
+                            <span th:if="${conversation[1] > 0}" 
+                                  class="badge bg-danger rounded-pill" 
+                                  th:text="${conversation[1]}">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer th:replace="~{fragments/footer.html :: footer}"></footer>
+</body>
+</html>

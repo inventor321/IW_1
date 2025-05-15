@@ -13,8 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.ui.Model;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import es.ucm.fdi.iw.model.*;
+import es.ucm.fdi.iw.repository.MessageRepository;
+import es.ucm.fdi.iw.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -22,226 +27,79 @@ import java.util.HashMap;
 import java.util.List;
 
 @Controller
+@RequestMapping("/chat")
 public class ChatController {
 
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
+
+    @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    @PostMapping("/event/{eventId}")
+    @GetMapping("/{partnerId}")
     @Transactional
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> sendEventMessage(
-            @PathVariable Long eventId,
-            @RequestBody Map<String, String> messageData,
-            HttpSession session) {
+    public String chat(@PathVariable Long partnerId, Model model, HttpSession session) {
+        User currentUser = (User) session.getAttribute("u");
+        User chatPartner = userRepository.findById(partnerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        User user = (User) session.getAttribute("u");
+        // Actualizar dateRead de los mensajes recibidos por el usuario actual
+        List<Message> unreadMessages = messageRepository.findUnreadMessages(currentUser.getId(), partnerId);
+        unreadMessages.forEach(message -> message.setDateRead(LocalDateTime.now()));
+        messageRepository.saveAll(unreadMessages);
 
-        System.out.println("Debug: Received message for event " + eventId);
-        System.out.println("Debug: Message content: " + messageData.get("content"));
-        System.out.println("Debug: User: " + user.getUsername());
+        // Obtener todos los mensajes entre los dos usuarios
+        List<Message> messages = messageRepository.findChatMessages(currentUser.getId(), partnerId);
 
-        try {
-            Event event = entityManager.find(Event.class, eventId);
-            if (event == null) {
-                System.out.println("Debug: Event not found: " + eventId);
-                return ResponseEntity.notFound().build();
-            }
+        // Pasar datos al modelo
+        model.addAttribute("chatPartnerName", chatPartner.getUsername());
+        model.addAttribute("chatPartnerId", chatPartner.getId());
+        model.addAttribute("currentUserId", currentUser.getId());
+        model.addAttribute("messages", messages);
 
-            Message message = new Message();
-            message.setSender(user);
-            message.setEvent(event);
-            message.setText(messageData.get("content"));
-            message.setDateSent(LocalDateTime.now());
-            message.setType(Message.MessageType.EVENT);
-
-            entityManager.persist(message);
-            entityManager.flush();
-
-            System.out.println("Debug: Message saved successfully with ID: " + message.getId());
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("from", user.getUsername());
-            response.put("text", message.getText());
-            response.put("dateSent", message.getDateSent().toString());
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            System.err.println("Error saving message: ");
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
+        return "chat";
     }
 
-   
-    @PostMapping("/events/{eventId}")
+    @GetMapping("/conversations")
+    public String conversations(Model model, HttpSession session) {
+        User currentUser = (User) session.getAttribute("u");
+
+        // Obtener todas las conversaciones con el conteo de mensajes no leídos
+        List<Object[]> conversations = messageRepository.findConversationsWithUnreadCount(currentUser.getId());
+
+        // Calcular el total de mensajes no leídos
+        int unreadCount = conversations.stream()
+                .mapToInt(conversation -> ((Long) conversation[1]).intValue())
+                .sum();
+
+        // Pasar los datos al modelo
+        model.addAttribute("conversations", conversations);
+        model.addAttribute("unreadCount", unreadCount);
+        return "conversations"; // Nombre de la plantilla Thymeleaf
+    }
+
+    @PostMapping("/send")
     @Transactional
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> sendEventMessage(
-            @PathVariable Long eventId,
-            @RequestBody Map<String, String> messageData,
-            @AuthenticationPrincipal User user) {
+    public String sendMessage(@RequestParam Long receiverId, @RequestParam String message, HttpSession session) {
+        User sender = (User) session.getAttribute("u");
+        User receiver = userRepository.findById(receiverId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        System.out.println("Debug: Received message data: " + messageData);
+        // Crear y guardar el mensaje
+        Message newMessage = new Message();
+        newMessage.setSender(sender);
+        newMessage.setRecipient(receiver);
+        newMessage.setText(message);
+        newMessage.setDateSent(LocalDateTime.now());
+        messageRepository.save(newMessage);
 
-        try {
-            Event event = entityManager.find(Event.class, eventId);
-            if (event == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            String content = messageData.get("content");
-            if (content == null || content.trim().isEmpty()) {
-                return ResponseEntity.badRequest().build();
-            }
-
-            Message message = new Message();
-            message.setSender(user);
-            message.setEvent(event);
-            message.setText(content);
-            message.setDateSent(LocalDateTime.now());
-            message.setType(Message.MessageType.EVENT);
-
-            entityManager.persist(message);
-            entityManager.flush();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("from", user.getUsername());
-            response.put("text", message.getText());
-            response.put("dateSent", message.getDateSent().toString());
-
-            // Broadcast the message to all subscribers
-            simpMessagingTemplate.convertAndSend(
-                "/topic/events/" + eventId,
-                response
-            );
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            System.err.println("Error processing message: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
+        return "redirect:/chat/" + receiverId;
     }
 
-    @GetMapping("/event/{eventId}/messages")
-    @ResponseBody
-    public List<Message.Transfer> getEventMessages(@PathVariable Long eventId) {
-        return entityManager
-                .createQuery(
-                    "SELECT m FROM Message m WHERE m.event.id = :eventId ORDER BY m.dateSent",
-                    Message.class)
-                .setParameter("eventId", eventId)
-                .getResultList()
-                .stream()
-                .map(Message::toTransfer)
-                .toList();
-    }
-
-    @GetMapping("/event/{eventId}/messages/unread")
-    @ResponseBody
-    public Long getUnreadMessagesCount(
-            @PathVariable Long eventId,
-            @AuthenticationPrincipal User user) {
-        return entityManager
-                .createQuery(
-                    "SELECT COUNT(m) FROM Message m WHERE m.event.id = :eventId AND m.dateRead IS NULL AND m.sender.id != :userId",
-                    Long.class)
-                .setParameter("eventId", eventId)
-                .setParameter("userId", user.getId())
-                .getSingleResult();
-    }
-
-    @PostMapping("/event/{eventId}/messages/read")
-    @Transactional
-    @ResponseBody
-    public void markMessagesAsRead(
-            @PathVariable Long eventId,
-            @AuthenticationPrincipal User user) {
-        entityManager
-                .createQuery(
-                    "UPDATE Message m SET m.dateRead = :now WHERE m.event.id = :eventId AND m.sender.id != :userId AND m.dateRead IS NULL")
-                .setParameter("now", LocalDateTime.now())
-                .setParameter("eventId", eventId)
-                .setParameter("userId", user.getId())
-                .executeUpdate();
-    }
-
-    @PostMapping("/event/{eventId}/message/{messageId}/delete")
-    @Transactional
-    @ResponseBody
-    public ResponseEntity<?> deleteMessage(
-            @PathVariable Long eventId,
-            @PathVariable Long messageId,
-            @AuthenticationPrincipal User user) {
-
-        Message message = entityManager.find(Message.class, messageId);
-        
-        if (message == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        entityManager.remove(message);
-        return ResponseEntity.ok().build();
-    }
-
-    @MessageMapping("/test")
-    @SendTo("/topic/test")
-    public Map<String, Object> handleTestMessage(String message) {
-        System.out.println("Received test message: " + message);
-        try {
-            Map<String, Object> response = new HashMap<>();
-            response.put("timestamp", LocalDateTime.now().toString());
-            response.put("message", message);
-            response.put("status", "received");
-            
-            System.out.println("Sending response: " + response);
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return errorResponse;
-        }
-    }
-
-    @MessageMapping("/chat/{eventId}")
-    @SendTo("/topic/chat/{eventId}")
-    public Map<String, Object> handleChatMessage(@DestinationVariable Long eventId, 
-                                               @Payload Map<String, String> messageData,
-                                               @AuthenticationPrincipal User user) {
-        System.out.println("Received chat message for event " + eventId);
-        
-        try {
-            Event event = entityManager.find(Event.class, eventId);
-            if (event == null) {
-                throw new RuntimeException("Event not found");
-            }
-
-            Message message = new Message();
-            message.setSender(user);
-            message.setEvent(event);
-            message.setText(messageData.get("content"));
-            message.setDateSent(LocalDateTime.now());
-            message.setType(Message.MessageType.EVENT);
-
-            entityManager.persist(message);
-            entityManager.flush();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("from", user.getUsername());
-            response.put("text", message.getText());
-            response.put("dateSent", message.getDateSent().toString());
-            
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to process message: " + e.getMessage());
-            return errorResponse;
-        }
-    }
 }
