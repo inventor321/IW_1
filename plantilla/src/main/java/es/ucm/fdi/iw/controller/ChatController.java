@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import es.ucm.fdi.iw.model.*;
 import es.ucm.fdi.iw.repository.MessageRepository;
 import es.ucm.fdi.iw.repository.UserRepository;
+import es.ucm.fdi.iw.repository.EventRepository;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -41,6 +42,16 @@ public class ChatController {
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    private EventRepository eventRepository; // Asegúrate de tener este repositorio
+
+    @ModelAttribute
+    public void populateModel(HttpSession session, Model model) {
+        for (String name : new String[] { "u", "url", "ws" }) {
+            model.addAttribute(name, session.getAttribute(name));
+        }
+    }
 
     @GetMapping("/{partnerId}")
     @Transactional
@@ -69,19 +80,31 @@ public class ChatController {
     @GetMapping("/conversations")
     public String conversations(Model model, HttpSession session) {
         User currentUser = (User) session.getAttribute("u");
+        if (currentUser == null) {
+            // Redirige al login si no hay usuario en sesión
+            return "redirect:/login";
+        }
 
         // Obtener todas las conversaciones con el conteo de mensajes no leídos
-        List<Object[]> conversations = messageRepository.findConversationsWithUnreadCount(currentUser.getId());
+        List<Object[]> conversations = messageRepository.findAllConversationsWithUnreadCount(currentUser.getId());
 
-        // Calcular el total de mensajes no leídos
+        // Ordenar: primero las que tienen mensajes sin leer, luego las demás
+        conversations.sort((a, b) -> {
+            Long unreadA = (Long) a[1];
+            Long unreadB = (Long) b[1];
+            if ((unreadA > 0 && unreadB > 0) || (unreadA == 0 && unreadB == 0)) {
+                return 0;
+            }
+            return unreadA > 0 ? -1 : 1;
+        });
+
         int unreadCount = conversations.stream()
                 .mapToInt(conversation -> ((Long) conversation[1]).intValue())
                 .sum();
 
-        // Pasar los datos al modelo
         model.addAttribute("conversations", conversations);
         model.addAttribute("unreadCount", unreadCount);
-        return "conversations"; // Nombre de la plantilla Thymeleaf
+        return "conversations";
     }
 
     @PostMapping("/send")
@@ -100,6 +123,33 @@ public class ChatController {
         messageRepository.save(newMessage);
 
         return "redirect:/chat/" + receiverId;
+    }
+
+    @PostMapping("/group/{groupId}/send")
+    public String sendGroupMessage(@PathVariable long groupId,
+                                   @RequestParam String text,
+                                   HttpSession session) {
+        User sender = (User) session.getAttribute("u");
+        if (sender == null) {
+            return "redirect:/login";
+        }
+
+        Event event = eventRepository.findById(groupId).orElse(null);
+        if (event == null) {
+            // Maneja el error como prefieras
+            return "redirect:/events";
+        }
+
+        Message message = new Message();
+        message.setSender(sender);
+        message.setUsergroup(groupId);
+        message.setText(text);
+        message.setDateSent(LocalDateTime.now());
+        message.setEvent(event); // <-- ¡IMPORTANTE!
+
+        messageRepository.save(message);
+
+        return "redirect:/events/" + groupId;
     }
 
 }

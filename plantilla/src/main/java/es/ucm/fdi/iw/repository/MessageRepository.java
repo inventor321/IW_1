@@ -33,4 +33,17 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
            "GROUP BY m.sender " +
            "ORDER BY COUNT(m) DESC")
     List<Object[]> findConversationsWithUnreadCount(@Param("currentUserId") Long currentUserId);
+
+    @Query("""
+        SELECT u, 
+               SUM(CASE WHEN m.recipient.id = :userId AND m.dateRead IS NULL THEN 1 ELSE 0 END) as unreadCount
+        FROM Message m
+        JOIN User u ON (u.id = m.sender.id AND m.sender.id <> :userId) OR (u.id = m.recipient.id AND m.recipient.id <> :userId)
+        WHERE m.sender.id = :userId OR m.recipient.id = :userId
+        GROUP BY u
+    """)
+    List<Object[]> findAllConversationsWithUnreadCount(@Param("userId") Long userId);
+
+    @Query("SELECT m FROM Message m WHERE m.event.id = :eventId ORDER BY m.dateSent ASC")
+    List<Message> findEventMessages(@Param("eventId") Long eventId);
 }

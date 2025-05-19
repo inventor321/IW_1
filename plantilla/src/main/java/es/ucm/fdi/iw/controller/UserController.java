@@ -7,6 +7,7 @@ import es.ucm.fdi.iw.model.Message;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.User.Role;
 import es.ucm.fdi.iw.repository.UserRepository;
+import es.ucm.fdi.iw.repository.MessageRepository;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,12 +65,24 @@ public class UserController {
 	@Autowired
 	private EntityManager entityManager;
 
+	@Autowired
+	private MessageRepository messageRepository;
+
 	@ModelAttribute
-	public void populateModel(HttpSession session, Model model) {
-		for (String name : new String[] { "u", "url", "ws" }) {
-			model.addAttribute(name, session.getAttribute(name));
-		}
-	}
+    public void populateModel(HttpSession session, Model model) {
+        User u = (User) session.getAttribute("u");
+        model.addAttribute("u", u);
+        for (String name : new String[] { "url", "ws" }) {
+            model.addAttribute(name, session.getAttribute(name));
+        }
+        // Añade el contador de mensajes no leídos si el usuario está logueado
+        if (u != null) {
+            long unreadCount = messageRepository.countUnreadMessages(u.getId());
+            model.addAttribute("unreadCount", unreadCount);
+        } else {
+            model.addAttribute("unreadCount", 0);
+        }
+    }
 
 	@ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "No eres administrador, y éste no es tu perfil")
 	public static class NoEsTuPerfilException extends RuntimeException {

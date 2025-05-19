@@ -6,3 +6,57 @@
 .badge {
     font-size: 0.9rem;
 }
+
+body {
+    background-color: #e8f5e9;
+}
+.conversation-card {
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+    background: #fff;
+    margin-bottom: 1.5rem;
+}
+.conversation-header {
+    background: rgba(0,128,0,0.5);
+    color: #fff;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem;
+}
+.conversation-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.conversation-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    text-decoration: none;
+    color: #222;
+    background: transparent;
+}
+.conversation-item:last-child {
+    border-bottom: none;
+}
+.conversation-item:hover, .conversation-item.active {
+    background: #e8f5e9;
+    text-decoration: none;
+}
+.conversation-item.unread {
+    background: #fffde7;
+    font-weight: bold;
+}
+.badge-unread {
+    background: #2e7d32 !important;
+    color: #fff;
+    border-radius: 12px;
+    padding: 0.3em 0.8em;
+    font-size: 0.95em;
+    margin-left: 0.5em;
+}
+.username {
+    font-weight: 500;
+    font-size: 1.1em;
+}

@@ -6,6 +6,8 @@ import es.ucm.fdi.iw.model.Event.Category;
 import es.ucm.fdi.iw.repository.EventRepository;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.Participation;
+import es.ucm.fdi.iw.model.Message;
+import es.ucm.fdi.iw.repository.MessageRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -48,6 +50,9 @@ public class EventController {
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private MessageRepository messageRepository;
+    
     @Autowired
     private EntityManager entityManager;
 
@@ -156,9 +161,15 @@ public class EventController {
                 .createQuery("SELECT p.user FROM Participation p WHERE p.event = :event AND p.enabled = true",
                         User.class)
                 .setParameter("event", event).getResultList();
+
+        // Cargar mensajes del chat de grupo
+        List<Message> eventMessages = messageRepository.findEventMessages(id);
+
         model.addAttribute("event", event);
         model.addAttribute("isParticipating", isParticipating);
         model.addAttribute("participants", participants);
+        model.addAttribute("eventMessages", eventMessages); // <-- Añade esto
+
         return "event";
     }
 

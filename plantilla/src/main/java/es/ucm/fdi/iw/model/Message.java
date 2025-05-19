@@ -95,4 +95,7 @@ public class Message implements Transferable<Message.Transfer> {
 	public Transfer toTransfer() {
 		return new Transfer(this);
 	}
+
+	public long getUsergroup() { return usergroup; }
+	public void setUsergroup(long usergroup) { this.usergroup = usergroup; }
 }

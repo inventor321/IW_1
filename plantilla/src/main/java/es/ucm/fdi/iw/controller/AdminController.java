@@ -46,14 +46,14 @@ public class AdminController {
     @Autowired
     private ParticipationRepository participationRepository;
 
+    private static final Logger log = LogManager.getLogger(AdminController.class);
+
     @ModelAttribute
     public void populateModel(HttpSession session, Model model) {
         for (String name : new String[] { "u", "url", "ws" }) {
             model.addAttribute(name, session.getAttribute(name));
         }
     }
-
-    private static final Logger log = LogManager.getLogger(AdminController.class);
 
     @GetMapping("/")  // Changed from "" to "/"
     public String index(Model model) {

@@ -1,39 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" class="h-100">
 <head>
+    <th:block th:replace="~{fragments/head :: header}" />
     <title>Mis Conversaciones</title>
     <link rel="stylesheet" th:href="@{/css/chat.css}">
+    <link rel="stylesheet" th:href="@{/css/conversations.css}">
 </head>
 <body class="d-flex flex-column h-100">
     <!-- Navbar -->
-    <header th:replace="~{fragments/nav.html :: nav}"></header>
+    <th:block th:replace="~{fragments/nav.html :: nav}" />
 
     <main class="flex-shrink-0 container mt-4">
-        <div class="card">
-            <div class="card-header">
-                <h5>Mis Conversaciones</h5>
+        <div class="conversation-card card">
+            <div class="conversation-header card-header">
+                <h5 class="mb-0">Mis Conversaciones</h5>
             </div>
-            <div class="card-body chat-container">
-                <!-- Lista de conversaciones -->
-                <div class="list-group">
-                    <div th:each="conversation : ${conversations}">
-                        <a th:href="@{'/chat/' + ${conversation[0].id}}" 
-                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                           th:classappend="${conversation[1] > 0 ? 'list-group-item-warning' : ''}">
-                            <span>
-                                <strong th:text="${conversation[0].username}">Usuario</strong>
-                            </span>
-                            <span th:if="${conversation[1] > 0}" 
-                                  class="badge bg-danger rounded-pill" 
-                                  th:text="${conversation[1]}">0</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <ul class="conversation-list list-group list-group-flush">
+                <li th:each="conversation : ${conversations}">
+                    <a th:href="@{'/chat/' + ${conversation[0].id}}"
+                       th:class="'conversation-item list-group-item list-group-item-action d-flex justify-content-between align-items-center' + (${conversation[1]} > 0 ? ' unread list-group-item-warning' : '')">
+                        <span class="username" th:text="${conversation[0].username}">Usuario</span>
+                        <span th:if="${conversation[1] > 0}" class="badge-unread badge bg-success rounded-pill" th:text="${conversation[1]}">0</span>
+                    </a>
+                </li>
+                <li th:if="${#lists.isEmpty(conversations)}" class="conversation-item list-group-item text-muted">
+                    No tienes conversaciones activas.
+                </li>
+            </ul>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer th:replace="~{fragments/footer.html :: footer}"></footer>
+    <th:block th:replace="~{fragments/footer.html :: footer}" />
 </body>
 </html>

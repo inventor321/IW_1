@@ -30,16 +30,6 @@
                     </button>
                 </form>
 
-
-                <!-- <form th:if="${!event.active && #authorization.expression('hasAnyRole(''ORG'', ''ADMIN'')')}"
-                    th:action="@{/events/{id}/enable(id=${event.id})}" method="post"
-                    class="position-absolute top-0 end-0 px-5">
-                    <button type="submit" class="btn btn-outline-success bg-white hover-success"
-                        onclick="return confirm('¿Estás seguro de que quieres habilitar este evento?')">
-                        <img th:src="@{/img/enable.png}" src="/img/enable.png" alt="enable" width="32" height="32" />
-                    </button>
-                </form> -->
-
                 <!-- Event info-->
                 <h1 class="display-4" th:text="${event.name}">Nombre del Evento</h1>
                 <p class="lead" th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">Fecha del Evento</p>
@@ -104,14 +94,13 @@
                 <div class="chat-messages" id="chatMessages">
                     <div th:each="message : ${eventMessages}" class="message">
                         <strong th:text="${message.sender.username}"></strong>
-                        <span th:text="${message.content}"></span>
-                        <small th:text="${#temporals.format(message.sentAt, 'HH:mm')}"></small>
+                        <span th:text="${message.text}"></span>
+                        <small th:text="${#temporals.format(message.dateSent, 'HH:mm')}"></small>
                     </div>
                 </div>
-                <form id="messageForm" class="message-form">
-                    <input type="text" id="messageInput" class="form-control message-input"
+                <form th:action="@{/chat/group/{groupId}/send(groupId=${event.id})}" method="post">
+                    <input type="text" name="text" class="form-control message-input"
                         placeholder="Escribe un mensaje..." required>
-                    <input type="hidden" id="eventId" th:value="${event.id}">
                     <button type="submit" class="btn btn-success mt-2 w-100">Enviar</button>
                 </form>
             </div>
