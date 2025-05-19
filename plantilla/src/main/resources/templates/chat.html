@@ -24,7 +24,8 @@
                     <div th:each="message : ${messages}">
                         <div th:class="${message.sender.id == currentUserId ? 'message-sent' : 'message-received'}">
                             <strong th:text="${message.sender.username}">Sender</strong>:
-                            <span th:text="${message.text}">Message content</span>
+                            <span th:text="${message.text}"></span>
+                            <small th:text="${#temporals.format(message.dateSent, 'HH:mm')}"></small>
                         </div>
                     </div>
                 </div>
