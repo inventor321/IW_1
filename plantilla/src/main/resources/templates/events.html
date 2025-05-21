@@ -1,123 +1,203 @@
 <!DOCTYPE html>
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
-
-<head>
+  <head>
     <th:block th:replace="~{fragments/head :: header}" />
     <title>Eventos - Exchange Connect</title>
-    <link rel="stylesheet" th:href="@{/css/events.css}">
+    <link rel="stylesheet" th:href="@{/css/events.css}" />
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+  </head>
 
-<body class="d-flex flex-column h-100">
+  <body class="d-flex flex-column h-100">
     <header th:replace="~{fragments/nav.html :: nav}"></header>
 
     <main class="flex-shrink-0">
-        <section class="hero">
-            <div class="container">
-                <h1 class="display-4 fw-bold">Eventos Disponibles</h1>
-                <p class="lead">Explora y únete a eventos increíbles cerca de ti.</p>
+      <section class="hero">
+        <div class="container">
+          <h1 class="display-4 fw-bold">Eventos Disponibles</h1>
+          <p class="lead">Explora y únete a eventos increíbles cerca de ti.</p>
 
-                <!-- Barra de búsqueda avanzada -->
-                <div class="row justify-content-center mb-5">
-                    <div class="col-md-10">
-                        <form th:action="@{/events}" method="get" class="bg-light p-4 rounded shadow-sm">
-                            <div class="row g-3">
-                                <!-- Campo de búsqueda principal -->
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="text" class="form-control" name="query" th:value="${param.query}"
-                                            placeholder="Palabra clave..." aria-label="Buscar">
-                                    </div>
-                                </div>
-
-                                <!-- Selector de criterio -->
-                                <div class="col-md-3">
-                                    <select class="form-select" name="criteria">
-                                        <option value="name" th:selected="${param.criteria == 'name'}">Por nombre
-                                        </option>
-                                        <option value="category" th:selected="${param.criteria == 'category'}">Por
-                                            categoría</option>
-                                        <option value="date" th:selected="${param.criteria == 'date'}">Por fecha
-                                        </option>
-                                        <option value="location" th:selected="${param.criteria == 'location'}">Por
-                                            ubicación</option>
-                                    </select>
-                                </div>
-
-                                <!-- Botón de búsqueda -->
-                                <div class="col-md-3">
-                                    <button type="submit" class="btn btn-success w-100">
-                                        <i class="bi bi-funnel"></i> Filtrar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Filtros adicionales (ejemplo para fecha) -->
-                            <div class="row mt-3" th:if="${param.criteria == 'date'}">
-                                <div class="col-md-6">
-                                    <label class="form-label">Desde:</label>
-                                    <input type="date" name="startDate" class="form-control"
-                                        th:value="${param.startDate}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Hasta:</label>
-                                    <input type="date" name="endDate" class="form-control" th:value="${param.endDate}">
-                                </div>
-                            </div>
-                        </form>
+          <!-- Barra de búsqueda avanzada -->
+          <div class="row justify-content-center mb-5">
+            <div class="col-md-10">
+              
+                <form th:action="@{/events}" method="get" class="bg-light p-4 rounded shadow-sm">
+                    <div class="row g-3">
+                    <!-- Campo de búsqueda principal -->
+                    <div class="col-md-5">
+                        <div class="input-group">
+                        <span class="input-group-text"
+                            ><i class="bi bi-search"></i
+                        ></span>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="query"
+                            th:value="${param.query}"
+                            placeholder="Palabra clave..."
+                            aria-label="Buscar"
+                        />
+                        </div>
                     </div>
-                </div>
-            </div>
-        </section>
 
-        <section class="container py-5">
-            <h2 class="text-center text-success mb-4">Próximos Eventos</h2>
+                    <!-- Selector de categoría -->
+                    <div class="col-md-3">
+                        <select class="form-select" name="category">
+                        <option value="">Todas las categorías</option>
+                        <option
+                            th:each="cat : ${T(es.ucm.fdi.iw.model.Event.Category).values()}"
+                            th:value="${cat}"
+                            th:text="${cat.name().replace('_', ' ')}"
+                            th:selected="${param.category != null && param.category == cat.name()}"
+                        ></option>
+                        </select>
+                    </div>
 
-            <!-- Mensaje si no hay resultados -->
-            <div th:if="${events.isEmpty()}" class="alert alert-info text-center">
-                No se encontraron eventos con los filtros seleccionados.
-            </div>
+                    <!-- Botón de búsqueda -->
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-funnel"></i> Filtrar
+                        </button>
+                    </div>
 
-            <!-- Lista de eventos -->
-            <section class="event-list">
-                <div class="event-card" th:each="event : ${events}">
-                    <img th:if="${event.imageUrl}" th:src="@{${event.imageUrl}}" class="img-fluid"
-                        th:alt="${event.name}" loading="eager" onload="this.style.opacity='1'"
-                        onerror="this.src='[[/img/default-pic.jpg]]'" style="opacity: 0; transition: opacity 0.3s;">
-                    <div class="event-details">
-                        <h3 th:text="${event.name}">Event Name</h3>
-                        <p class="text-muted" th:text="${'Categoría: ' + event.category}">Categoría</p>
-                        <p th:text="${event.description}">Description</p>
-                        <span class="event-date"
-                            th:text="${'Fecha: ' + #temporals.format(event.date, 'dd/MM/yyyy')}">Date</span>
-                        <span class="event-location" th:text="${'Ubicación: ' + event.location}">Location</span>
-                        <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-primary mt-2">
-                            Ir al evento
+                    <!-- Botón para limpiar filtros -->
+                    <div class="col-md-2">
+                        <a
+                        th:href="@{/events}"
+                        class="btn btn-outline-secondary w-100"
+                        >
+                        <i class="bi bi-arrow-counterclockwise"></i> Limpiar
                         </a>
                     </div>
-                </div>
-            </section>
+                    </div>
+
+                    <!-- Filtros de fecha (siempre visibles) -->
+                    <div class="row mt-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha desde:</label>
+                        <input
+                        type="date"
+                        name="startDate"
+                        class="form-control"
+                        th:value="${param.startDate}"
+                        />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha hasta:</label>
+                        <input
+                        type="date"
+                        name="endDate"
+                        class="form-control"
+                        th:value="${param.endDate}"
+                        />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Ordenar por:</label>
+                        <select class="form-select" name="sort">
+                        <option
+                            value="date-asc"
+                            th:selected="${param.sort == 'date-asc'}"
+                        >
+                            Fecha (ascendente)
+                        </option>
+                        <option
+                            value="date-desc"
+                            th:selected="${param.sort == 'date-desc'}"
+                        >
+                            Fecha (descendente)
+                        </option>
+                        <option
+                            value="name-asc"
+                            th:selected="${param.sort == 'name-asc'}"
+                        >
+                            Nombre (A-Z)
+                        </option>
+                        <option
+                            value="name-desc"
+                            th:selected="${param.sort == 'name-desc'}"
+                        >
+                            Nombre (Z-A)
+                        </option>
+                        </select>
+                    </div>
+                    </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="container py-5">
+        <h2 class="text-center text-success mb-4">Próximos Eventos</h2>
+
+        <!-- Mensaje si no hay resultados -->
+        <div th:if="${events.isEmpty()}" class="alert alert-info text-center">
+          No se encontraron eventos con los filtros seleccionados.
+        </div>
+
+        <!-- Lista de eventos -->
+        <section class="event-list">
+          <div class="event-card" th:each="event : ${events}">
+            <img
+              th:if="${event.imageUrl}"
+              th:src="@{${event.imageUrl}}"
+              class="img-fluid"
+              th:alt="${event.name}"
+              loading="eager"
+              onload="this.style.opacity='1'"
+              onerror="this.src='[[/img/default-pic.jpg]]'"
+              style="opacity: 0; transition: opacity 0.3s"
+            />
+            <div class="event-details">
+              <h3 th:text="${event.name}">Event Name</h3>
+              <p class="text-muted" th:text="${'Categoría: ' + event.category}">
+                Categoría
+              </p>
+              <p th:text="${event.description}">Description</p>
+              <span
+                class="event-date"
+                th:text="${'Fecha: ' + #temporals.format(event.date, 'dd/MM/yyyy')}"
+                >Date</span
+              >
+              <span
+                class="event-location"
+                th:text="${'Ubicación: ' + event.location}"
+                >Location</span
+              >
+              <a
+                th:href="@{/events/{id}(id=${event.id})}"
+                class="btn btn-primary mt-2"
+              >
+                Ir al evento
+              </a>
+            </div>
+          </div>
         </section>
+      </section>
     </main>
 
     <th:block th:replace="~{fragments/footer.html :: footer}" />
 
     <!-- Script para mostrar/ocultar filtros dinámicos -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const criteriaSelect = document.querySelector('select[name="criteria"]');
-            const dateFilters = document.querySelector('.row.mt-3');
+      document.addEventListener("DOMContentLoaded", function () {
+        const criteriaSelect = document.querySelector(
+          'select[name="criteria"]'
+        );
+        const dateFilters = document.querySelector(".row.mt-3");
 
-            criteriaSelect.addEventListener('change', function () {
-                dateFilters.style.display = this.value === 'date' ? 'flex' : 'none';
-            });
-
-            // Inicializar visibilidad al cargar
-            dateFilters.style.display = criteriaSelect.value === 'date' ? 'flex' : 'none';
+        criteriaSelect.addEventListener("change", function () {
+          dateFilters.style.display = this.value === "date" ? "flex" : "none";
         });
-    </script>
-</body>
 
+        // Inicializar visibilidad al cargar
+        dateFilters.style.display =
+          criteriaSelect.value === "date" ? "flex" : "none";
+      });
+    </script>
+  </body>
 </html>

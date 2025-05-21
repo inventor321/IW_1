@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,35 +60,27 @@ public class EventController {
     @GetMapping
     public String listEvents(Model model,
             @RequestParam(required = false) String query,
-            @RequestParam(required = false, defaultValue = "name") String criteria,
+            @RequestParam(required = false) Event.Category category,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false, defaultValue = "date-asc") String sort) {
 
         List<Event> events;
-
-        if (query != null && !query.isEmpty()) {
-            switch (criteria) {
-                case "name":
-                    events = eventRepository.findByActiveTrueAndNameContainingIgnoreCase(query);
-                    break;
-                case "category":
-                    events = eventRepository.findByActiveTrue();
-                    //events = eventRepository.findByActiveTrueAndCategoryContainingIgnoreCase(query);
-                    break;
-                case "date":
-                    {
-                        events = eventRepository.findAll();
-                    }
-                    break;
-                case "location":
-                    events = eventRepository.findByLocationContainingIgnoreCase(query);
-                    break;
-                default:
-                    events = eventRepository.findAll();
-            }
-        } else {
-            events = eventRepository.findAllByActiveTrueOrderByDateAsc();
+        LocalDateTime start = null, end = null;
+        if (startDate != null){
+            start = startDate.atStartOfDay();
         }
+        if (endDate != null){
+            end = endDate.atTime(23, 59, 59);
+        }
+
+        events = eventRepository.findFilteredEvents(
+            query,
+            category,
+            start,
+            end,
+            sort
+        );
 
         model.addAttribute("events", events);
         return "events"; // Renderiza la pagina de eventos

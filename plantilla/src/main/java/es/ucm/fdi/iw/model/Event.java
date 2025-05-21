@@ -12,13 +12,15 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(length = 255)
     private String name;
 
-    @Lob // Si la descripción puede ser larga
+     // Si la descripción puede ser larga
+    @Column(length = 1000) // Longitud máxima para un texto largo
     private String description;
 
     private LocalDateTime date;
+    @Column(length = 255)
     private String location;
     private String imageUrl;
     private boolean active; // Por defecto, el evento está habilitado
