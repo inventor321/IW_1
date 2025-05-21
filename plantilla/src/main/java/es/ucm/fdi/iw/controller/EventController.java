@@ -94,9 +94,10 @@ public class EventController {
     }
 
     @GetMapping("/create")
-    @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
-    public String showCreateEventForm(Model model) {
-        model.addAttribute("event", new Event());
+    public String createEventForm(Model model) {
+        if (!model.containsAttribute("event")) {
+            model.addAttribute("event", new Event());
+        }
         return "create-event";
     }
 
@@ -235,51 +236,54 @@ public class EventController {
     @PostMapping("/{id}/disable")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     @Transactional
-    public String disableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
+    public String disableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session,
+                               @RequestHeader(value = "referer", required = false) String referer) {
         try {
             User user = (User) session.getAttribute("u");
             Event event = eventRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
             if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
-                eventRepository.disableEventById(id); // Llama al método personalizado
+                eventRepository.disableEventById(id);
                 ra.addFlashAttribute("message", "Event disabled successfully");
             } else {
                 ra.addFlashAttribute("error", "You don't have permission to disable this event");
             }
-
-            return "redirect:/events";
+            // Redirige a la página anterior si existe, si no a "/"
+            return "redirect:" + (
+                referer != null && referer.contains("/events/") ? "/events" :
+                referer != null ? referer : "/"
+            );
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error disabling event: " + e.getMessage());
             return "redirect:/";
         }
     }
 
-
     @PostMapping("/{id}/enable")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     @Transactional
-    public String enableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
+    public String enableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session,
+                              @RequestHeader(value = "referer", required = false) String referer) {
         try {
             User user = (User) session.getAttribute("u");
             Event event = eventRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
             if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
-                event.setActive(true); // Habilita el evento
+                event.setActive(true);
                 eventRepository.save(event);
                 ra.addFlashAttribute("message", "Event enabled successfully");
             } else {
                 ra.addFlashAttribute("error", "You don't have permission to enable this event");
             }
-
-            return "redirect:/events";
+            // Redirige a la página anterior si existe, si no a "/events"
+            return "redirect:" + (referer != null ? referer : "/events");
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error enabling event: " + e.getMessage());
             return "redirect:/";
         }
     }
-
 
     @GetMapping("/{id}/edit")
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")

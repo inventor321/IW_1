@@ -74,7 +74,7 @@
                                         </a>
                                         <!-- Botón para deshabilitar -->
                                         <th:block th:if="${event.active}">
-                                            <form th:action="@{/org/events/{id}/disable(id=${event.id})}" method="post" class="d-inline">
+                                            <form th:action="@{/events/{id}/disable(id=${event.id})}" method="post" class="d-inline">
                                                 <button type="submit" class="btn btn-danger btn-sm"
                                                         onclick="return confirm('¿Estás seguro de que quieres deshabilitar este evento?')">
                                                     <i class="bi bi-x-circle"></i> Deshabilitar
@@ -83,7 +83,7 @@
                                         </th:block>
                                         <!-- Botón para habilitar -->
                                         <th:block th:if="${!event.active}">
-                                            <form th:action="@{/org/events/{id}/enable(id=${event.id})}" method="post" class="d-inline">
+                                            <form th:action="@{/events/{id}/enable(id=${event.id})}" method="post" class="d-inline">
                                                 <button type="submit" class="btn btn-success btn-sm"
                                                         onclick="return confirm('¿Estás seguro de que quieres habilitar este evento?')">
                                                     <i class="bi bi-check-circle"></i> Habilitar
