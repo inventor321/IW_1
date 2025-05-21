@@ -143,7 +143,7 @@ public class EventController {
 
     @GetMapping("/{id}")
     public String getEvent(@PathVariable Long id, Model model, Authentication authentication, HttpSession session) {
-        if (authentication == null || !authentication.isAuthenticated()) {
+        if (authentication == null || !authentication.isAuthenticated() || session.getAttribute("u") == null) {
             return "redirect:/login";
         }
         Event event = eventRepository.findById(id)
