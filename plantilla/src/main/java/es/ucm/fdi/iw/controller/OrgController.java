@@ -70,47 +70,4 @@ public class OrgController {
         return "org";
     }
 
-    @PostMapping("/events/{id}/disable")
-    @PreAuthorize("hasRole('ORG')")
-    @Transactional
-    public String disableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
-        try {
-            User user = (User) session.getAttribute("u");
-            Event event = eventRepository.findById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
-
-            if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
-                eventRepository.disableEventById(id); // Llama al método personalizado
-                ra.addFlashAttribute("message", "Event disabled successfully");
-            } else {
-                ra.addFlashAttribute("error", "You don't have permission to disable this event");
-            }
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error al deshabilitar el evento: " + e.getMessage());
-        }
-
-        return "redirect:/org/";
-    }
-
-    @PostMapping("/events/{id}/enable")
-    @PreAuthorize("hasRole('ORG')")
-    @Transactional
-    public String enableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session) {
-        try {
-            User user = (User) session.getAttribute("u");
-            Event event = eventRepository.findById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
-
-            if (user.hasRole(User.Role.ADMIN) || event.getOrg() == null || event.getOrg().equals(user.getId())) {
-                eventRepository.enableEventById(id); // Llama al método personalizado
-                ra.addFlashAttribute("message", "Event enabled successfully");
-            } else {
-                ra.addFlashAttribute("error", "You don't have permission to enable this event");
-            }
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error al habilitar el evento: " + e.getMessage());
-        }
-        return "redirect:/org/";
-    }
-
 }

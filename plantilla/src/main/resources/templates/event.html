@@ -21,7 +21,7 @@
 
                 <!-- Formulario delete-->               
                 <form th:if="${#authorization.expression('hasAnyRole(''ORG'', ''ADMIN'')')}"
-                    th:action="@{/events/(${event.id})/disable}" method="post"
+                    th:action="@{/events/{id}/disable(id=${event.id})}" method="post"
                     class="position-absolute top-0 end-0 px-5">
                     <!-- Delete button-->
                     <button type="submit" class="btn btn-outline-danger bg-white hover-danger"
