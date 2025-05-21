@@ -16,14 +16,17 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     // Ordena todos los eventos por fecha en orden ascendente
     List<Event> findAll();
     List<Event> findAllByOrderByDateAsc();
+    List<Event> findByActiveTrue();
     List<Event> findByCategory(Event.Category category);
     List<Event> findByDate(LocalDateTime date);
     List<Event> findByNameContaining(String name);
     List<Event> findAllByActiveTrueOrderByDateAsc(); // Busca solo eventos habilitados y los ordena por fecha
-    /*List<Event> findByNameContainingIgnoreCase(String query);
+    List<Event> findByActiveTrueAndDateAfter(LocalDateTime date);
+    List<Event> findByNameContainingIgnoreCase(String name);
     List<Event> findByLocationContainingIgnoreCase(String query);
-    List<Event> findByCategoryContainingIgnoreCase(String query);
-    */
+    List<Event> findByActiveTrueAndNameContainingIgnoreCase(String name);
+
+    //List<Event> findByActiveTrueAndCategoryContainingIgnoreCase(String query);
 
     @Modifying
     @Query("UPDATE Event e SET e.active = false WHERE e.id = :id")

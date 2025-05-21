@@ -64,15 +64,15 @@ public class EventController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
         List<Event> events;
-        query = null;
 
-        /*if (query != null && !query.isEmpty()) {
+        if (query != null && !query.isEmpty()) {
             switch (criteria) {
                 case "name":
-                    events = eventRepository.findByNameContainingIgnoreCase(query);
+                    events = eventRepository.findByActiveTrueAndNameContainingIgnoreCase(query);
                     break;
                 case "category":
-                    events = eventRepository.findByCategoryContainingIgnoreCase(query);
+                    events = eventRepository.findByActiveTrue();
+                    //events = eventRepository.findByActiveTrueAndCategoryContainingIgnoreCase(query);
                     break;
                 case "date":
                     {
@@ -85,7 +85,7 @@ public class EventController {
                 default:
                     events = eventRepository.findAll();
             }
-        } else*/ {
+        } else {
             events = eventRepository.findAllByActiveTrueOrderByDateAsc();
         }
 
