@@ -14,6 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import es.ucm.fdi.iw.repository.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.List;
 
 /**
  * Non-authenticated requests only.
@@ -75,7 +79,6 @@ public class RootController {
         newUser.setUsername(username);
         newUser.setPassword(encodePassword(password));
         newUser.setFirstName(name);
-        // setLastName
         newUser.setEmail(email);
         newUser.setPhonenumber(phone);
         newUser.setEnabled(true);
@@ -84,6 +87,12 @@ public class RootController {
         userRepository.save(newUser);
         userRepository.flush();
         session.setAttribute("u", newUser);
+
+        // Autenticar al usuario en Spring Security
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        UsernamePasswordAuthenticationToken authToken =
+            new UsernamePasswordAuthenticationToken(newUser, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         return "redirect:/";
     }

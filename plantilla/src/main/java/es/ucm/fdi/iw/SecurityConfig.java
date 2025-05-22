@@ -67,6 +67,7 @@ public class SecurityConfig {
 						.anyRequest().authenticated())
 				.formLogin(formLogin -> formLogin
 						.loginPage("/login")
+						.defaultSuccessUrl("/", false) // false = solo si no hay SavedRequest
 						.permitAll()
 						.successHandler(loginSuccessHandler) // <-- called when login Ok; can redirect
 				)
