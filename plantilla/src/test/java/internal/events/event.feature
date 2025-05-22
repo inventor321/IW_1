@@ -22,6 +22,7 @@ Feature: sample karate test script
         "name": "Test Event",
         "description": "bla bla bla",
         "location": "Gibraltar",
+        "aforo": "2"
       }
       """
 

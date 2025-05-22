@@ -4,6 +4,7 @@ import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.model.Event.Category;
 import es.ucm.fdi.iw.repository.EventRepository;
+import es.ucm.fdi.iw.repository.UserRepository;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.Participation;
 import es.ucm.fdi.iw.model.Message;
@@ -50,6 +51,9 @@ public class EventController {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private MessageRepository messageRepository;
@@ -226,6 +230,34 @@ public class EventController {
         }
 
         return "redirect:/events/" + id;
+    }
+
+    @PostMapping("/withdraw/{id1}/{id2}")
+    @Transactional
+    public String withdrawOtherFromEvent(@PathVariable Long id1, @PathVariable Long id2, Model model, HttpSession session) {
+        User u = userRepository.findById(id2)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Event event = eventRepository.findById(id1)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        try {
+            Participation p = entityManager.createQuery(
+                    "SELECT p FROM Participation p WHERE p.user = :user AND p.event = :event AND p.enabled = true",
+                    Participation.class)
+                    .setParameter("user", u)
+                    .setParameter("event", event)
+                    .getSingleResult();
+
+            p.setEnabled(false);
+            p.setTimestamp(new Timestamp(System.currentTimeMillis()));
+
+            entityManager.merge(p);
+            entityManager.flush();
+        } catch (jakarta.persistence.NoResultException e) {
+            return "redirect:/events/" + id1;
+        }
+
+        return "redirect:/events/" + id1;
     }
 
     @PostMapping("/{id}/disable")
