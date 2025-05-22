@@ -51,3 +51,4 @@ Roles y tareas:
 
 ## Partes de terceros
 - Imágenes obtenidas de https://stocksnap.io/, con licencia Creative Commons 0 https://stocksnap.io/license 
+- Full calendar de https://fullcalendar.io/, https://fullcalendar.io/license
