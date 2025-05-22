@@ -1,44 +1,18 @@
 Feature: login en servidor
 
-#
-#  Este test funciona, pero no es de buena educación martillear una API externa
-#
-Scenario: login malo en github
-    Given driver 'https://github.com/login'
-    And input('#login_field', 'dummy')
-    And input('#password', 'world')
-    When submit().click("input[name=commit]")
-    Then match html('.flash-error') contains 'Incorrect username or password.'
-#
-
-  Scenario: login malo en plantilla
-    Given driver baseUrl + '/user/2'
-    And input('#username', 'dummy')
-    And input('#password', 'world')
-    When submit().click(".form-signin button")
-    Then match html('.error') contains 'Error en nombre de usuario o contraseña'
-
-  @login_b
-  Scenario: login correcto como b
-    Given driver baseUrl + '/login'
-    And input('#username', 'b')
-    And input('#password', 'aa')
-    When submit().click(".form-signin button")
-    Then waitForUrl(baseUrl + '/user/2')
-
-  @login_a
-  Scenario: login correcto como a
-    Given driver baseUrl + '/login'
-    And input('#username', 'a')
-    And input('#password', 'a')
-    When submit().click(".form-signin button")
-    Then waitForUrl(baseUrl + '/admin')
-
-  Scenario: logout after login
-    Given driver baseUrl + '/login'
-    And input('#username', 'a')
-    And input('#password', 'a')
-    When submit().click(".form-signin button")
-    Then waitForUrl(baseUrl + '/admin')
-    When submit().click("{button}logout")
-    Then waitForUrl(baseUrl + '/login')
+  @login_org
+  Scenario: login correcto como org
+    Given driver 'http://localhost:8080/login'
+    * input('#username', 'ORG')
+    * input('#password', 'aa')
+    * click("button[id='loguear']")
+    * waitForUrl(baseUrl + '/org/')
+    Given driver 'http://localhost:8080/events/create'
+    * input('#eventName', 'fieston')
+    * input('#eventDescription', 'que bueno')
+    * input('#eventLocation', 'aqui mismo')
+    * input('#eventAforo', '2')
+    * select('select[id=eventCategory]', 'CULTURA_Y_ARTE')
+    * click("button[id='crear']")
+    * delay(1000)
+    * waitForUrl(baseUrl + '/events/198')

@@ -48,9 +48,9 @@
                         </div>
                         <div class="mb-3">
                             <label for="eventCategory" class="form-label">Categoría</label>
-                            <select id="eventCategory" name="category" class="form-control">
+                            <select id="eventCategory" name="category" class="form-control" required>
                                 <option value="" disabled th:selected="${event == null || event.category == null}">Selecciona una categoría</option>
-                                <option value="CULTURA_Y_ARTE" th:selected="${event?.category?.name() == 'CULTURA_Y_ARTE'}">Cultura y Arte</option>
+                                <option id="cya" value="CULTURA_Y_ARTE" th:selected="${event?.category?.name() == 'CULTURA_Y_ARTE'}">Cultura y Arte</option>
                                 <option value="MUSICA_Y_ESPECTACULOS" th:selected="${event?.category?.name() == 'MUSICA_Y_ESPECTACULOS'}">Música y Espectáculos</option>
                                 <option value="OCIO_Y_VIDA_NOCTURNA" th:selected="${event?.category?.name() == 'OCIO_Y_VIDA_NOCTURNA'}">Ocio y Vida Nocturna</option>
                                 <option value="NATURALEZA_Y_AIRE_LIBRE" th:selected="${event?.category?.name() == 'NATURALEZA_Y_AIRE_LIBRE'}">Naturaleza y Aire Libre</option>
@@ -90,7 +90,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary" 
+                        <button type="submit" class="btn btn-primary" id="crear"
                                 th:text="${event != null and event.id != null ? 'Actualizar Evento' : 'Crear Evento'}">
                             Crear Evento
                         </button>

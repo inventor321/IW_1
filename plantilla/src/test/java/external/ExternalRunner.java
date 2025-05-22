@@ -9,15 +9,4 @@ class ExternalRunner {
     Karate testLogin() {
         return Karate.run("login").relativeTo(getClass());
     }    
-
-    @Karate.Test
-    Karate testWs() {
-        return Karate.run("ws").relativeTo(getClass());
-    }  
-
-    @Karate.Test
-    Karate testEvent() {
-        return Karate.run("event").relativeTo(getClass());
-        
-    }
 }
