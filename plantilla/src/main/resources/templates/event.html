@@ -39,16 +39,17 @@
 
                 <!-- Participate button-->
                 <div class="text-center">
-
-                    <form th:if="${!isParticipating}" th:action="@{/events/participate/{id}(id=${event.id})}"
-                        method="post">
-                        <button type="submit" class="custom-btn">Apuntarse al evento</button>
-                    </form>
-
                     <form th:if="${isParticipating}" th:action="@{/events/withdraw/{id}(id=${event.id})}" method="post">
                         <button type="submit" class="custom-btn2">Anular inscripción al evento</button>
                     </form>
-
+                    <th:block th:if="${!isParticipating}">
+                        <form th:if="${event.aforo > participants.size()}" th:action="@{/events/participate/{id}(id=${event.id})}" method="post">
+                            <button type="submit" class="custom-btn">Apuntarse al evento</button>
+                        </form>
+                        <th:block th:if="${participants.size() >= event.aforo}">
+                            <button class="custom-btn3">Evento completo</button>
+                        </th:block>
+                    </th:block> 
                 </div>
 
                 <!-- Edit button -->
@@ -76,6 +77,9 @@
             <!-- Lista participantes-->
             <div class="participants">
                 <h5>Lista de Participantes</h5>
+                <span th:text="${participants.size()}">Capacidad</span>
+                <span>/</span>
+                <span th:text="${event.aforo}">Capacidad</span>
                 <ul class="list-group">
                     <a th:each="participant : ${participants}" 
                        th:href="@{/user/{id}(id=${participant.id})}"

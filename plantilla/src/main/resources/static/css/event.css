@@ -56,6 +56,20 @@ body {
     cursor: pointer;
     margin-bottom: 2rem; 
 }
+
+.custom-btn3 {
+    background-color: rgb(141, 133, 133);
+    color: rgb(0, 0, 0);
+    border: 2px solid rgba(49, 47, 47, 0.5);
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    margin-bottom: 2rem; 
+}
+
 .btn {
     padding: 10px 15px;
     background-color: rgba(0, 128, 0, 0.5);
