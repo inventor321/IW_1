@@ -31,7 +31,7 @@ Roles y tareas:
   Vista de administrador para realizar tareas de gestión, como la creación de nuevos eventos.
 - **Perfil de usuario**  
   Permite modificar la información personal de tu cuenta, cambiar la foto de perfil y enviar mensajes.
-- **Amistades**
+- **Amistades**  
   Lista de usuarios añadidos como amigos, con sugerencias de usuarios a los que añadir.
 - **Chat**  
   Pantalla dedicada a la comunicación mediante mensajes con otros usuarios.
