@@ -48,7 +48,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="eventCategory" class="form-label">Categoría</label>
-                            <select id="eventCategory" name="category" class="form-control" required>
+                            <select id="eventCategory" name="category" class="form-control">
                                 <option value="" disabled th:selected="${event == null || event.category == null}">Selecciona una categoría</option>
                                 <option value="CULTURA_Y_ARTE" th:selected="${event?.category?.name() == 'CULTURA_Y_ARTE'}">Cultura y Arte</option>
                                 <option value="MUSICA_Y_ESPECTACULOS" th:selected="${event?.category?.name() == 'MUSICA_Y_ESPECTACULOS'}">Música y Espectáculos</option>
