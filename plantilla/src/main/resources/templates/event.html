@@ -55,7 +55,7 @@
                 <!-- Edit button -->
                 <div class="text-center">
                     <a th:href="@{'/events/' + ${event.id} + '/edit'}" 
-                    th:if="${#authorization.expression('hasRole(''ADMIN'')') || (event.org != null && event.org == session.u.id)}" 
+                    th:if="${#authorization.expression('hasRole(''ADMIN'')') || (event.org != null && event.org == u.id)}" 
                        class="custom-btn w-21 mb-0 text-decoration-none">
                         EDITAR EVENTO
                     </a>
@@ -81,16 +81,22 @@
                 <span>/</span>
                 <span th:text="${event.aforo}">Capacidad</span>
                 <ul class="list-group">
-                    <a th:each="participant : ${participants}" 
-                       th:href="@{/user/{id}(id=${participant.id})}"
-                       class="list-group-item list-group-item-action d-flex align-items-center" 
-                       th:attr="data-id=${participant.id}">
-                        <img th:src="@{/user/{id}/pic(id=${participant.id})}" 
-                             class="participant-avatar me-2" 
-                             alt="Avatar"
-                             onerror="this.src='/img/default-avatar.png';">
-                        <span th:text="${participant.username}">Username</span>
-                    </a>
+                    <th:block th:each="participant : ${participants}">
+                        <a th:href="@{/user/{id}(id=${participant.id})}"
+                        class="list-group-item list-group-item-action d-flex align-items-center" 
+                        th:attr="data-id=${participant.id}">
+                            <img th:src="@{/user/{id}/pic(id=${participant.id})}" 
+                                class="participant-avatar me-2" 
+                                alt="Avatar"
+                                onerror="this.src='/img/default-avatar.png';">
+                            <span th:text="${participant.username}">Username</span>
+                        
+                        <form th:if="${#authorization.expression('hasRole(''ADMIN'')') || (event.org != null && event.org == u.id)}" 
+                            th:action="@{/events/withdraw/{id1}/{id2}(id1=${event.id}, id2=${participant.id})}" method="post">
+                            <button type="submit" class="custom-btn4">Eliminar</button>
+                        </form>
+                        </a>
+                    </th:block>
                 </ul>
             </div>
 
