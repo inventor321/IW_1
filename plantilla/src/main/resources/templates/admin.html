@@ -107,7 +107,8 @@
                                     <th>Nombre</th>
                                     <th>Fecha</th>
                                     <th>Participantes</th>
-                                    <th>Categoría</th> <!-- Nueva columna -->
+                                    <th>Creador</th>
+                                    <th>Categoría</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -120,9 +121,18 @@
                                              class="event-thumb me-2" alt="Event">
                                         <span th:text="${event.name}">Título del Evento</span>
                                     </td>
-                                    <td th:text="${#temporals.format(event.date, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
-                                    <td th:text="${participantCounts[event.id]}">0</td> <!-- Muestra la cantidad de participantes -->
-                                    <td th:text="${event.category}">Categoría</td> <!-- Nueva columna -->
+                                     <td>
+                                        <span th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">01/01/2025</span>
+                                        <span>to</span>
+                                        <span th:text="${#temporals.format(event.ending, 'dd MMMM yyyy HH:mm')}">01/01/2025</span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${participantCounts[event.id]}">Capacidad</span>
+                                        <span>/</span>
+                                        <span th:text="${event.aforo}">Capacidad</span>
+                                    </td>
+                                    <td th:text="${event.org}">Creador</td> 
+                                    <td th:text="${event.category}">Categoría</td> 
                                     <td>
                                         <span th:class="${event.active ? 'badge bg-success' : 'badge bg-danger'}"
                                               th:text="${event.active ? 'Activo' : 'Inactivo'}">

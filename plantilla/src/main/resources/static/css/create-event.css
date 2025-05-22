@@ -1,6 +1,11 @@
 body {
     background-color: #e8f5e9;
 }
+
+.form-control{
+    margin-bottom: 10px;
+}
+
 .hero {
     background: url('/img/events-bg.jpg') center/cover no-repeat;
     height: 50vh;

@@ -20,6 +20,8 @@ public class Event {
     private String description;
 
     private LocalDateTime date;
+    private LocalDateTime ending;
+    private Integer aforo;
     @Column(length = 255)
     private String location;
     private String imageUrl;
@@ -33,14 +35,16 @@ public class Event {
     public Event() {
     }
 
-    public Event(String name, String description, LocalDateTime date, String location, String imageUrl, Long org,
-            Category category) {
+    public Event(String name, String description, LocalDateTime date, LocalDateTime ending, String location, String imageUrl, Long org,
+            Integer aforo, Category category) {
         this.name = name;
         this.description = description;
         this.date = date;
+        this.ending = ending;
         this.location = location;
         this.imageUrl = imageUrl;
         this.org = org;
+        this.aforo = aforo;
         this.category = category;
         this.active = true; // Por defecto, el evento está habilitado
     }

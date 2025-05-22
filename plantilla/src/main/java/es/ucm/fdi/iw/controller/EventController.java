@@ -99,11 +99,13 @@ public class EventController {
     public String created(@RequestParam String name,
             @RequestParam String description,
             @RequestParam LocalDateTime date,
+            @RequestParam LocalDateTime ending,
             @RequestParam String location,
             @RequestParam String imageSource,
             @RequestParam(required = false) String imageUrl,
             @RequestParam(required = false) MultipartFile imageFile,
             @RequestParam String category,
+            @RequestParam Integer aforo,
             HttpSession session,
             RedirectAttributes ra) {
         try {
@@ -111,7 +113,7 @@ public class EventController {
 
             Category cat = Category.valueOf(category);
 
-            Event event = new Event(name, description, date, location, null, u.getId(), cat);
+            Event event = new Event(name, description, date, ending, location, null, u.getId(), aforo, cat);
             eventRepository.save(event);
 
             if ("file".equals(imageSource) && imageFile != null && !imageFile.isEmpty()) {
@@ -302,9 +304,11 @@ public class EventController {
                             @RequestParam String name,
                             @RequestParam String description,
                             @RequestParam LocalDateTime date,
+                            @RequestParam LocalDateTime ending,
                             @RequestParam String location,
                             @RequestParam String imageSource,
                             @RequestParam String category,
+                            @RequestParam Integer aforo,
                             @RequestParam(required = false) String imageUrl,
                             @RequestParam(required = false) MultipartFile imageFile,
                             HttpSession session,
@@ -324,6 +328,7 @@ public class EventController {
             event.setName(name);
             event.setDescription(description);
             event.setDate(date);
+            event.setEnding(ending);
             event.setLocation(location);
             event.setCategory(Category.valueOf(category));
 

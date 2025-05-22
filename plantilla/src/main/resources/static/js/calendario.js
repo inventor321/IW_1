@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
       },
-      navLinks: true, // can click day/week names to navigate views
+      navLinks: true,
       editable: true,
       selectable: true,
       selectMirror: true,
-      dayMaxEvents: true, // allow "more" link when too many events
+      dayMaxEvents: true,
       titleFormat: '',
       events: [
       ]
@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
       calendar2.addEvent({
         title: lEventosJS[i].name,
         start: lEventosJS[i].date,
+        end: lEventosJS[i].ending,
         url: '/events/' + lEventosJS[i].id
       });
     }

@@ -28,15 +28,23 @@
                             <textarea class="form-control" id="eventDescription" name="description" rows="3" required th:text="${event != null ? event.description : ''}"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="eventDate" class="form-label">Date</label>
+                            <label for="eventDate" class="form-label">Date Start</label>
                             <input type="datetime-local" class="form-control" id="eventDate" name="date" required
                                 th:value="${event != null and event.date != null 
                                     ? #temporals.format(event.date, 'yyyy-MM-dd''T''HH:mm') 
                                     : #temporals.format(T(java.time.LocalDateTime).now(), 'yyyy-MM-dd''T''HH:mm') }">
                         </div>
                         <div class="mb-3">
+                            <label for="eventEnd" class="form-label">Date end</label>
+                            <input type="datetime-local" class="form-control" id="eventEnd" name="ending" required>
+                        </div>
+                        <div class="mb-3">
                             <label for="eventLocation" class="form-label">Location</label>
                             <input type="text" class="form-control" id="eventLocation" name="location" required th:value="${event?.location}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventAforo" class="form-label">Capacity</label>
+                            <input type="number" class="form-control" id="eventAforo" name="aforo" min="1" pattern="\d+" step="1" required>
                         </div>
                         <div class="mb-3">
                             <label for="eventCategory" class="form-label">Categoría</label>

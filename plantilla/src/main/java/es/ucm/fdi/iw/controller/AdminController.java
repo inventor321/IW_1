@@ -55,9 +55,11 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/")  // Changed from "" to "/"
-    public String index(Model model) {
+    @GetMapping("/")
+    public String index(Model model, HttpSession session) {
         log.info("Admin acaba de entrar");
+        User currentUser = (User) session.getAttribute("u");
+        model.addAttribute("u", currentUser);
         try {
             // Obtener todos los eventos activos
             List<Event> events = eventRepository.findAll();
