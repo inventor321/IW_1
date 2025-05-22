@@ -125,13 +125,6 @@ public class UserController {
 		return "user";
 	}
 
-	/*
-	List<Event> lEventos = entityManager
-				.createQuery("SELECT p.event FROM Participation p WHERE p.user = :user AND p.enabled = true",
-						Event.class)
-				.setParameter("user", targetUser).getResultList();
-	model.addAttribute("lEventos", lEventos); 
-	*/
 
 	@PostMapping("/search")
 	public String search(@RequestParam(value = "username") String username, Model model, HttpSession session) {

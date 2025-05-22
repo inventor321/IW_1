@@ -36,7 +36,10 @@
                         </div>
                         <div class="mb-3">
                             <label for="eventEnd" class="form-label">Fecha de fin</label>
-                            <input type="datetime-local" class="form-control" id="eventEnd" name="ending" required>
+                            <input type="datetime-local" class="form-control" id="eventEnd" name="ending" required 
+                                th:value="${event != null and event.ending != null 
+                                    ? #temporals.format(event.ending, 'yyyy-MM-dd''T''HH:mm') 
+                                    : #temporals.format(T(java.time.LocalDateTime).now(), 'yyyy-MM-dd''T''HH:mm') }">
                         </div>
                         <div class="mb-3">
                             <label for="eventLocation" class="form-label">Ubicación</label>
@@ -44,7 +47,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="eventAforo" class="form-label">Capacidad</label>
-                            <input type="number" class="form-control" id="eventAforo" name="aforo" min="1" pattern="\d+" step="1" required>
+                            <input type="number" class="form-control" id="eventAforo" name="aforo" min="1" pattern="\d+" step="1" required th:value="${event?.aforo}">
                         </div>
                         <div class="mb-3">
                             <label for="eventCategory" class="form-label">Categoría</label>
