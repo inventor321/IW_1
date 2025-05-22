@@ -1,16 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Establecer la fecha actual en el campo de fecha
-    const eventDateInput = document.getElementById('eventDate');
-    const eventEndInput = document.getElementById('eventEnd');
-    if (eventDateInput) {
-        const now = new Date();
-        const formattedDate = now.toISOString().slice(0, 16); // Formato: YYYY-MM-DDTHH:mm
-        const later = new Date();
-        later.setDate(now.getDate() + 1);
-        const fdate = later.toISOString().slice(0, 16);
-        eventDateInput.value = formattedDate;
-        eventEndInput.value = fdate;
-    }
 
     // Manejar la selección de fuente de imagen (URL o archivo local)
     const urlSource = document.getElementById('urlSource');
