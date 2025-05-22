@@ -45,7 +45,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("UPDATE Event e SET e.active = true WHERE e.id = :id")
     void enableEventById(@Param("id") Long id);
 
-     @Query("SELECT e FROM Event e WHERE " +
+    @Query("SELECT e FROM Event e WHERE " +
            "e.active = true AND " + 
            "(LOWER(e.name) LIKE %:query% OR " +
            "LOWER(e.description) LIKE %:query% OR " +
@@ -58,7 +58,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
            "CASE WHEN :sortOption = 'date-desc' THEN e.date END DESC, " +
            "CASE WHEN :sortOption = 'name-asc' THEN e.name END ASC, " +
            "CASE WHEN :sortOption = 'name-desc' THEN e.name END DESC, " +
-           "e.date DESC") // Orden por defecto si no hay match
+           "e.date ASC")
     List<Event> findFilteredEvents(
             @Param("query") String query,
             @Param("category") Event.Category category,

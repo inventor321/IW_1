@@ -330,6 +330,7 @@ public class EventController {
             event.setDate(date);
             event.setEnding(ending);
             event.setLocation(location);
+            event.setAforo(aforo);
             event.setCategory(Category.valueOf(category));
 
             // Handle image update
