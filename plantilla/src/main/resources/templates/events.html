@@ -17,6 +17,14 @@
     <main class="flex-shrink-0">
       <section class="hero">
         <div class="container">
+
+          <div class="d-flex justify-content-end mb-4"
+              th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''ORG'')')}">
+              <a th:href="@{/events/create}" class="btn btn-light">
+                  <i class="bi bi-plus-circle"></i> Crear Evento
+              </a>
+          </div>
+
           <h1 class="display-4 fw-bold">Eventos Disponibles</h1>
           <p class="lead">Explora y únete a eventos increíbles cerca de ti.</p>
 

@@ -2,7 +2,7 @@
 <html class="h-100" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>Nav fragment - rest intentionally left empty</title>
+    <title>Fragmento de navegación - el resto intencionadamente vacío</title>
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -15,33 +15,25 @@
                 <a class="navbar-brand" th:href="@{/}" href="/">
                     <img th:src="@{/img/logoSmall.png}" src="/img/logoSmall.png" alt="logo IW" width="32" height="32" class="d-inline-block align-text-top"/> Exchange Connect
                 </a>
-                <!-- menu hamburguesa si no cabe todo -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <!-- menú hamburguesa si no cabe todo -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Alternar navegación">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <!-- <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
-                    <span th:text="${message}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <span th:text="${error}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div> -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto">
                         <th:block th:if="${u}">
                             <li class="nav-item mx-3">
-                                <!-- Boton Administrar -->
+                                <!-- Botón Administrar -->
                                 <a class="nav-link" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/}">Administrar</a>
                             </li>
                            
                             <li class="nav-item mx-3">
-                                <!-- Boton Panel de creador-->
+                                <!-- Botón Panel de creador-->
                                 <a class="nav-link" th:if="${#authorization.expression('hasRole(''ORG'')')}" th:href="@{/org/}">Panel de Creador</a>
                             </li>
 
                             <li class="nav-item mx-3">
-                                <!-- Boton Eventos-->
+                                <!-- Botón Eventos-->
                                 <a class="nav-link" th:href="@{/events}">Eventos</a>
                             </li>
 
@@ -53,14 +45,14 @@
                             </li>
 
                             <li class="nav-item mx-2">
-                                <!-- Boton perfil usuario -->
+                                <!-- Botón perfil usuario -->
                                 <a class="nav-link" th:href="@{/user/{id}(id=${u.id})}">
                                     <img class="iwthumb rounded" th:src="@{/user/{id}/pic(id=${u.id})}">
                                     <span th:text="${u.username}">Pepe</span>
                                 </a>
                             </li>
                             <li class="nav-item align-self-center me-4">
-                                <!-- Chat button -->
+                                <!-- Botón Chat -->
                                 <a th:href="@{/chat/conversations}" class="text-decoration-none">
                                     <button type="button" class="btn btn-outline-primary btn-sm position-relative">
                                         ✉️ 
@@ -73,11 +65,11 @@
                                 </a>
                             </li>
                             <li class="nav-item align-self-center">
-                                <!-- Formulario logout-->
+                                <!-- Formulario cerrar sesión-->
                                 <form th:action="@{/logout}" method="post" class="d-inline">
-                                    <!-- Boton logout-->
+                                    <!-- Botón cerrar sesión-->
                                     <button type="submit" class="btn btn-link nav-link">
-                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
                                     </button>
                                 </form>
                             </li>
@@ -85,24 +77,24 @@
 
                         <th:block th:unless="${u}">
                             <li class="nav-item mx-3">
-                                <!-- Boton events-->
-                                <a class="nav-link" th:href="@{/events}">Events</a>
+                                <!-- Botón eventos-->
+                                <a class="nav-link" th:href="@{/events}">Eventos</a>
                             </li>
                             
                             <li class="nav-item mx-2">
-                                <!-- Boton register-->
-                                <a class="nav-link" th:href="@{/register}" href="/register">Register</a>
+                                <!-- Botón registro-->
+                                <a class="nav-link" th:href="@{/register}" href="/register">Registrarse</a>
                             </li>
                             <li class="nav-item mx-2">
-                                <!-- Boton login-->
-                                <a class="nav-link" th:href="@{/login}" href="/login">Login</a>
+                                <!-- Botón iniciar sesión-->
+                                <a class="nav-link" th:href="@{/login}" href="/login">Iniciar sesión</a>
                             </li>
                             <li class="nav-item debug align-self-center" th:if="${application.debug}">
                                 <!-- Formulario login Admin-->
                                 <form class="d-flex" th:action="@{/login}" method="post">
                                     <input type="hidden" name="username" value="ADMIN">
                                     <input type="hidden" name="password" value="aa">
-                                    <!-- Boton admin-->
+                                    <!-- Botón admin-->
                                     <button type="submit" class="btn btn-outline-danger btn-sm">ADMIN</button>
                                 </form>
                             </li>
@@ -111,7 +103,7 @@
                                 <form class="d-flex" th:action="@{/login}" method="post">
                                     <input type="hidden" name="username" value="ORG">
                                     <input type="hidden" name="password" value="aa">
-                                    <!-- Boton org-->
+                                    <!-- Botón org-->
                                     <button type="submit" class="btn btn-outline-danger btn-sm">ORG</button>
                                 </form>
                             </li>
@@ -120,8 +112,8 @@
                                 <form class="d-flex" th:action="@{/login}" method="post">
                                     <input type="hidden" name="username" value="USER">
                                     <input type="hidden" name="password" value="aa">
-                                    <!-- Boton user-->
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">USER</button>
+                                    <!-- Botón usuario-->
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">USUARIO</button>
                                 </form>
                             </li>
                         </th:block>

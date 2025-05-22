@@ -107,7 +107,6 @@
                                     <th>Nombre</th>
                                     <th>Fecha</th>
                                     <th>Participantes</th>
-                                    <th>Creador</th>
                                     <th>Categoría</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
@@ -123,7 +122,7 @@
                                     </td>
                                      <td>
                                         <span th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">01/01/2025</span>
-                                        <span>to</span>
+                                        <span>a</span>
                                         <span th:text="${#temporals.format(event.ending, 'dd MMMM yyyy HH:mm')}">01/01/2025</span>
                                     </td>
                                     <td>
@@ -131,7 +130,6 @@
                                         <span>/</span>
                                         <span th:text="${event.aforo}">Capacidad</span>
                                     </td>
-                                    <td th:text="${event.org}">Creador</td> 
                                     <td th:text="${event.category}">Categoría</td> 
                                     <td>
                                         <span th:class="${event.active ? 'badge bg-success' : 'badge bg-danger'}"

@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -16,16 +18,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 class PlantillaApplicationTests {
 
-	@Autowired private WebApplicationContext wac;	
-	private MockMvc mockMvc;	
+	@Autowired private MockMvc mockMvc;	
 	
-	@BeforeEach
-	public void setup() throws Exception {
-	    this.mockMvc = MockMvcBuilders
-			.webAppContextSetup(this.wac).build();
-	}
 
 	@Test
 	void contextLoads() {
@@ -50,5 +47,30 @@ class PlantillaApplicationTests {
 	      .andReturn();	     
 	    Assertions.assertEquals("application/json", 
 	      mvcResult.getResponse().getContentType());
+	}
+
+	@Test
+	public void homePageLoads() throws Exception {
+	    MvcResult mvcResult = this.mockMvc.perform(get("/"))
+	        .andDo(print()).andExpect(status().isOk())
+	        .andReturn();
+	    Assertions.assertTrue(mvcResult.getResponse().getContentAsString().contains("Exchange Connect"));
+	}
+
+	@Test
+	public void protectedPageRedirectsToLogin() throws Exception {
+	    this.mockMvc.perform(get("/events/create"))
+	        .andDo(print())
+	        .andExpect(status().is3xxRedirection())
+	        .andExpect(redirectedUrlPattern("**/login"));
+	}
+
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	@Test
+	public void createEventFormLoadsForAdmin() throws Exception {
+	    this.mockMvc.perform(get("/events/create"))
+	        .andDo(print())
+	        .andExpect(status().isOk())
+	        .andExpect(content().string(containsString("Crear Evento")));
 	}
 }

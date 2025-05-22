@@ -3,15 +3,10 @@ body {
 }
 
 .hero {
-    /* background: url('/img/events-bg.jpg') center/cover no-repeat; */
-    height: 50vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    padding: 35px 0;
+    text-align: center; 
+    background: rgba(0, 128, 0, 0.5);
     color: white;
-    background-blend-mode: overlay;
-    background-color: rgba(0, 128, 0, 0.5);
 }
 
 .btn-green {
