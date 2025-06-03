@@ -34,7 +34,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Controller
 @RequestMapping("/events")
 public class EventController {
@@ -43,6 +42,31 @@ public class EventController {
     public void populateModel(HttpSession session, Model model) {
         for (String name : new String[] { "u", "url", "ws" }) {
             model.addAttribute(name, session.getAttribute(name));
+        }
+
+        User currentUser = (User) session.getAttribute("u");
+
+        if (currentUser != null) {
+            // Obtener todas las conversaciones con el conteo de mensajes no leídos
+            List<Object[]> conversations = messageRepository.findAllConversationsWithUnreadCount(currentUser.getId());
+
+            // Ordenar: primero las que tienen mensajes sin leer, luego las demás
+            conversations.sort((a, b) -> {
+                Long unreadA = (Long) a[1];
+                Long unreadB = (Long) b[1];
+                if ((unreadA > 0 && unreadB > 0) || (unreadA == 0 && unreadB == 0)) {
+                    return 0;
+                }
+                return unreadA > 0 ? -1 : 1;
+            });
+
+            int unreadCount = conversations.stream()
+                    .mapToInt(conversation -> ((Long) conversation[1]).intValue())
+                    .sum();
+
+            model.addAttribute("conversations", conversations);
+            model.addAttribute("unreadCount", unreadCount);
+
         }
     }
 
@@ -57,12 +81,12 @@ public class EventController {
 
     @Autowired
     private MessageRepository messageRepository;
-    
+
     @Autowired
     private EntityManager entityManager;
 
     @GetMapping
-    public String listEvents(Model model,
+    public String listEvents(Model model, HttpSession session,
             @RequestParam(required = false) String query,
             @RequestParam(required = false) Event.Category category,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -71,20 +95,44 @@ public class EventController {
 
         List<Event> events;
         LocalDateTime start = null, end = null;
-        if (startDate != null){
+        if (startDate != null) {
             start = startDate.atStartOfDay();
         }
-        if (endDate != null){
+        if (endDate != null) {
             end = endDate.atTime(23, 59, 59);
         }
 
+        User currentUser = (User) session.getAttribute("u");
+
+        if (currentUser != null) {
+            // Obtener todas las conversaciones con el conteo de mensajes no leídos
+            List<Object[]> conversations = messageRepository.findAllConversationsWithUnreadCount(currentUser.getId());
+
+            // Ordenar: primero las que tienen mensajes sin leer, luego las demás
+            conversations.sort((a, b) -> {
+                Long unreadA = (Long) a[1];
+                Long unreadB = (Long) b[1];
+                if ((unreadA > 0 && unreadB > 0) || (unreadA == 0 && unreadB == 0)) {
+                    return 0;
+                }
+                return unreadA > 0 ? -1 : 1;
+            });
+
+            int unreadCount = conversations.stream()
+                    .mapToInt(conversation -> ((Long) conversation[1]).intValue())
+                    .sum();
+
+            model.addAttribute("conversations", conversations);
+            model.addAttribute("unreadCount", unreadCount);
+
+        }
+
         events = eventRepository.findFilteredEvents(
-            query,
-            category,
-            start,
-            end,
-            sort
-        );
+                query,
+                category,
+                start,
+                end,
+                sort);
 
         model.addAttribute("events", events);
         return "events"; // Renderiza la pagina de eventos
@@ -234,7 +282,8 @@ public class EventController {
 
     @PostMapping("/withdraw/{id1}/{id2}")
     @Transactional
-    public String withdrawOtherFromEvent(@PathVariable Long id1, @PathVariable Long id2, Model model, HttpSession session) {
+    public String withdrawOtherFromEvent(@PathVariable Long id1, @PathVariable Long id2, Model model,
+            HttpSession session) {
         User u = userRepository.findById(id2)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         Event event = eventRepository.findById(id1)
@@ -264,7 +313,7 @@ public class EventController {
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     @Transactional
     public String disableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session,
-                               @RequestHeader(value = "referer", required = false) String referer) {
+            @RequestHeader(value = "referer", required = false) String referer) {
         try {
             User user = (User) session.getAttribute("u");
             Event event = eventRepository.findById(id)
@@ -277,10 +326,8 @@ public class EventController {
                 ra.addFlashAttribute("error", "You don't have permission to disable this event");
             }
             // Redirige a la página anterior si existe, si no a "/"
-            return "redirect:" + (
-                referer != null && referer.contains("/events/") ? "/events" :
-                referer != null ? referer : "/"
-            );
+            return "redirect:"
+                    + (referer != null && referer.contains("/events/") ? "/events" : referer != null ? referer : "/");
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error disabling event: " + e.getMessage());
             return "redirect:/";
@@ -291,7 +338,7 @@ public class EventController {
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     @Transactional
     public String enableEvent(@PathVariable Long id, RedirectAttributes ra, HttpSession session,
-                              @RequestHeader(value = "referer", required = false) String referer) {
+            @RequestHeader(value = "referer", required = false) String referer) {
         try {
             User user = (User) session.getAttribute("u");
             Event event = eventRepository.findById(id)
@@ -319,12 +366,12 @@ public class EventController {
         User u = (User) session.getAttribute("u");
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
-        
+
         if (u.hasRole(User.Role.ORG) && !event.getOrg().equals(u.getId())) {
             ra.addFlashAttribute("error", "You don't have permission to edit this event");
             return "redirect:/events/" + id;
         }
-        
+
         model.addAttribute("event", event);
         return "create-event";
     }
@@ -333,18 +380,18 @@ public class EventController {
     @PreAuthorize("hasAnyRole('ORG', 'ADMIN')")
     @Transactional
     public String updateEvent(@PathVariable Long id,
-                            @RequestParam String name,
-                            @RequestParam String description,
-                            @RequestParam LocalDateTime date,
-                            @RequestParam LocalDateTime ending,
-                            @RequestParam String location,
-                            @RequestParam String imageSource,
-                            @RequestParam String category,
-                            @RequestParam Integer aforo,
-                            @RequestParam(required = false) String imageUrl,
-                            @RequestParam(required = false) MultipartFile imageFile,
-                            HttpSession session,
-                            RedirectAttributes ra) {
+            @RequestParam String name,
+            @RequestParam String description,
+            @RequestParam LocalDateTime date,
+            @RequestParam LocalDateTime ending,
+            @RequestParam String location,
+            @RequestParam String imageSource,
+            @RequestParam String category,
+            @RequestParam Integer aforo,
+            @RequestParam(required = false) String imageUrl,
+            @RequestParam(required = false) MultipartFile imageFile,
+            HttpSession session,
+            RedirectAttributes ra) {
         try {
             User u = (User) session.getAttribute("u");
             Event event = eventRepository.findById(id)
@@ -384,6 +431,5 @@ public class EventController {
             return "redirect:/events/" + id;
         }
     }
-
 
 }

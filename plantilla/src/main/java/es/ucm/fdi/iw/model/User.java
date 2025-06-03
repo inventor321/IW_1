@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * An authorized user of the system.
@@ -53,6 +54,7 @@ public class User implements Transferable<User.Transfer> {
     private String phonenumber;
     private String imageUrl;
 
+    private LocalDateTime lastlogin;
     private boolean enabled;
     @Column(nullable = false)
     private String roles; // split by ',' to separate roles
@@ -88,11 +90,12 @@ public class User implements Transferable<User.Transfer> {
         private String email;
         private int totalReceived;
         private int totalSent;
+        private LocalDateTime lastlogin;
     }
 
     @Override
     public Transfer toTransfer() {
-        return new Transfer(id, username, firstName, email, received.size(), sent.size());
+        return new Transfer(id, username, firstName, email, received.size(), sent.size(), lastlogin);
     }
 
     @Override

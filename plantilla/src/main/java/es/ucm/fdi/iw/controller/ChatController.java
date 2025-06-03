@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.http.HttpStatus;
 
 import es.ucm.fdi.iw.model.*;
@@ -55,7 +56,8 @@ public class ChatController {
 
     @GetMapping("/{partnerId}")
     @Transactional
-    public String chat(@PathVariable Long partnerId, Model model, HttpSession session) {
+    public String chat(@PathVariable Long partnerId, Model model, HttpSession session, RedirectAttributes ra) {
+
         User currentUser = (User) session.getAttribute("u");
         User chatPartner = userRepository.findById(partnerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
@@ -127,8 +129,8 @@ public class ChatController {
 
     @PostMapping("/group/{groupId}/send")
     public String sendGroupMessage(@PathVariable long groupId,
-                                   @RequestParam String text,
-                                   HttpSession session) {
+            @RequestParam String text,
+            HttpSession session) {
         User sender = (User) session.getAttribute("u");
         if (sender == null) {
             return "redirect:/login";

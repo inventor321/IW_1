@@ -24,7 +24,9 @@ import org.springframework.http.HttpStatus;
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.repository.EventRepository;
+import es.ucm.fdi.iw.repository.MessageRepository;
 import es.ucm.fdi.iw.repository.ParticipationRepository;
+import es.ucm.fdi.iw.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -43,6 +45,13 @@ public class AdminController {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
+
     @Autowired
     private ParticipationRepository participationRepository;
 
@@ -53,10 +62,35 @@ public class AdminController {
         for (String name : new String[] { "u", "url", "ws" }) {
             model.addAttribute(name, session.getAttribute(name));
         }
+
+        User currentUser = (User) session.getAttribute("u");
+
+        if (currentUser != null) {
+            // Obtener todas las conversaciones con el conteo de mensajes no leídos
+            List<Object[]> conversations = messageRepository.findAllConversationsWithUnreadCount(currentUser.getId());
+
+            // Ordenar: primero las que tienen mensajes sin leer, luego las demás
+            conversations.sort((a, b) -> {
+                Long unreadA = (Long) a[1];
+                Long unreadB = (Long) b[1];
+                if ((unreadA > 0 && unreadB > 0) || (unreadA == 0 && unreadB == 0)) {
+                    return 0;
+                }
+                return unreadA > 0 ? -1 : 1;
+            });
+
+            int unreadCount = conversations.stream()
+                    .mapToInt(conversation -> ((Long) conversation[1]).intValue())
+                    .sum();
+
+            model.addAttribute("conversations", conversations);
+            model.addAttribute("unreadCount", unreadCount);
+
+        }
     }
 
-    @GetMapping("/")
-    public String index(Model model, HttpSession session) {
+    @GetMapping("/eventos")
+    public String events(Model model, HttpSession session) {
         log.info("Admin acaba de entrar");
         User currentUser = (User) session.getAttribute("u");
         model.addAttribute("u", currentUser);
@@ -72,14 +106,57 @@ public class AdminController {
                 log.info("Event ID: {}, Participant Count: {}", event.getId(), count);
             }
 
-            List<User> users = entityManager
-                .createQuery("SELECT u FROM User u", User.class)
-                .getResultList();
-            model.addAttribute("users", users);
             model.addAttribute("events", events);
             model.addAttribute("participantCounts", participantCounts);
 
-            return "admin"; // This should match exactly with the template name (without .html)
+            return "adminevents"; // This should match exactly with the template name (without .html)
+        } catch (Exception e) {
+            log.error("Error loading users: " + e.getMessage());
+            return "error";
+        }
+    }
+
+    @GetMapping("/usuarios")
+    public String users(Model model, HttpSession session) {
+        log.info("Admin acaba de entrar");
+        User currentUser = (User) session.getAttribute("u");
+        model.addAttribute("u", currentUser);
+        try {
+
+            List<User> users = entityManager
+                    .createQuery("SELECT u FROM User u", User.class)
+                    .getResultList();
+            model.addAttribute("users", users);
+
+            return "adminusers";
+        } catch (Exception e) {
+            log.error("Error loading users: " + e.getMessage());
+            return "error";
+        }
+    }
+
+    @GetMapping("/lastusuarios")
+    public String lastusers(Model model, HttpSession session) {
+        log.info("Admin acaba de entrar");
+        int contador = 0;
+        List<User> resultado = new java.util.ArrayList<User>();
+        User currentUser = (User) session.getAttribute("u");
+        model.addAttribute("u", currentUser);
+        try {
+
+            List<User> users = entityManager
+                    .createQuery("SELECT u FROM User u ORDER BY u.lastlogin DESC", User.class)
+                    .getResultList();
+
+            for(User user : users) {
+                if(contador <=20) {
+                    resultado.add(user);
+                    contador++;
+                }
+            }
+            model.addAttribute("users", resultado);
+
+            return "ultimoslogin";
         } catch (Exception e) {
             log.error("Error loading users: " + e.getMessage());
             return "error";

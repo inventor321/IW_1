@@ -20,8 +20,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
-               .withSockJS(); // Añade SockJS para mejor compatibilidad
+        registry.addEndpoint("/ws");
+               // comentado por profesor .withSockJS(); // Añade SockJS para mejor compatibilidad
         // allowedOrigins allows proxying; see https://stackoverflow.com/questions/33977803
     }
 

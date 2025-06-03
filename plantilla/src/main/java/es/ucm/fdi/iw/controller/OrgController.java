@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import es.ucm.fdi.iw.model.Event;
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.repository.EventRepository;
+import es.ucm.fdi.iw.repository.MessageRepository;
 import es.ucm.fdi.iw.repository.ParticipationRepository;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -41,10 +42,38 @@ public class OrgController {
     @Autowired
     private ParticipationRepository participationRepository;
 
+    @Autowired
+    private MessageRepository messageRepository;
+
     @ModelAttribute
     public void populateModel(HttpSession session, Model model) {
         for (String name : new String[] { "u", "url", "ws" }) {
             model.addAttribute(name, session.getAttribute(name));
+        }
+
+        User currentUser = (User) session.getAttribute("u");
+
+        if (currentUser != null) {
+            // Obtener todas las conversaciones con el conteo de mensajes no leídos
+            List<Object[]> conversations = messageRepository.findAllConversationsWithUnreadCount(currentUser.getId());
+
+            // Ordenar: primero las que tienen mensajes sin leer, luego las demás
+            conversations.sort((a, b) -> {
+                Long unreadA = (Long) a[1];
+                Long unreadB = (Long) b[1];
+                if ((unreadA > 0 && unreadB > 0) || (unreadA == 0 && unreadB == 0)) {
+                    return 0;
+                }
+                return unreadA > 0 ? -1 : 1;
+            });
+
+            int unreadCount = conversations.stream()
+                    .mapToInt(conversation -> ((Long) conversation[1]).intValue())
+                    .sum();
+
+            model.addAttribute("conversations", conversations);
+            model.addAttribute("unreadCount", unreadCount);
+
         }
     }
 
@@ -58,6 +87,29 @@ public class OrgController {
 
         // Obtener todos los eventos activos
         List<Event> events = eventRepository.findAll();
+
+        if (currentUser != null) {
+            // Obtener todas las conversaciones con el conteo de mensajes no leídos
+            List<Object[]> conversations = messageRepository.findAllConversationsWithUnreadCount(currentUser.getId());
+
+            // Ordenar: primero las que tienen mensajes sin leer, luego las demás
+            conversations.sort((a, b) -> {
+                Long unreadA = (Long) a[1];
+                Long unreadB = (Long) b[1];
+                if ((unreadA > 0 && unreadB > 0) || (unreadA == 0 && unreadB == 0)) {
+                    return 0;
+                }
+                return unreadA > 0 ? -1 : 1;
+            });
+
+            int unreadCount = conversations.stream()
+                    .mapToInt(conversation -> ((Long) conversation[1]).intValue())
+                    .sum();
+
+            model.addAttribute("conversations", conversations);
+            model.addAttribute("unreadCount", unreadCount);
+
+        }
 
         // Añadir la cantidad de participantes a cada evento
         Map<Long, Long> participantCounts = new HashMap<>();

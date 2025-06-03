@@ -63,6 +63,11 @@
     border-color: #28a745;
 }
 
+.btn-new {
+    background-color: rgb(231, 72, 72);
+    border-color: rgb(231, 72, 72);;
+}
+
 .btn-success:hover {
     background-color: #218838;
     border-color: #1e7e34;

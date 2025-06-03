@@ -24,7 +24,17 @@
                         <th:block th:if="${u}">
                             <li class="nav-item mx-3">
                                 <!-- Botón Administrar -->
-                                <a class="nav-link" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/}">Administrar</a>
+                                <a class="nav-link" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/eventos}">Administrar Eventos</a>
+                            </li>
+
+                            <li class="nav-item mx-3">
+                                <!-- Botón Administrar -->
+                                <a class="nav-link" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/usuarios}">Administrar Usuarios</a>
+                            </li>
+
+                            <li class="nav-item mx-3">
+                                <!-- Botón Administrar -->
+                                <a class="nav-link" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/lastusuarios}">Ultimos Usuarios</a>
                             </li>
                            
                             <li class="nav-item mx-3">
@@ -53,15 +63,41 @@
                             </li>
                             <li class="nav-item align-self-center me-4">
                                 <!-- Botón Chat -->
-                                <a th:href="@{/chat/conversations}" class="text-decoration-none">
-                                    <button type="button" class="btn btn-outline-primary btn-sm position-relative">
-                                        ✉️ 
-                                        <span id="nav-unread" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary"
-                                              th:if="${unreadCount > 0}" 
-                                              th:text="${unreadCount}">
+                                <a th:href="@{/chat/conversations}" class="'conversation-item list-group-item list-group-item-action d-flex justify-content-between align-items-center'">
+                                    <button type="button"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center position-relative border-0 shadow-sm rounded px-3 py-2"
+                                            th:if="${unreadCount > 0}"
+                                            style="background-color: #dc3545; color: white;">
+                                        
+                                        <span class="fw-semibold">
+                                            ✉️
+                                        </span>
+                                        
+                                        <span id="nav-unread"
+                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-danger shadow-sm"
+                                            th:text="${unreadCount}">
                                             0
                                         </span>
                                     </button>
+
+
+                                    <button type="button"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center position-relative border-0 shadow-sm rounded px-3 py-2"
+                                            th:if="${unreadCount == 0}"
+                                            style="background-color: #f8f9fa; color: #212529;">
+                                        
+                                        <span class="fw-semibold">
+                                            ✉️
+                                        </span>
+
+                                        <!-- Badge oculto si no hay mensajes, pero lo dejamos como estructura -->
+                                        <span id="nav-unread"
+                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary d-none"
+                                            th:text="${unreadCount}">
+                                            0
+                                        </span>
+                                    </button>
+
                                 </a>
                             </li>
                             <li class="nav-item align-self-center">

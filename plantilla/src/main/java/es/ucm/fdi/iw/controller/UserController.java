@@ -69,20 +69,38 @@ public class UserController {
 	private MessageRepository messageRepository;
 
 	@ModelAttribute
-    public void populateModel(HttpSession session, Model model) {
-        User u = (User) session.getAttribute("u");
-        model.addAttribute("u", u);
-        for (String name : new String[] { "url", "ws" }) {
-            model.addAttribute(name, session.getAttribute(name));
-        }
-        // Añade el contador de mensajes no leídos si el usuario está logueado
-        if (u != null) {
-            long unreadCount = messageRepository.countUnreadMessages(u.getId());
-            model.addAttribute("unreadCount", unreadCount);
-        } else {
-            model.addAttribute("unreadCount", 0);
-        }
-    }
+	public void populateModel(HttpSession session, Model model) {
+		User u = (User) session.getAttribute("u");
+		model.addAttribute("u", u);
+		for (String name : new String[] { "url", "ws" }) {
+			model.addAttribute(name, session.getAttribute(name));
+		}
+
+		User currentUser = (User) session.getAttribute("u");
+
+		if (currentUser != null) {
+			// Obtener todas las conversaciones con el conteo de mensajes no leídos
+			List<Object[]> conversations = messageRepository.findAllConversationsWithUnreadCount(currentUser.getId());
+
+			// Ordenar: primero las que tienen mensajes sin leer, luego las demás
+			conversations.sort((a, b) -> {
+				Long unreadA = (Long) a[1];
+				Long unreadB = (Long) b[1];
+				if ((unreadA > 0 && unreadB > 0) || (unreadA == 0 && unreadB == 0)) {
+					return 0;
+				}
+				return unreadA > 0 ? -1 : 1;
+			});
+
+			int unreadCount = conversations.stream()
+					.mapToInt(conversation -> ((Long) conversation[1]).intValue())
+					.sum();
+
+			model.addAttribute("conversations", conversations);
+			model.addAttribute("unreadCount", unreadCount);
+
+		}
+	}
 
 	@ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "No eres administrador, y éste no es tu perfil")
 	public static class NoEsTuPerfilException extends RuntimeException {
@@ -115,7 +133,7 @@ public class UserController {
 
 		log.info("Friendship status between {} and {}: {}",
 				currentUser.getUsername(), targetUser.getUsername(), areFriends);
-		
+
 		List<Event> lEventos = entityManager
 				.createQuery("SELECT p.event FROM Participation p WHERE p.user = :user AND p.enabled = true",
 						Event.class)
@@ -124,7 +142,6 @@ public class UserController {
 
 		return "user";
 	}
-
 
 	@PostMapping("/search")
 	public String search(@RequestParam(value = "username") String username, Model model, HttpSession session) {
