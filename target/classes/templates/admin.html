@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/head :: header}" />
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <title>Panel de Administración</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<body class="d-flex flex-column h-100 bg-light">
+    <header th:replace="~{fragments/nav.html :: nav}"></header>
+
+    <main class="flex-shrink-0" style="background-color: rgba(0, 128, 0, 0.5);">
+        <div class="container mt-5 mb-4 admin-container">
+            <h1 class="text-center mb-4">Panel de Administración</h1>
+            
+            <!-- Actions Panel -->
+            <div class="row mt-4 mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Acciones Rápidas</h4>
+                        </div>
+                        <div class="card-body">
+                            <a th:href="@{/events/create}" class="btn btn-success me-2">
+                                <i class="bi bi-plus-circle me-2"></i>Crear Nuevo Evento
+                            </a>
+                            <a th:href="@{/events}" class="btn btn-info me-2">
+                                <i class="bi bi-list me-2"></i>Ver Eventos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Management -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Gestión de Usuarios</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Roles</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="user : ${users}">
+                                    <td th:text="${user.id}">1</td>
+                                    <td>
+                                        <img th:if="${user.imageUrl}" th:src="${user.imageUrl}" 
+                                             class="avatar me-2" alt="Avatar">
+                                        <span th:text="${user.username}">username</span>
+                                    </td>
+                                    <td th:text="${user.email}">email</td>
+                                    <td>
+                                        <span class="badge bg-primary" th:each="role : ${user.roles}" 
+                                              th:text="${role}">ROLE</span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge badge"
+                                              th:classappend="${user.enabled ? 'bg-success' : 'bg-danger'}"
+                                              th:text="${user.enabled ? 'Activo' : 'Inactivo'}"
+                                              th:data-user-id="${user.id}">
+                                            Estado
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form th:action="@{'/admin/toggle/' + ${user.id}}" 
+                                              method="post" class="d-inline">
+                                            <button th:data-user-id="${user.id}"
+                                                    class="btn toggle-user"
+                                                    th:classappend="${user.enabled ? 'btn-danger' : 'btn-success'}"
+                                                    th:text="${user.enabled ? 'Inhabilitar' : 'Habilitar'}">
+                                            </button>
+                                        </form>
+                                        <a th:href="@{'/user/' + ${user.id}}" 
+                                           class="btn btn-info btn-sm">Ver Perfil</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Management -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Gestión de Eventos</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Fecha</th>
+                                    <th>Participantes</th>
+                                    <th>Creador</th>
+                                    <th>Categoría</th> 
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="event : ${events}">
+                                    <td th:text="${event.id}">1</td>
+                                    <td>
+                                        <img th:if="${event.imageUrl}" th:src="${event.imageUrl}" 
+                                             class="event-thumb me-2" alt="Event">
+                                        <span th:text="${event.name}">Título del Evento</span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${#temporals.format(event.date, 'dd MMMM yyyy HH:mm')}">01/01/2025</span>
+                                        <span>to</span>
+                                        <span th:text="${#temporals.format(event.ending, 'dd MMMM yyyy HH:mm')}">01/01/2025</span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${participantCounts[event.id]}">Capacidad</span>
+                                        <span>/</span>
+                                        <span th:text="${event.aforo}">Capacidad</span>
+                                    </td>
+                                    <td th:text="${event.org}">Creador</td> 
+                                    <td th:text="${event.category}">Categoría</td> 
+                                    <td>
+                                        <span th:class="${event.active ? 'badge bg-success' : 'badge bg-danger'}"
+                                              th:text="${event.active ? 'Activo' : 'Inactivo'}">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{'/events/' + ${event.id}}" class="btn btn-info btn-sm">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                        <!-- Botón para deshabilitar -->
+                                        <th:block th:if="${event.active}">
+                                            <form th:action="@{/admin/events/{id}/disable(id=${event.id})}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('¿Estás seguro de que quieres deshabilitar este evento?')">
+                                                    <i class="bi bi-x-circle"></i> Deshabilitar
+                                                </button>
+                                            </form>
+                                        </th:block>
+                                        <!-- Botón para habilitar -->
+                                        <th:block th:if="${!event.active}">
+                                            <form th:action="@{/admin/events/{id}/enable(id=${event.id})}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-success btn-sm"
+                                                        onclick="return confirm('¿Estás seguro de que quieres habilitar este evento?')">
+                                                    <i class="bi bi-check-circle"></i> Habilitar
+                                                </button>
+                                            </form>
+                                        </th:block>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <th:block th:replace="~{fragments/footer.html :: footer}" />
+    <script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

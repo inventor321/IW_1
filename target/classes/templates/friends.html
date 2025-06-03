@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/head :: header}" />
+    <link rel="stylesheet" th:href="@{/css/friends.css}">
+    <title>Amistades - Exchange Connect</title>
+</head>
+
+<body class="d-flex flex-column h-100 bg-light">
+    <header th:replace="~{fragments/nav.html :: nav}"></header>
+
+    <main class="flex-shrink-0" style="background-color: rgba(0, 128, 0, 0.5);">
+        <div class="container mt-5 mb-4">
+            <h1 class="text-center mb-4">Amistades</h1>
+
+            <!-- Friends List Section -->
+            <div class="card mb-4" th:if="${not #lists.isEmpty(friends)}">
+                <div class="card-header">
+                    <h4>Mis Amigos</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3" th:each="friend : ${friends}">
+                            <div class="friend-card">
+                                <img th:src="@{/user/{id}/pic(id=${friend.id})}" 
+                                     class="friend-avatar" 
+                                     alt="Friend avatar"
+                                     onerror="this.src='/img/default-avatar.png';">
+                                <div class="friend-info">
+                                    <h5 th:text="${friend.username}">Username</h5>
+                                    <p class="text-muted" th:text="${friend.email}">email@example.com</p>
+                                    <div class="btn-group">
+                                        <a th:href="@{'/user/' + ${friend.id}}" 
+                                           class="btn btn-info btn-sm me-2">
+                                            <i class="bi bi-person"></i> Ver Perfil
+                                        </a>
+                                        <a th:href="@{'/messages/chat/' + ${friend.id}}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="bi bi-chat-dots"></i> Enviar Mensaje
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Requests Section -->
+            <div class="card mb-4" th:if="${not #lists.isEmpty(pendingRequests)}">
+                <div class="card-header">
+                    <h4>Solicitudes Pendientes</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3" th:each="request : ${pendingRequests}">
+                            <div class="friend-card">
+                                <img th:src="@{/user/{id}/pic(id=${request.user1.id})}" 
+                                     class="friend-avatar" 
+                                     alt="User avatar"
+                                     onerror="this.src='/img/default-avatar.png';">
+                                <div class="friend-info">
+                                    <h5 th:text="${request.user1.username}">Username</h5>
+                                    <p class="text-muted" th:text="${request.user1.email}">email@example.com</p>
+                                    <div class="btn-group">
+                                        <form th:action="@{'/friends/accept/' + ${request.user1.id}}" 
+                                              method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="bi bi-check-lg"></i> Aceptar
+                                            </button>
+                                        </form>
+                                        <form th:action="@{'/friends/decline/' + ${request.user1.id}}" 
+                                              method="post" class="d-inline ms-2">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-x-lg"></i> Rechazar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggestions Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Sugerencias</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3" th:each="user : ${suggestions}">
+                            <div class="friend-card">
+                                <img th:src="@{/user/{id}/pic(id=${user.id})}" 
+                                     class="friend-avatar" 
+                                     alt="User avatar"
+                                     onerror="this.src='/img/default-avatar.png';">
+                                <div class="friend-info">
+                                    <h5 th:text="${user.username}">Username</h5>
+                                    <p class="text-muted" th:text="${user.email}">email@example.com</p>
+                                    <form th:action="@{'/friends/request/' + ${user.id}}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="bi bi-person-plus"></i> Enviar Solicitud
+                                        </button>
+                                    </form>
+                                    <a th:href="@{'/user/' + ${user.id}}" class="btn btn-info btn-sm">Ver Perfil</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <th:block th:replace="~{fragments/footer.html :: footer}" />
+</body>
+</html>

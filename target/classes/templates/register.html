@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Cabecera -->
+<head>
+    <th:block th:replace="~{fragments/head :: header}" />
+    <title>Registro - Exchange Connect</title>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+</head>
+
+<!-- Cuerpo -->
+<body class="d-flex flex-column h-100">
+    <!-- Navbar -->
+    <header th:replace="~{fragments/nav.html :: nav}"></header>
+
+    <main class="flex-shrink-0 d-flex justify-content-center align-items-center mb-5">
+        <div class="register-container">    
+            <h2 class="text-center text-success">Regístrate</h2>
+            <div th:if="${error}" class="alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+
+            <!-- Formulario registro -->
+            <form method="post" th:action="@{/register}">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nombre de Usuario</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nombre Completo</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Teléfono</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="" required>
+                </div>
+                <!-- Register button -->
+                <button class="btn btn-green w-100" type="submit">Registrarse</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <th:block th:replace="~{fragments/footer.html :: footer}" />
+</body>
+
+</html>

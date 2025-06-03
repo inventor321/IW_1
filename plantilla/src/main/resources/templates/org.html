@@ -4,6 +4,8 @@
 <head>
     <th:block th:replace="~{fragments/head :: header}" />
     <link rel="stylesheet" th:href="@{/css/org.css}">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Panel de Organizador</title>
 </head>
 
@@ -82,23 +84,19 @@
                                                 <i class="bi bi-eye"></i> Ver
                                             </a>
                                             <!-- Botón para deshabilitar -->
-                                            <th:block th:if="${event.active}">
-                                                <form th:action="@{/events/{id}/disable(id=${event.id})}" method="post" class="d-inline">
-                                                    <button type="submit" class="btn btn-danger btn-sm"
-                                                            onclick="return confirm('¿Estás seguro de que quieres deshabilitar este evento?')">
-                                                        <i class="bi bi-x-circle"></i> Deshabilitar
-                                                    </button>
-                                                </form>
-                                            </th:block>
+                                            <button type="button"
+                                                    class="btn btn-danger btn-sm toggle-event"
+                                                    th:data-event-id="${event.id}"
+                                                    th:if="${event.active}">
+                                                <i class="bi bi-x-circle"></i> Deshabilitar
+                                            </button>
                                             <!-- Botón para habilitar -->
-                                            <th:block th:if="${!event.active}">
-                                                <form th:action="@{/events/{id}/enable(id=${event.id})}" method="post" class="d-inline">
-                                                    <button type="submit" class="btn btn-success btn-sm"
-                                                            onclick="return confirm('¿Estás seguro de que quieres habilitar este evento?')">
-                                                        <i class="bi bi-check-circle"></i> Habilitar
-                                                    </button>
-                                                </form>
-                                            </th:block>
+                                            <button type="button"
+                                                    class="btn btn-success btn-sm toggle-event"
+                                                    th:data-event-id="${event.id}"
+                                                    th:if="${!event.active}">
+                                                <i class="bi bi-check-circle"></i> Habilitar
+                                            </button>
                                         </td>
                                     </th:block>
                                 </tr>
@@ -111,6 +109,7 @@
     </main>
 
     <th:block th:replace="~{fragments/footer.html :: footer}" />
+    <script th:src="@{/js/org.js}"></script>
 </body>
 
 </html>

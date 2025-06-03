@@ -43,11 +43,13 @@ Roles y tareas:
 - prueba1 -> prueba1
 - prueba2 -> prueba2
   
+## Cambios post-examen
+
+Todos los botones de habilitar y deshabilitar a la hora de la gestión por parte del administrador y del organizador están hechos con AJAX para así evitar que la página se regargue al pulsar el botón. Además se han añadido las mejoras propuestas en el examen excepto el uso de los websockets.
+
 ## Autores
 - Telmo Aracama Docampo
-- Guillermo Colorado García
-- Allen Pinchuk
-- Marco Antonio Prieto Aradra
+
 
 ## Partes de terceros
 - Imágenes obtenidas de https://stocksnap.io/, con licencia Creative Commons 0 https://stocksnap.io/license 
